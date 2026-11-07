@@ -1,0 +1,93 @@
+/* A shared motion language and the upcoming computing department. */
+.header-support{flex-shrink:0;min-height:44px;gap:7px;padding:9px 14px;font-size:12px;white-space:nowrap}
+.header-support .support-label{font-size:12px;line-height:1.4}
+.header-support>span:first-child{font-size:24px}
+.alpha-badge{display:inline-flex;align-items:center;padding:3px 7px;border:1px solid var(--ui-accent-edge);border-radius:6px;background:var(--ui-accent-soft);color:var(--ui-accent-text);font-size:9px;font-weight:600;line-height:1.4;letter-spacing:.5px;white-space:nowrap}
+.domain-switch{width:max-content;display:flex}
+.domain-switch>button{transition:background .25s ease,box-shadow .25s ease;color:var(--ink)}
+.domain-switch>button>div{min-width:0}
+.domain-switch>button small{display:block;margin-top:3px}
+.domain-switch #computingNav{min-width:220px}
+.domain-switch #computingNav small{display:flex;gap:5px;align-items:center}
+.domain-switch>button.selected{box-shadow:inset 0 0 0 1px var(--ui-accent-edge)}
+.domain-switch .alpha-badge{padding:1px 5px;font-size:8px}
+.computing-section{padding-bottom:25px}
+.computing-hero{display:grid;grid-template-columns:1.15fr 1fr;gap:38px;align-items:center;min-height:370px;padding:48px;border-radius:28px;background:#122d29;color:#edf6e9;position:relative;overflow:hidden}
+.computing-hero:before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#b3dfb209 1px,transparent 1px),linear-gradient(90deg,#b3dfb209 1px,transparent 1px);background-size:40px 40px}
+.computing-intro,.computing-terminal{position:relative;min-width:0}
+.computing-status{display:flex;align-items:center;gap:12px;color:#b9d0c2;font-size:11px}
+.computing-status .alpha-badge{background:#d7f59b;color:#18372c;border-color:#d7f59b}
+.computing-intro h1{font-size:clamp(35px,4.7vw,57px);font-weight:600;line-height:1.08;letter-spacing:-2px;margin:26px 0 21px}
+.computing-intro h1 em{font-family:Georgia,serif;font-weight:400;color:#d7f59b}
+.computing-intro>p{max-width:450px;font-size:15px;line-height:1.9;color:#c5d7cc}
+.computing-soon{display:flex;align-items:center;gap:9px;margin-top:25px;font-size:11px;line-height:1.7;color:#d7f59b}
+.computing-soon>span{font-size:22px}
+.computing-terminal{border:1px solid #b3dcb72e;background:#0c211ed9;border-radius:18px;box-shadow:0 24px 55px #0003;transform:rotate(2deg)}
+.terminal-bar{display:flex;align-items:center;gap:6px;padding:16px;border-bottom:1px solid #b3dcb71c}
+.terminal-bar>span{width:7px;height:7px;border-radius:50%;background:#e6b778}
+.terminal-bar>span:nth-child(2){background:#d7f59b}.terminal-bar>span:nth-child(3){background:#55b9a0}
+.terminal-bar small{margin-left:auto;color:#8ea99a;font-size:9px;letter-spacing:.4px}
+.terminal-code{display:flex;flex-direction:column;gap:17px;padding:26px 20px;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:#d6e8d5;overflow-wrap:anywhere}
+.terminal-code i{font-style:normal;color:#8ce0ce}.terminal-code b{font-weight:400;color:#e6c894}.terminal-code .code-comment{color:#85a995}
+.terminal-ready{border-top:1px solid #b3dcb71c;padding-top:20px;color:#d7f59b;font-size:11px}
+.terminal-cursor{margin-left:3px}
+.computing-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:38px 0 24px}
+.computing-heading .eyebrow{font-size:9px;letter-spacing:1.6px;color:var(--ui-faint)}
+.computing-heading h2{font-size:clamp(24px,3vw,32px);letter-spacing:-.8px;margin-top:10px;line-height:1.25}
+.computing-heading>span{font-size:11px;color:var(--ui-text);max-width:170px;line-height:1.7}
+.language-tabs{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.language-tab{display:flex;align-items:center;gap:16px;min-width:0;min-height:100px;padding:22px;text-align:left;border:1px solid var(--line);background:var(--ui-surface);color:var(--ink);border-radius:19px;transition:border-color .25s,background .25s,transform .25s,box-shadow .25s}
+.language-tab[aria-selected=true]{border-color:var(--ui-accent-edge);background:var(--ui-accent-soft);box-shadow:inset 0 0 0 1px var(--ui-accent-edge)}
+.language-symbol{display:grid;place-items:center;flex-shrink:0;width:49px;height:49px;border-radius:14px;background:var(--ui-soft);color:var(--ui-accent-text);font:600 20px/1 ui-monospace,monospace}
+.language-tab b{display:block;font-size:20px;font-weight:600}.language-tab small{display:block;margin-top:6px;font-size:11px;color:var(--ui-text);line-height:1.6}
+.language-soon{margin-left:auto;white-space:nowrap;font-size:10px;color:var(--ui-accent-text)}
+.language-panel{margin-top:18px;border:1px solid var(--line);border-radius:21px;padding:30px;background:var(--ui-surface)}
+.language-panel h3{font-size:24px;letter-spacing:-.5px;line-height:1.4;margin:16px 0 12px}
+.language-panel>p{font-size:14px;line-height:1.85;color:var(--ui-text);max-width:680px}
+.language-topics{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0}
+.language-topics>span{background:var(--ui-soft);color:var(--ui-text);padding:8px 12px;border-radius:8px;font-size:11px}
+.language-panel .language-note{font-size:12px;color:var(--ui-faint);padding-top:17px;border-top:1px solid var(--line)}
+.language-tab:focus-visible,.language-panel:focus-visible,#computingNav:focus-visible{outline:3px solid var(--ui-accent-text);outline-offset:4px}
+/* Animate composite properties; content never depends on an initial hidden class. */
+.topic,.task-card{transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s}
+.topic-actions button span,.hero-actions button span,.solve,.next-task span{transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s}
+button:active{transform:scale(.97)}
+.hero{position:relative}
+.hero .orbital svg{overflow:visible}
+@media(prefers-reduced-motion:no-preference){
+  :root[data-motion=on] .hero .orbital svg>ellipse{transform-box:fill-box;transform-origin:center;animation:orbit-turn 26s linear infinite}
+  :root[data-motion=on] .hero .orbital svg>ellipse:nth-of-type(2){animation:orbit-reverse 34s linear infinite}
+  :root[data-motion=on] .terminal-cursor{animation:cursor-pulse 1.4s ease-in-out 6}
+  :root[data-motion=on] dialog[open]{animation:dialog-arrive .38s cubic-bezier(.16,1,.3,1)}
+  :root[data-motion=on] dialog[open]::backdrop{animation:backdrop-arrive .25s ease-out}
+}
+@keyframes orbit-turn{from{transform:rotate(-32deg)}to{transform:rotate(328deg)}}
+@keyframes orbit-reverse{from{transform:rotate(42deg)}to{transform:rotate(-318deg)}}
+@keyframes cursor-pulse{0%,100%{opacity:1}50%{opacity:.15}}
+@keyframes dialog-arrive{from{opacity:0;transform:translateY(24px) scale(.965)}to{opacity:1;transform:none}}
+@keyframes backdrop-arrive{from{opacity:0}to{opacity:1}}
+@media(hover:hover) and (pointer:fine){
+  .topic:hover,.language-tab:hover{transform:translateY(-6px);box-shadow:0 18px 32px #17342a17;border-color:var(--ui-accent-edge)}
+  .task-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px #17342a12;border-color:var(--ui-accent-edge)}
+  .topic-actions button:hover span,.hero-actions button:hover span,.next-task:hover span{transform:translateX(4px)}
+  .solve:hover{transform:translateX(3px);background:var(--ui-accent);color:#fff}
+}
+@media(max-width:1050px){.header-support{padding:9px;width:44px}.header-support .support-label{display:none}.computing-hero{padding:35px;gap:25px}.terminal-code{font-size:11px}.language-soon{display:none}}
+@media(max-width:767px){
+  .domain-switch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:4px}
+  .domain-switch>button,.domain-switch #computingNav{min-width:0;padding:10px 6px;gap:7px;min-height:67px}
+  .domain-switch>button>span{display:none}.domain-switch b{font-size:12px;letter-spacing:-.3px}
+  .domain-switch small{font-size:9px}.domain-switch #computingNav small{gap:3px;flex-wrap:wrap}
+  .computing-hero{grid-template-columns:1fr;padding:30px;gap:28px;border-radius:23px;min-height:0}
+  .computing-intro h1{font-size:clamp(33px,7vw,46px);letter-spacing:-1.4px}.computing-intro>p{font-size:14px}
+  .computing-status{font-size:10px;gap:8px;flex-wrap:wrap}.computing-soon{font-size:11px}
+  .computing-terminal{transform:none}.terminal-code{font-size:12px;padding:22px;gap:14px}
+  .computing-heading{display:block;margin-top:30px}.computing-heading>span{display:block;max-width:none;margin-top:10px}
+  .language-tabs{gap:10px}.language-tab{padding:17px 12px;gap:10px;flex-direction:column;align-items:flex-start}
+  .language-symbol{width:42px;height:42px;font-size:17px}.language-tab b{font-size:19px}.language-tab small{font-size:10px}
+  .language-panel{padding:23px}.language-panel h3{font-size:23px}.language-panel>p{font-size:13px}
+}
+@media(max-width:420px){.domain-switch b{font-size:11px}.domain-switch>button:not(#computingNav) small{display:none}.domain-switch #computingNav small{font-size:8px}.domain-switch .alpha-badge{font-size:7px;padding:1px 3px}.computing-hero{padding:25px 20px}.terminal-code{font-size:10px;padding:18px 13px}.terminal-ready{font-size:10px}.terminal-bar small{font-size:8px}.language-topics>span{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.topic:hover,.task-card:hover,.language-tab:hover,.solve:hover,button:active{transform:none}}
+:root[data-motion=off] .topic:hover,:root[data-motion=off] .task-card:hover,:root[data-motion=off] .language-tab:hover,:root[data-motion=off] .solve:hover,:root[data-motion=off] button:active{transform:none}
+:root[data-motion-paused] *, :root[data-motion-paused] *::before,:root[data-motion-paused] *::after{animation-play-state:paused!important}
