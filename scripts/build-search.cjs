@@ -11,5 +11,6 @@ const dir=path.join(root,'topics',`${domain}-${key}`);fs.mkdirSync(dir,{recursiv
 const indexBody='<h1>Темы математики и физики</h1><p class="lead">Математика 6–11 классов и физика 7–11 классов: объяснения, формулы и задачи с решениями.</p>'+[6,7,8,9,10,11].map(g=>`<section><h2>${g} класс</h2><ul>${entries.filter(e=>e.g===g).map(e=>`<li><a href="${e.url}">${esc(e.name)}</a> — ${e.subject}</li>`).join('')}</ul></section>`).join('');
 fs.writeFileSync(path.join(root,'topics/index.html'),shell('Математика и физика 6–11 классов — все темы | Матклуб','Каталог школьных тем: алгебра, геометрия и физика с объяснениями и задачами.',origin+'/topics/',indexBody,{'@context':'https://schema.org','@type':'CollectionPage',name:'Темы математики и физики',url:origin+'/topics/'}));
 fs.writeFileSync(path.join(root,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
-fs.writeFileSync(path.join(root,'sitemap.xml'),'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+[origin+'/',origin+'/topics/',...entries.map(e=>e.url)].map(url=>`<url><loc>${url}</loc></url>`).join('')+'</urlset>');
-console.log(`Built ${entries.length} lesson pages and ${entries.length+2} sitemap URLs`);
+const pythonEntries=require('./build-python.cjs')({root,origin,shell});
+fs.writeFileSync(path.join(root,'sitemap.xml'),'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+[origin+'/',origin+'/topics/',...entries.map(e=>e.url),...pythonEntries.map(e=>e.url)].map(url=>`<url><loc>${url}</loc></url>`).join('')+'</urlset>');
+console.log(`Built ${entries.length} school lesson pages and ${entries.length+2+pythonEntries.length} sitemap URLs`);

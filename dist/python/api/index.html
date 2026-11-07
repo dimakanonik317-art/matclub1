@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Контракты API и JSON | Матклуб</title><meta name="description" content="Контракты API и JSON: объяснение, пример Python, задачи и разборы. Проверка внешних данных до использования."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/api/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Контракты API и JSON | Матклуб"><meta property="og:description" content="Контракты API и JSON: объяснение, пример Python, задачи и разборы. Проверка внешних данных до использования."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/api/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Контракты API и JSON","description":"Контракты API и JSON: объяснение, пример Python, задачи и разборы. Проверка внешних данных до использования.","inLanguage":"ru","educationalLevel":"Практика разработчика","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/api/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Практика разработчика</nav><p class="section-kicker">PYTHON 3 · ПРАКТИКА РАЗРАБОТЧИКА</p><h1>Контракты API и JSON</h1><p class="lead">Проверка внешних данных до использования.</p><section><h2>Разбираемся в теме</h2><p>API — договор о запросах и ответах между программами. Для HTTP важны метод, адрес, статус и тело ответа. Успешный статус ещё не гарантирует правильную структуру JSON: данные нужно проверить перед использованием.</p><p>Отделяй получение ответа от его разбора. Чистую функцию разбора можно проверить без сети на заранее заданных данных: успех, ошибка статуса, повреждённый JSON и неожиданная схема. Здесь мы работаем с такими ответами, не обращаясь к внешнему серверу.</p><p>В реальном клиенте нужны ограничение времени ожидания, обработка ошибок и осторожные повторы. Браузер также применяет CORS. Пароли и секретные ключи нельзя помещать в публичный код сайта; учебные примеры не требуют ключей.</p></section><section><h2>Пример</h2><pre><code>import json
+
+status = 200
+body = &#39;{&quot;users&quot;: [{&quot;name&quot;: &quot;Анна&quot;}]}&#39;
+if 200 &lt;= status &lt; 300:
+    payload = json.loads(body)
+    print(payload[&quot;users&quot;][0][&quot;name&quot;])</code></pre><h3>Результат</h3><pre>Анна</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>Не считай любой ответ JSON-словарём. Сначала проверь статус, затем формат и обязательные поля.</p></aside><section><h2>Практика</h2><article><h3>Имена из ответа</h3><p>Напиши extract_names(payload). payload — dict; отсутствующее users считай пустым списком. users должен быть list словарей с непустым строковым name. Верни имена после strip(). При неверной структуре подними ValueError. Вход не меняй.</p><h4>Шаблон</h4><pre><code>def extract_names(payload):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Проверь контейнер до обхода.</li><li>Проверяй каждую запись и создавай новый список результата.</li></ol><pre><code>def extract_names(payload):
+    users = payload.get(&quot;users&quot;, [])
+    if not isinstance(users, list):
+        raise ValueError(&quot;users должен быть списком&quot;)
+    names = []
+    for user in users:
+        if not isinstance(user, dict):
+            raise ValueError(&quot;Пользователь должен быть словарём&quot;)
+        name = user.get(&quot;name&quot;)
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError(&quot;Нужно непустое имя&quot;)
+        names.append(name.strip())
+    return names</code></pre></details></article><article><h3>Разбор HTTP-ответа</h3><p>Напиши decode_response(status, body). Для статуса 200–299 разбери JSON-строку body и верни dict. Неуспешный статус, некорректный JSON или JSON не-словарь должны вызывать ValueError.</p><h4>Шаблон</h4><pre><code>import json
+
+def decode_response(status, body):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Проверь диапазон статусов до чтения тела.</li><li>json.JSONDecodeError — подкласс ValueError; после разбора отдельно проверь тип.</li></ol><pre><code>import json
+
+def decode_response(status, body):
+    if not 200 &lt;= status &lt; 300:
+        raise ValueError(&quot;Неуспешный HTTP-статус&quot;)
+    payload = json.loads(body)
+    if not isinstance(payload, dict):
+        raise ValueError(&quot;Ожидался JSON-объект&quot;)
+    return payload</code></pre></details></article><a class="primary" href="/?python=api">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

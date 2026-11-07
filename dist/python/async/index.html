@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Асинхронность | Матклуб</title><meta name="description" content="Асинхронность: объяснение, пример Python, задачи и разборы. async, await и совместное ожидание."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/async/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Асинхронность | Матклуб"><meta property="og:description" content="Асинхронность: объяснение, пример Python, задачи и разборы. async, await и совместное ожидание."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/async/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Асинхронность","description":"Асинхронность: объяснение, пример Python, задачи и разборы. async, await и совместное ожидание.","inLanguage":"ru","educationalLevel":"Практика разработчика","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/async/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Практика разработчика</nav><p class="section-kicker">PYTHON 3 · ПРАКТИКА РАЗРАБОТЧИКА</p><h1>Асинхронность</h1><p class="lead">async, await и совместное ожидание.</p><section><h2>Разбираемся в теме</h2><p>async def создаёт корутинную функцию. Её вызов возвращает корутину, а выполнение начинается при await или планировании задач. Асинхронность полезна для ожидания ввода-вывода, но сама по себе не ускоряет тяжёлые вычисления процессора.</p><p>asyncio.gather() ожидает несколько корутин совместно и возвращает результаты в порядке переданных аргументов. await asyncio.sleep(0) отдаёт управление другим задачам. Блокирующий time.sleep() внутри корутины останавливает весь цикл событий.</p><p>В обычном файле Python точкой входа часто служит asyncio.run(main()). В редакторе этого сайта цикл уже работает: используй await main() на верхнем уровне. Автоматические проверки также поддерживают верхнеуровневый await.</p></section><section><h2>Пример</h2><pre><code>import asyncio
+
+async def square(number):
+    await asyncio.sleep(0)
+    return number * number
+
+print(await asyncio.gather(square(2), square(3)))</code></pre><h3>Результат</h3><pre>[4, 9]</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>Вызов async-функции без await не возвращает готовый результат. Не запускай asyncio.run() внутри уже работающего цикла.</p></aside><section><h2>Практика</h2><article><h3>Корутина с передачей управления</h3><p>Напиши async-функцию double_after_yield(value). Она должна сделать await asyncio.sleep(0) и вернуть удвоенное значение.</p><h4>Шаблон</h4><pre><code>import asyncio
+
+async def double_after_yield(value):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Объяви функцию через async def.</li><li>После передачи управления верни числовой результат.</li></ol><pre><code>import asyncio
+
+async def double_after_yield(value):
+    await asyncio.sleep(0)
+    return value * 2</code></pre></details></article><article><h3>Квадраты совместно</h3><p>Напиши async-функцию gather_squares(values). Создай корутину для каждого числа, совместно дождись их через asyncio.gather() и верни список квадратов в исходном порядке. Каждая корутина должна уступать управление через asyncio.sleep(0).</p><h4>Шаблон</h4><pre><code>import asyncio
+
+async def gather_squares(values):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Вынеси одну операцию в маленькую корутину.</li><li>Распакуй корутины в gather() и дождись общего результата.</li></ol><pre><code>import asyncio
+
+async def gather_squares(values):
+    async def square(value):
+        await asyncio.sleep(0)
+        return value * value
+    return list(await asyncio.gather(*(square(value) for value in values)))</code></pre></details></article><a class="primary" href="/?python=async">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

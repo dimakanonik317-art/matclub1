@@ -1,0 +1,43 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Классы и состояние | Матклуб</title><meta name="description" content="Классы и состояние: объяснение, пример Python, задачи и разборы. Экземпляры, __init__ и методы."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/classes/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Классы и состояние | Матклуб"><meta property="og:description" content="Классы и состояние: объяснение, пример Python, задачи и разборы. Экземпляры, __init__ и методы."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/classes/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Классы и состояние","description":"Классы и состояние: объяснение, пример Python, задачи и разборы. Экземпляры, __init__ и методы.","inLanguage":"ru","educationalLevel":"Структура и модели","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/classes/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Структура и модели</nav><p class="section-kicker">PYTHON 3 · СТРУКТУРА И МОДЕЛИ</p><h1>Классы и состояние</h1><p class="lead">Экземпляры, __init__ и методы.</p><section><h2>Разбираемся в теме</h2><p>Класс описывает объекты с общими правилами. __init__ задаёт начальное состояние экземпляра, self обращается к этому экземпляру. Вызов counter.increment() передаёт counter в self автоматически.</p><p>Данные конкретного объекта записывай в self.attribute. Изменяемые атрибуты на уровне класса общие для всех экземпляров и часто приводят к неожиданным связям. Проверь два объекта: изменение одного не должно менять другой.</p><p>Метод может защищать инвариант, например неотрицательный баланс. Сначала проверь вход и возможность операции, затем меняй состояние. При ошибке объект должен остаться в прежнем корректном состоянии.</p></section><section><h2>Пример</h2><pre><code>class Counter:
+    def __init__(self):
+        self.value = 0
+
+    def increment(self):
+        self.value += 1
+
+counter = Counter()
+counter.increment()
+print(counter.value)</code></pre><h3>Результат</h3><pre>1</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>self.value и переменная value — разные имена. Состояние отдельного объекта хранится в его атрибутах.</p></aside><section><h2>Практика</h2><article><h3>Независимые счётчики</h3><p>Создай Counter(start=0) с атрибутом value. Метод increment(step=1) увеличивает value и возвращает новое значение. Объекты независимы.</p><h4>Шаблон</h4><pre><code>class Counter:
+    def __init__(self, start=0):
+        pass
+
+    def increment(self, step=1):
+        pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Инициализируй self.value в __init__.</li><li>Метод изменяет состояние и возвращает новое значение.</li></ol><pre><code>class Counter:
+    def __init__(self, start=0):
+        self.value = start
+
+    def increment(self, step=1):
+        self.value += step
+        return self.value</code></pre></details></article><article><h3>Кошелёк с проверками</h3><p>Создай Wallet(balance=0) с атрибутом balance и методами deposit(amount), withdraw(amount). Суммы — целые; отрицательные суммы и недостаток средств вызывают ValueError без изменения баланса. Методы возвращают новый баланс. Начальный баланс неотрицателен.</p><h4>Шаблон</h4><pre><code>class Wallet:
+    def __init__(self, balance=0):
+        self.balance = balance
+
+    def deposit(self, amount):
+        pass
+
+    def withdraw(self, amount):
+        pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Проверяй сумму до изменения баланса.</li><li>При недостатке средств выброси ValueError и сохрани состояние.</li></ol><pre><code>class Wallet:
+    def __init__(self, balance=0):
+        self.balance = balance
+
+    def deposit(self, amount):
+        if amount &lt; 0:
+            raise ValueError(&quot;Сумма не может быть отрицательной&quot;)
+        self.balance += amount
+        return self.balance
+
+    def withdraw(self, amount):
+        if amount &lt; 0 or amount &gt; self.balance:
+            raise ValueError(&quot;Недопустимое списание&quot;)
+        self.balance -= amount
+        return self.balance</code></pre></details></article><a class="primary" href="/?python=classes">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

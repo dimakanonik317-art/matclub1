@@ -1,0 +1,32 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Модели данных и аннотации | Матклуб</title><meta name="description" content="Модели данных и аннотации: объяснение, пример Python, задачи и разборы. dataclass и явная структура объектов."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/dataclasses/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Модели данных и аннотации | Матклуб"><meta property="og:description" content="Модели данных и аннотации: объяснение, пример Python, задачи и разборы. dataclass и явная структура объектов."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/dataclasses/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Модели данных и аннотации","description":"Модели данных и аннотации: объяснение, пример Python, задачи и разборы. dataclass и явная структура объектов.","inLanguage":"ru","educationalLevel":"Структура и модели","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/dataclasses/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Структура и модели</nav><p class="section-kicker">PYTHON 3 · СТРУКТУРА И МОДЕЛИ</p><h1>Модели данных и аннотации</h1><p class="lead">dataclass и явная структура объектов.</p><section><h2>Разбираемся в теме</h2><p>Аннотации описывают ожидаемые типы аргументов и результата: def square(x: int) -&gt; int. Они помогают редактору и анализатору, но сами по себе не запрещают передать другой тип во время выполнения.</p><p>@dataclass автоматически создаёт __init__, читаемое представление и сравнение по полям. Это удобно для объектов, которые в первую очередь хранят данные. Методы вычисления по полям можно добавлять как в обычном классе.</p><p>У полей с умолчанием есть порядок: они идут после обязательных. Для изменяемого значения по умолчанию применяют field(default_factory=list), чтобы каждый объект получил собственный список.</p></section><section><h2>Пример</h2><pre><code>from dataclasses import dataclass
+
+@dataclass
+class Point:
+    x: float
+    y: float
+
+point = Point(2, 5)
+print(point.x + point.y)</code></pre><h3>Результат</h3><pre>7</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>Аннотация price: float не выполняет автоматическое преобразование строки в число.</p></aside><section><h2>Практика</h2><article><h3>Точка с длиной</h3><p>Создай dataclass Point с полями x: float, y: float и методом norm(), возвращающим расстояние до начала координат.</p><h4>Шаблон</h4><pre><code>from dataclasses import dataclass
+import math
+
+# Объяви Point</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Добавь декоратор @dataclass над классом.</li><li>В norm() используй координаты текущего экземпляра.</li></ol><pre><code>from dataclasses import dataclass
+import math
+
+@dataclass
+class Point:
+    x: float
+    y: float
+
+    def norm(self):
+        return math.hypot(self.x, self.y)</code></pre></details></article><article><h3>Строка заказа</h3><p>Создай dataclass Product с полями name: str, price: float, quantity: int=0. Метод total() возвращает price*quantity.</p><h4>Шаблон</h4><pre><code>from dataclasses import dataclass
+
+# Объяви Product</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Поле quantity с умолчанием поставь после обязательных полей.</li><li>Метод total() вычисляет результат по полям self.</li></ol><pre><code>from dataclasses import dataclass
+
+@dataclass
+class Product:
+    name: str
+    price: float
+    quantity: int = 0
+
+    def total(self):
+        return self.price * self.quantity</code></pre></details></article><a class="primary" href="/?python=dataclasses">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

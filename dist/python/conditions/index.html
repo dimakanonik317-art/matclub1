@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Ветвления | Матклуб</title><meta name="description" content="Ветвления: объяснение, пример Python, задачи и разборы. if, elif, else и логические условия."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/conditions/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Ветвления | Матклуб"><meta property="og:description" content="Ветвления: объяснение, пример Python, задачи и разборы. if, elif, else и логические условия."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/conditions/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Ветвления","description":"Ветвления: объяснение, пример Python, задачи и разборы. if, elif, else и логические условия.","inLanguage":"ru","educationalLevel":"Первые программы","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/conditions/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Первые программы</nav><p class="section-kicker">PYTHON 3 · ПЕРВЫЕ ПРОГРАММЫ</p><h1>Ветвления</h1><p class="lead">if, elif, else и логические условия.</p><section><h2>Разбираемся в теме</h2><p>После if записывают условие и двоеточие. Инструкции выбранной ветви выделяют одинаковым отступом, обычно четырьмя пробелами. elif проверяется, если предыдущие условия не подошли, else обрабатывает оставшийся случай.</p><p>Для сравнения используются ==, !=, &lt;, &lt;=, &gt;, &gt;=. Операторы and и or объединяют условия, not отрицает. Python допускает цепочку 0 &lt;= score &lt;= 100.</p><p>Порядок проверок важен: в цепочке if/elif выполняется первая подходящая ветвь. Границы диапазона и ноль стоит проверять отдельными примерами.</p></section><section><h2>Пример</h2><pre><code>score = 75
+if score &gt;= 90:
+    print(&quot;Отлично&quot;)
+elif score &gt;= 60:
+    print(&quot;Зачёт&quot;)
+else:
+    print(&quot;Попробуй ещё&quot;)</code></pre><h3>Результат</h3><pre>Зачёт</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>= присваивает значение, == сравнивает. Отступы — часть синтаксиса, а не украшение.</p></aside><section><h2>Практика</h2><article><h3>Знак числа</h3><p>Прочитай целое число. Выведи positive, negative или zero в зависимости от знака.</p><h4>Шаблон</h4><pre><code>number = int(input())
+# Добавь три ветви</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Проверь строго положительное число.</li><li>Для нуля оставь отдельную ветвь.</li></ol><pre><code>number = int(input())
+if number &gt; 0:
+    print(&quot;positive&quot;)
+elif number &lt; 0:
+    print(&quot;negative&quot;)
+else:
+    print(&quot;zero&quot;)</code></pre></details></article><article><h3>Доставка по акции</h3><p>На первой строке дана целая стоимость заказа, на второй — yes или no: есть ли подписка. Доставка бесплатна при заказе от 2000 или при подписке yes. Выведи 0 для бесплатной доставки, иначе 250.</p><h4>Шаблон</h4><pre><code>total = int(input())
+member = input()
+# Выбери стоимость доставки</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Для бесплатной доставки достаточно любого одного условия.</li><li>Объедини условия через or.</li></ol><pre><code>total = int(input())
+member = input()
+if total &gt;= 2000 or member == &quot;yes&quot;:
+    print(0)
+else:
+    print(250)</code></pre></details></article><a class="primary" href="/?python=conditions">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Проект: список дел с JSON | Матклуб</title><meta name="description" content="Проект: список дел с JSON: объяснение, пример Python, задачи и разборы. Данные, изменения без побочных эффектов и хранение."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/project-todo/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Проект: список дел с JSON | Матклуб"><meta property="og:description" content="Проект: список дел с JSON: объяснение, пример Python, задачи и разборы. Данные, изменения без побочных эффектов и хранение."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/project-todo/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Проект: список дел с JSON","description":"Проект: список дел с JSON: объяснение, пример Python, задачи и разборы. Данные, изменения без побочных эффектов и хранение.","inLanguage":"ru","educationalLevel":"Четыре проекта","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/project-todo/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Четыре проекта</nav><p class="section-kicker">PYTHON 3 · ЧЕТЫРЕ ПРОЕКТА</p><h1>Проект: список дел с JSON</h1><p class="lead">Данные, изменения без побочных эффектов и хранение.</p><section><h2>Разбираемся в теме</h2><p>Модель задачи — словарь с id, title и done. Уникальный идентификатор отделён от позиции в списке: удаление одного элемента не должно менять идентичность остальных.</p><p>Операции добавления и завершения возвращают новые списки с отдельными словарями. Хранение вынесено в save_tasks() и load_tasks(), поэтому игровая или веб-оболочка не меняет предметную логику.</p><p>В браузере файл временный. Для локальной версии добавь CLI на argparse, README и тесты. Перед расширением схемы подумай, как будут читаться старые сохранения.</p></section><section><h2>Пример</h2><pre><code>tasks = [{&quot;id&quot;: 1, &quot;title&quot;: &quot;Изучить JSON&quot;, &quot;done&quot;: False}]
+print(tasks[0][&quot;title&quot;])</code></pre><h3>Результат</h3><pre>Изучить JSON</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>Идентификатор нельзя вычислять как len(tasks)+1, если в сохранении возможны пропуски.</p></aside><section><h2>Практика</h2><article><h3>Четыре операции списка дел</h3><p>Реализуй add_task(tasks,title): новый список, новый id=max(id)+1 или 1, title.strip(), done=False; пустой title → ValueError. complete_task(tasks,id): новый список, помечает задачу done=True; неизвестный id → KeyError. Входы не меняются, словари копируются. save_tasks(path,tasks) пишет JSON UTF-8; load_tasks(path) читает его, для отсутствующего файла возвращает []. Входные задачи имеют уникальные целые id.</p><h4>Шаблон</h4><pre><code>import json
+
+def add_task(tasks, title):
+    pass
+
+def complete_task(tasks, task_id):
+    pass
+
+def save_tasks(path, tasks):
+    pass
+
+def load_tasks(path):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Раздели изменение данных и работу с файлом.</li><li>Копируй не только список, но и словари задач; max(id) не зависит от пропусков.</li><li>Отсутствующий файл обрабатывай отдельно от повреждённого JSON.</li></ol><pre><code>import json
+
+def add_task(tasks, title):
+    title = title.strip()
+    if not title:
+        raise ValueError(&quot;Пустое название&quot;)
+    task_id = max((task[&quot;id&quot;] for task in tasks), default=0) + 1
+    return [dict(task) for task in tasks] + [
+        {&quot;id&quot;: task_id, &quot;title&quot;: title, &quot;done&quot;: False}
+    ]
+
+def complete_task(tasks, task_id):
+    if not any(task[&quot;id&quot;] == task_id for task in tasks):
+        raise KeyError(task_id)
+    return [dict(task, done=True) if task[&quot;id&quot;] == task_id else dict(task)
+            for task in tasks]
+
+def save_tasks(path, tasks):
+    with open(path, &quot;w&quot;, encoding=&quot;utf-8&quot;) as file:
+        json.dump(tasks, file, ensure_ascii=False)
+
+def load_tasks(path):
+    try:
+        with open(path, encoding=&quot;utf-8&quot;) as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []</code></pre></details></article><a class="primary" href="/?python=project-todo">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

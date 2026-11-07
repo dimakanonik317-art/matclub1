@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Декораторы и контекстные менеджеры | Матклуб</title><meta name="description" content="Декораторы и контекстные менеджеры: объяснение, пример Python, задачи и разборы. Поведение вокруг вызова и ресурса."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/patterns/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Декораторы и контекстные менеджеры | Матклуб"><meta property="og:description" content="Декораторы и контекстные менеджеры: объяснение, пример Python, задачи и разборы. Поведение вокруг вызова и ресурса."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/patterns/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Декораторы и контекстные менеджеры","description":"Декораторы и контекстные менеджеры: объяснение, пример Python, задачи и разборы. Поведение вокруг вызова и ресурса.","inLanguage":"ru","educationalLevel":"Качество и алгоритмы","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/patterns/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Качество и алгоритмы</nav><p class="section-kicker">PYTHON 3 · КАЧЕСТВО И АЛГОРИТМЫ</p><h1>Декораторы и контекстные менеджеры</h1><p class="lead">Поведение вокруг вызова и ресурса.</p><section><h2>Разбираемся в теме</h2><p>Декоратор получает функцию и возвращает новую функцию с дополнительным поведением. @decorator над def эквивалентно присваиванию function = decorator(function). Обёртка обычно принимает *args и **kwargs, чтобы не ограничивать исходный интерфейс.</p><p>functools.wraps копирует имя, документацию и ссылку на исходную функцию. Без него инструменты видят только wrapper. Состояние декоратора нужно отделять для каждой декорируемой функции.</p><p>contextlib.contextmanager превращает генератор с одним yield в контекстный менеджер. До yield — вход, после него — успешное завершение. Код finally выполняется и при ошибке; если успешное действие нужно отменить при исключении, не помещай его безусловно в finally.</p></section><section><h2>Пример</h2><pre><code>from contextlib import contextmanager
+
+@contextmanager
+def marker():
+    print(&quot;вход&quot;)
+    try:
+        yield
+    finally:
+        print(&quot;выход&quot;)
+
+with marker():
+    print(&quot;работа&quot;)</code></pre><h3>Результат</h3><pre>вход
+работа
+выход</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>Возвращай результат исходной функции из обёртки. Пропущенный return незаметно заменит результат на None.</p></aside><section><h2>Практика</h2><article><h3>Декоратор-счётчик</h3><p>Напиши call_counter: декоратор сохраняет метаданные функции и добавляет атрибут calls, сначала 0. Перед каждым вызовом увеличивает calls, в том числе если функция затем выбросит исключение. Аргументы и результат передавай без изменений.</p><h4>Шаблон</h4><pre><code>from functools import wraps
+
+def call_counter(function):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Увеличь счётчик до вызова исходной функции.</li><li>Используй wraps и не забудь вернуть и wrapper, и результат function.</li></ol><pre><code>from functools import wraps
+
+def call_counter(function):
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        wrapper.calls += 1
+        return function(*args, **kwargs)
+    wrapper.calls = 0
+    return wrapper</code></pre></details></article><article><h3>Буфер с подтверждением</h3><p>Напиши контекстный менеджер collect(target). Он выдаёт новый пустой список buffer. При успешном выходе добавляет buffer в конец target; при исключении не меняет target и не подавляет ошибку.</p><h4>Шаблон</h4><pre><code>from contextlib import contextmanager
+
+@contextmanager
+def collect(target):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Создай отдельный буфер и выдай его через yield.</li><li>Выполни extend после yield: при исключении выполнение до него не дойдёт.</li></ol><pre><code>from contextlib import contextmanager
+
+@contextmanager
+def collect(target):
+    buffer = []
+    yield buffer
+    target.extend(buffer)</code></pre></details></article><a class="primary" href="/?python=patterns">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

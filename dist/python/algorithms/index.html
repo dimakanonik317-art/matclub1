@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Алгоритмы и сложность | Матклуб</title><meta name="description" content="Алгоритмы и сложность: объяснение, пример Python, задачи и разборы. Двоичный поиск и слияние без лишней сортировки."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/algorithms/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Алгоритмы и сложность | Матклуб"><meta property="og:description" content="Алгоритмы и сложность: объяснение, пример Python, задачи и разборы. Двоичный поиск и слияние без лишней сортировки."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/algorithms/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Алгоритмы и сложность","description":"Алгоритмы и сложность: объяснение, пример Python, задачи и разборы. Двоичный поиск и слияние без лишней сортировки.","inLanguage":"ru","educationalLevel":"Качество и алгоритмы","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/algorithms/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Качество и алгоритмы</nav><p class="section-kicker">PYTHON 3 · КАЧЕСТВО И АЛГОРИТМЫ</p><h1>Алгоритмы и сложность</h1><p class="lead">Двоичный поиск и слияние без лишней сортировки.</p><section><h2>Разбираемся в теме</h2><p>Оценка O(n) описывает рост работы с размером входа, а не точное время в секундах. Линейный поиск в худшем случае смотрит все элементы. Двоичный поиск на отсортированном списке каждый раз отбрасывает половину диапазона и требует O(log n) сравнений.</p><p>Удобный контракт границ: рассматривается полуинтервал [left, right). При middle=(left+right)//2 значение меньше цели сдвигает left к middle+1, иначе сдвигается right. Так можно найти первое вхождение и не зациклиться.</p><p>Два уже отсортированных списка можно объединить двумя указателями за O(n+m). Повторная сортировка объединения решает задачу, но не использует полезную информацию о входе. Докажи, что каждый указатель только движется вперёд.</p></section><section><h2>Пример</h2><pre><code>from bisect import bisect_left
+
+numbers = [1, 3, 3, 7]
+position = bisect_left(numbers, 3)
+print(position)</code></pre><h3>Результат</h3><pre>1</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>Двоичный поиск требует отсортированного входа. Не используй right=middle−1 с правилами для полуинтервала.</p></aside><section><h2>Практика</h2><article><h3>Первое вхождение</h3><p>Напиши binary_search(numbers, target): входной список отсортирован по возрастанию. Верни индекс первого вхождения target либо −1. Цель — O(log n); вход не меняй.</p><h4>Шаблон</h4><pre><code>def binary_search(numbers, target):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Поддерживай полуинтервал, где может находиться первый подходящий индекс.</li><li>После цикла проверь, что индекс существует и элемент равен цели.</li></ol><pre><code>def binary_search(numbers, target):
+    left, right = 0, len(numbers)
+    while left &lt; right:
+        middle = (left + right) // 2
+        if numbers[middle] &lt; target:
+            left = middle + 1
+        else:
+            right = middle
+    if left &lt; len(numbers) and numbers[left] == target:
+        return left
+    return -1</code></pre></details></article><article><h3>Слияние</h3><p>Напиши merge_sorted(first, second): верни новый отсортированный список из двух отсортированных списков чисел, сохранив повторы. Исходные списки не меняй. Реализуй линейное слияние двумя указателями.</p><h4>Шаблон</h4><pre><code>def merge_sorted(first, second):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Сравнивай только текущие элементы двух списков.</li><li>Когда один список кончился, добавь оставшийся хвост другого.</li></ol><pre><code>def merge_sorted(first, second):
+    result = []
+    i = j = 0
+    while i &lt; len(first) and j &lt; len(second):
+        if first[i] &lt;= second[j]:
+            result.append(first[i])
+            i += 1
+        else:
+            result.append(second[j])
+            j += 1
+    return result + first[i:] + second[j:]</code></pre></details></article><a class="primary" href="/?python=algorithms">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Python: Автоматические тесты | Матклуб</title><meta name="description" content="Автоматические тесты: объяснение, пример Python, задачи и разборы. Проверки поведения и защита от регрессий."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/python/testing/"><meta property="og:type" content="article"><meta property="og:title" content="Python: Автоматические тесты | Матклуб"><meta property="og:description" content="Автоматические тесты: объяснение, пример Python, задачи и разборы. Проверки поведения и защита от регрессий."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/python/testing/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Автоматические тесты","description":"Автоматические тесты: объяснение, пример Python, задачи и разборы. Проверки поведения и защита от регрессий.","inLanguage":"ru","educationalLevel":"Качество и алгоритмы","learningResourceType":"Урок Python с практикой","isAccessibleForFree":true,"url":"https://matclub1.dimakanonik317.workers.dev/python/testing/"}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/">Главная</a> / <a href="/python/">Python</a> / Качество и алгоритмы</nav><p class="section-kicker">PYTHON 3 · КАЧЕСТВО И АЛГОРИТМЫ</p><h1>Автоматические тесты</h1><p class="lead">Проверки поведения и защита от регрессий.</p><section><h2>Разбираемся в теме</h2><p>Хороший тест задаёт вход, выполняет действие и сравнивает результат с ожидаемым. Нужны обычные случаи, границы и ошибки. Проверка, вычисляющая ожидаемое значение тем же способом, что и проверяемая функция, может повторить её ошибку.</p><p>В стандартном unittest тестовый класс наследуется от TestCase, а методы начинаются с test_. assertEqual проверяет равенство, assertRaises — ожидаемое исключение. Каждый тест должен быть независимым.</p><p>Тесты нужны и для поиска ошибки, и для сохранения поведения после изменений. Проверь качество тестов мысленной мутацией: если заменить плюс на минус или сломать обработку отрицательных чисел, заметят ли они это?</p></section><section><h2>Пример</h2><pre><code>import unittest
+
+class TestSum(unittest.TestCase):
+    def test_sum(self):
+        self.assertEqual(sum([2, 3]), 5)
+
+suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestSum)
+result = unittest.TestResult()
+suite.run(result)
+print(result.testsRun, result.wasSuccessful())</code></pre><h3>Результат</h3><pre>1 True</pre></section><aside class="mistake-box"><h3>На что обратить внимание</h3><p>Прохождение одного обычного примера не доказывает корректность на пустых, граничных и ошибочных входах.</p></aside><section><h2>Практика</h2><article><h3>Палиндром с контрактом</h3><p>Напиши is_palindrome(text). Игнорируй регистр и все пробельные символы; знаки препинания сохраняй. Пустая строка считается палиндромом. Верни bool.</p><h4>Шаблон</h4><pre><code>def is_palindrome(text):
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>split() без аргумента удаляет разделители любого пробельного вида.</li><li>Сравни нормализованную строку с её обратной копией.</li></ol><pre><code>def is_palindrome(text):
+    normalized = &quot;&quot;.join(text.split()).casefold()
+    return normalized == normalized[::-1]</code></pre></details></article><article><h3>Тесты, которые ловят ошибку</h3><p>Для заданной функции add(a,b) напиши класс TestAdd(unittest.TestCase) минимум с тремя test_-методами. Проверь обычное сложение, отрицательные числа и нулевой аргумент. Тесты должны проходить на верной функции и замечать замену сложения вычитанием или поломку отрицательных чисел.</p><h4>Шаблон</h4><pre><code>import unittest
+
+def add(a, b):
+    return a + b
+
+class TestAdd(unittest.TestCase):
+    # Добавь тестовые методы
+    pass</code></pre><details><summary>Подсказки и эталонный код</summary><ol><li>Не меняй add: задача в проверках.</li><li>Используй заранее известные числовые ответы, а не выражение add() по обе стороны сравнения.</li></ol><pre><code>import unittest
+
+def add(a, b):
+    return a + b
+
+class TestAdd(unittest.TestCase):
+    def test_positive(self):
+        self.assertEqual(add(2, 3), 5)
+
+    def test_negative(self):
+        self.assertEqual(add(-4, 1), -3)
+
+    def test_zero(self):
+        self.assertEqual(add(7, 0), 7)</code></pre></details></article><a class="primary" href="/?python=testing">Писать и проверять код →</a></section><p><a href="/python/">← Все уроки Python</a></p></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>
