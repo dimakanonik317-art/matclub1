@@ -1,6 +1,6 @@
 (() => {
 const key='matclub-settings-v1';
-const defaults={theme:'system',accent:'forest',textSize:'normal',density:'normal',motion:true,focus:false,defaultGrade:7};
+const defaults={theme:'system',accent:'forest',textSize:'normal',density:'normal',motion:true,focus:false,defaultGrade:window.matclubBoot?.user?.grade||7};
 const choices={theme:['light','dark','system'],accent:['forest','ocean','violet','clay'],textSize:['normal','large','extra'],density:['normal','compact']};
 function normalize(raw){const value={...defaults};if(!raw||typeof raw!=='object')return value;for(const [name,list] of Object.entries(choices))if(list.includes(raw[name]))value[name]=raw[name];for(const name of ['motion','focus'])if(typeof raw[name]==='boolean')value[name]=raw[name];if(Number.isInteger(raw.defaultGrade)&&raw.defaultGrade>=6&&raw.defaultGrade<=11)value.defaultGrade=raw.defaultGrade;return value}
 let value;try{value=normalize(JSON.parse(localStorage.getItem(key)))}catch{value={...defaults}}

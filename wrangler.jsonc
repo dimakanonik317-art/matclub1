@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "matclub1",
+  "main": "server/worker.mjs",
+  "compatibility_date": "2026-11-07",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "matclub-users",
+      "database_id": "988eb434-5a6c-43c9-87cd-bc8cfe6ee801"
+    }
+  ]
+}

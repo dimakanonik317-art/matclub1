@@ -1,0 +1,44 @@
+import {DatabaseSync} from 'node:sqlite';
+import assert from 'node:assert/strict';
+import worker,{KEYS} from '../server/worker.mjs';
+const sql=new DatabaseSync(':memory:');sql.exec('PRAGMA foreign_keys=ON');
+class Statement{constructor(query,args=[]){this.query=query;this.args=args}bind(...args){return new Statement(this.query,args)}async first(){return sql.prepare(this.query).get(...this.args)||null}async run(){const result=sql.prepare(this.query).run(...this.args);return{success:true,meta:{changes:result.changes}}}}
+const DB={prepare(query){return new Statement(query)},async batch(statements){sql.exec('BEGIN');try{const results=[];for(const s of statements)results.push(await s.run());sql.exec('COMMIT');return results}catch(e){sql.exec('ROLLBACK');throw e}}};
+const env={DB,ASSETS:{fetch(){return new Response('<!DOCTYPE html><html><head></head><body>School</body></html>',{headers:{'content-type':'text/html','etag':'old'}})}}};
+let checks=0;const pending=[];const ctx={waitUntil(p){pending.push(p)}};
+async function call(path,{method='GET',data,token,origin='https://school.test',ip='192.0.2.10'}={}){const headers={'CF-Connecting-IP':ip};if(method!=='GET'){headers.origin=origin;headers['content-type']='application/json'}if(token)headers.cookie='__Host-matclub_session='+token;const r=await worker.fetch(new Request('https://school.test'+path,{method,headers,...(data===undefined?{}:{body:JSON.stringify(data)})}),env,ctx);let body;try{body=await r.json()}catch{}checks++;return{r,body,token:r.headers.get('set-cookie')?.match(/session=([a-f0-9]+)/)?.[1]}}
+function status(result,n){assert.equal(result.r.status,n,JSON.stringify(result.body))}
+const noDB=await worker.fetch(new Request('https://school.test/api/me'),{ASSETS:env.ASSETS});assert.equal(noDB.status,503);
+let result=await call('/api/me');status(result,200);assert.equal(result.body.user,null);
+status(await call('/api/register',{method:'POST',origin:'https://evil.test',data:{}}),403);
+status(await call('/api/register',{method:'POST',ip:'192.0.2.20',data:{login:'no',password:'short'}}),400);
+const registration=await call('/api/register',{method:'POST',data:{login:'Alice_7',password:'correct-passphrase-42',name:'Алиса',grade:9}});status(registration,201);const alice=registration.token,id=registration.body.user.id;assert.ok(alice?.length===64);assert.match(registration.r.headers.get('set-cookie'),/HttpOnly; Secure; SameSite=Lax/);assert.equal(registration.body.user.login,'alice_7');
+const stored=sql.prepare('SELECT * FROM users WHERE id=?').get(id);assert.notEqual(stored.password_hash,'correct-passphrase-42');assert.equal(stored.password_hash.length,64);assert.equal(stored.salt.length,32);assert.notEqual(sql.prepare('SELECT token_hash FROM sessions').get().token_hash,alice);
+status(await call('/api/register',{method:'POST',data:{login:'ALICE_7',password:'different-passphrase'}}),409);assert.equal(sql.prepare('SELECT count(*) as n FROM users').get().n,1);
+status(await call('/api/login',{method:'POST',data:{login:'alice_7',password:'incorrect-passphrase'}}),401);
+const login=await call('/api/login',{method:'POST',data:{login:'ALICE_7',password:'correct-passphrase-42'}});status(login,200);const second=login.token;assert.notEqual(second,alice);
+const bob=await call('/api/register',{method:'POST',ip:'192.0.2.30',data:{login:'bob_8',password:'another-passphrase',grade:8}});status(bob,201);
+let cloud=await call('/api/progress',{token:alice});status(cloud,200);assert.equal(cloud.body.revision,0);assert.deepEqual(cloud.body.data,{});
+const data={'matclub-solved':JSON.stringify(['task-1','task-2']),'matclub-python-v1':JSON.stringify({done:['hello-a'],drafts:{'hello-a':'print("<script>")'}})};
+result=await call('/api/progress',{method:'PUT',token:alice,data:{revision:0,data}});status(result,200);assert.equal(result.body.revision,1);
+cloud=await call('/api/progress',{token:second});assert.deepEqual(cloud.body.data,data);assert.equal(cloud.body.revision,1);
+result=await call('/api/progress',{token:bob.token});assert.deepEqual(result.body.data,{});assert.equal(result.body.revision,0);
+status(await call('/api/progress',{method:'PUT',token:second,data:{revision:0,data:{}}}),409);assert.deepEqual((await call('/api/progress',{token:alice})).body.data,data);
+status(await call('/api/progress',{method:'PUT',data:{revision:1,data}}),401);
+status(await call('/api/progress',{method:'PUT',token:alice,origin:'https://evil.test',data:{revision:1,data:{}}}),403);
+status(await call('/api/progress',{method:'PUT',token:alice,data:{revision:1,data:{unexpected:'{}'}}}),400);
+status(await call('/api/progress',{method:'PUT',token:alice,data:{revision:1,data:{'matclub-solved':'{"__proto__":{}}'}}}),400);
+status(await call('/api/progress',{method:'PUT',token:alice,data:{revision:1,data:{'matclub-solved':'broken'}}}),400);
+status(await call('/api/progress',{method:'PUT',token:alice,data:{revision:1,data:{'matclub-solved':JSON.stringify('x'.repeat(1024*1024))}}}),413);
+result=await call('/api/profile',{method:'PUT',token:alice,data:{name:'</script><script>alert(1)</script>',grade:10}});status(result,200);assert.equal(result.body.user.grade,10);
+const page=await worker.fetch(new Request('https://school.test/',{headers:{cookie:'__Host-matclub_session='+alice}}),env,ctx);const html=await page.text();assert.ok(html.includes('window.matclubBoot='));assert.ok(html.includes('\\u003c/script>'));assert.ok(!html.includes('<script>alert(1)</script>'));assert.match(page.headers.get('cache-control'),/no-store/);assert.equal(page.headers.get('etag'),null);assert.ok(!html.includes(stored.password_hash));
+status(await call('/api/profile',{method:'PUT',token:alice,data:{grade:3}}),400);
+status(await call('/api/password',{method:'POST',token:alice,data:{currentPassword:'wrong-passphrase',password:'new-passphrase'}}),401);
+const changed=await call('/api/password',{method:'POST',token:alice,data:{currentPassword:'correct-passphrase-42',password:'new-passphrase-42'}});status(changed,200);assert.ok(changed.token);
+assert.equal((await call('/api/me',{token:alice})).body.user,null);assert.equal((await call('/api/me',{token:second})).body.user,null);assert.equal((await call('/api/me',{token:changed.token})).body.user.id,id);
+status(await call('/api/login',{method:'POST',data:{login:'alice_7',password:'correct-passphrase-42'}}),401);status(await call('/api/login',{method:'POST',data:{login:'alice_7',password:'new-passphrase-42'}}),200);
+status(await call('/api/logout',{method:'POST',token:changed.token,data:{}}),200);status(await call('/api/progress',{token:changed.token}),401);
+sql.prepare('UPDATE sessions SET expires_at=0 WHERE user_id=?').run(bob.body.user.id);assert.equal((await call('/api/me',{token:bob.token})).body.user,null);
+for(let i=0;i<30;i++)await call('/api/login',{method:'POST',ip:'192.0.2.99',data:{login:'x',password:'short'}});status(await call('/api/login',{method:'POST',ip:'192.0.2.99',data:{login:'x',password:'short'}}),429);
+const erase=await call('/api/login',{method:'POST',data:{login:'alice_7',password:'new-passphrase-42'}});status(erase,200);status(await call('/api/account',{method:'DELETE',token:erase.token,data:{password:'incorrect-password'}}),401);status(await call('/api/account',{method:'DELETE',token:erase.token,data:{password:'new-passphrase-42'}}),200);assert.equal(sql.prepare('SELECT count(*) as n FROM users WHERE id=?').get(id).n,0);assert.equal(sql.prepare('SELECT count(*) as n FROM progress WHERE user_id=?').get(id).n,0);status(await call('/api/progress',{token:erase.token}),401);
+await Promise.all(pending);sql.close();console.log(`PASS: ${checks} API requests; real SQLite transactions, PBKDF2, secure sessions, CSRF, rate limits, private SSR, account isolation, revisions, password rotation, expiry and bounds.`);
