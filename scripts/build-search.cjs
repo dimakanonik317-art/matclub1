@@ -12,5 +12,6 @@ const indexBody='<h1>Темы математики и физики</h1><p class=
 fs.writeFileSync(path.join(root,'topics/index.html'),shell('Математика и физика 6–11 классов — все темы | Матклуб','Каталог школьных тем: алгебра, геометрия и физика с объяснениями и задачами.',origin+'/topics/',indexBody,{'@context':'https://schema.org','@type':'CollectionPage',name:'Темы математики и физики',url:origin+'/topics/'}));
 fs.writeFileSync(path.join(root,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
 const pythonEntries=require('./build-python.cjs')({root,origin,shell});
-fs.writeFileSync(path.join(root,'sitemap.xml'),'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+[origin+'/',origin+'/topics/',...entries.map(e=>e.url),...pythonEntries.map(e=>e.url)].map(url=>`<url><loc>${url}</loc></url>`).join('')+'</urlset>');
-console.log(`Built ${entries.length} school lesson pages and ${entries.length+2+pythonEntries.length} sitemap URLs`);
+const labEntries=require('./build-laboratory.cjs')({root,origin,shell});
+fs.writeFileSync(path.join(root,'sitemap.xml'),'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+[origin+'/',origin+'/topics/',...entries.map(e=>e.url),...pythonEntries.map(e=>e.url),...labEntries.map(e=>e.url)].map(url=>`<url><loc>${url}</loc></url>`).join('')+'</urlset>');
+console.log(`Built ${entries.length} school lesson pages and ${entries.length+2+pythonEntries.length+labEntries.length} sitemap URLs`);
