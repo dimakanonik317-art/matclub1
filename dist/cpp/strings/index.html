@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Строки и getline — C++ | Матклуб</title><meta name="description" content="Строки и getline: урок C++17 с объяснениями, примером и задачей с разбором."><meta name="robots" content="index,follow"><link rel="canonical" href="https://matclub1.dimakanonik317.workers.dev/cpp/strings/"><meta property="og:type" content="article"><meta property="og:title" content="Строки и getline — C++ | Матклуб"><meta property="og:description" content="Строки и getline: урок C++17 с объяснениями, примером и задачей с разбором."><meta property="og:url" content="https://matclub1.dimakanonik317.workers.dev/cpp/strings/"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Строки и getline","url":"https://matclub1.dimakanonik317.workers.dev/cpp/strings/","inLanguage":"ru","isAccessibleForFree":true}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Бета-тест</span></header><main><nav><a href="/cpp/">Курс C++</a></nav><h1>Строки и getline</h1><p>std::string владеет последовательностью символов. size() возвращает длину в байтах, а индексы начинаются с нуля.</p><p>Оператор &gt;&gt; читает слово до пробела. std::getline читает всю строку; после предыдущего &gt;&gt; можно использовать std::getline(std::cin &gt;&gt; std::ws, s), если начальные пробелы несущественны.</p><p>В этом уроке строки состоят из ASCII-символов. Русский текст в UTF-8 занимает несколько байтов на букву: простой разворот байтов испортит его.</p><h2>Пример</h2><pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+
+int main() { std::string s=&quot;code&quot;; std::reverse(s.begin(),s.end()); std::cout &lt;&lt; s &lt;&lt; &quot;\n&quot;; }
+</code></pre><h3>Вывод</h3><pre>edoc
+</pre><aside class="mistake-box">Не обращайся к s[s.size()]: это позиция за последним символом для обычного обхода.</aside><h2>Практика</h2><p>Прочитай одну ASCII-строку (возможно пустую, до 1000 символов). Выведи число латинских гласных a,e,i,o,u в любом регистре.</p><h3>Входные данные</h3><pre>EducAtE
+</pre><h3>Выходные данные</h3><pre>4
+</pre><h3>Входные данные</h3><pre>
+</pre><h3>Выходные данные</h3><pre>0
+</pre><h3>Входные данные</h3><pre>Hello world
+</pre><h3>Выходные данные</h3><pre>3
+</pre><details><summary>Эталонное решение</summary><pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main() { std::string s; std::getline(std::cin,s); int n=0; for(char c:s) if(std::string(&quot;aeiouAEIOU&quot;).find(c)!=std::string::npos) ++n; std::cout &lt;&lt; n &lt;&lt; &quot;\n&quot;; }
+</code></pre></details><h2>Вопрос на понимание</h2><p>Что читает getline?</p><details><summary>Ответ</summary><p>Строку до перевода строки. Пробелы внутри строки сохраняются.</p></details><a class="primary" href="/?cpp=strings">Открыть урок с редактором →</a></main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>

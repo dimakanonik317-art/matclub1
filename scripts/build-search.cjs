@@ -13,5 +13,6 @@ fs.writeFileSync(path.join(root,'topics/index.html'),shell('Математика
 fs.writeFileSync(path.join(root,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${origin}/sitemap.xml\n`);
 const pythonEntries=require('./build-python.cjs')({root,origin,shell});
 const labEntries=require('./build-laboratory.cjs')({root,origin,shell});
-fs.writeFileSync(path.join(root,'sitemap.xml'),'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+[origin+'/',origin+'/topics/',...entries.map(e=>e.url),...pythonEntries.map(e=>e.url),...labEntries.map(e=>e.url)].map(url=>`<url><loc>${url}</loc></url>`).join('')+'</urlset>');
-console.log(`Built ${entries.length} school lesson pages and ${entries.length+2+pythonEntries.length+labEntries.length} sitemap URLs`);
+const cppEntries=require('./build-cpp.cjs')({root,origin,shell});
+fs.writeFileSync(path.join(root,'sitemap.xml'),'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+[origin+'/',origin+'/topics/',...entries.map(e=>e.url),...pythonEntries.map(e=>e.url),...labEntries.map(e=>e.url),...cppEntries.map(e=>e.url)].map(url=>`<url><loc>${url}</loc></url>`).join('')+'</urlset>');
+console.log(`Built ${entries.length} school lesson pages and ${entries.length+2+pythonEntries.length+labEntries.length+cppEntries.length} sitemap URLs`);

@@ -25,7 +25,7 @@ $('#computingNav').classList.toggle('selected',isComputing);$('#computingNav').s
 $('.study-ribbon').hidden=isGraph||isComputing||isLab||state.view!=='catalog';$('#catalog').hidden=isGraph||isComputing||isLab;
 $('.hero').hidden=isGraph||isComputing||isLab||state.view!=='catalog';$('.discovery').hidden=isGraph||isComputing||isLab||state.view!=='catalog';
 $('.search').hidden=isGraph||isComputing||isLab;$('.curriculum-note').hidden=state.view!=='catalog';
-if(isGraph||isComputing||isLab){$('#breadcrumb').textContent=isGraph?'Графики функций':isLab?'Физическая лаборатория':'Информатика / Альфа';document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===state.view));if(isGraph)window.matclubPlotter?.refresh();if(isLab)window.matclubLab?.refresh();window.matclubMotion?.scene(state.view+':'+state.domain);window.matclubMotion?.cards();return}
+if(isGraph||isComputing||isLab){$('#breadcrumb').textContent=isGraph?'Графики функций':isLab?'Физическая лаборатория':'Информатика';document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===state.view));if(isGraph)window.matclubPlotter?.refresh();if(isLab)window.matclubLab?.refresh();window.matclubMotion?.scene(state.view+':'+state.domain);window.matclubMotion?.cards();return}
 const catalogKey=[state.domain,state.grade,state.section,state.subject,state.level,state.topic,state.view,state.strongOnly].join('|');const navigationChanged=catalogKey!==lastCatalogKey;if(navigationChanged)visibleTaskLimit=24;lastCatalogKey=catalogKey;
 $('#favcount').textContent=domainTasks().filter(t=>saved.includes(t.id)).length;
 document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===state.view));
