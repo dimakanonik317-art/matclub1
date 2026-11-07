@@ -1,0 +1,18 @@
+(() => {
+const key='matclub-settings-v1';
+const defaults={theme:'system',accent:'forest',textSize:'normal',density:'normal',motion:true,focus:false,defaultGrade:7};
+const choices={theme:['light','dark','system'],accent:['forest','ocean','violet','clay'],textSize:['normal','large','extra'],density:['normal','compact']};
+function normalize(raw){const value={...defaults};if(!raw||typeof raw!=='object')return value;for(const [name,list] of Object.entries(choices))if(list.includes(raw[name]))value[name]=raw[name];for(const name of ['motion','focus'])if(typeof raw[name]==='boolean')value[name]=raw[name];if(Number.isInteger(raw.defaultGrade)&&raw.defaultGrade>=6&&raw.defaultGrade<=11)value.defaultGrade=raw.defaultGrade;return value}
+let value;try{value=normalize(JSON.parse(localStorage.getItem(key)))}catch{value={...defaults}}
+const darkQuery=window.matchMedia?.('(prefers-color-scheme: dark)'),reducedQuery=window.matchMedia?.('(prefers-reduced-motion: reduce)');
+function apply(){const root=document.documentElement;root.dataset.theme=value.theme==='system'?(darkQuery?.matches?'dark':'light'):value.theme;root.dataset.accent=value.accent;root.dataset.density=value.density;root.dataset.motion=value.motion?'on':'off';root.dataset.focus=value.focus?'on':'off';root.dataset.textSize=value.textSize;root.style.setProperty('--font-scale',{normal:'1',large:'1.12',extra:'1.24'}[value.textSize]);document.querySelector('meta[name="theme-color"]')?.setAttribute('content',root.dataset.theme==='dark'?'#1b211e':'#f9f9f5')}
+function controls(){const form=document.getElementById('settingsForm');if(!form)return;const select=form.elements.defaultGrade;if(!select.options.length)select.innerHTML=Array.from({length:6},(_,i)=>`<option value="${i+6}">${i+6} класс</option>`).join('');for(const name of Object.keys(choices)){for(const input of form.querySelectorAll(`input[name="${name}"]`))input.checked=input.value===value[name]}form.elements.motion.checked=value.motion;form.elements.focus.checked=value.focus;select.value=String(value.defaultGrade)}
+function set(next,{persist=true}={}){value=normalize({...value,...next});apply();controls();if(persist){const status=document.getElementById('settingsStatus');try{localStorage.setItem(key,JSON.stringify(value));if(status)status.textContent='Сохранено в этом браузере ✓'}catch{if(status)status.textContent='Оформление изменено, но браузер не разрешил сохранить настройки.'}}}
+function open(){controls();document.getElementById('settingsDialog')?.showModal()}
+apply();darkQuery?.addEventListener?.('change',()=>{if(value.theme==='system')apply()});
+document.addEventListener('DOMContentLoaded',controls);
+document.addEventListener('click',e=>{if(e.target.closest('[data-open-settings]'))open();if(e.target.closest('[data-close-settings]'))document.getElementById('settingsDialog')?.close();if(e.target.closest('#resetSettings')){set(defaults);const status=document.getElementById('settingsStatus');if(status)status.textContent='Оформление сброшено. Избранное, прогресс и черновики сохранены.'}});
+document.addEventListener('change',e=>{if(!e.target.closest('#settingsForm'))return;const form=document.getElementById('settingsForm'),next={};for(const name of Object.keys(choices))next[name]=form.querySelector(`input[name="${name}"]:checked`)?.value||defaults[name];next.motion=form.elements.motion.checked;next.focus=form.elements.focus.checked;next.defaultGrade=Number(form.elements.defaultGrade.value);set(next)});
+document.addEventListener('submit',e=>{if(e.target.id==='settingsForm')e.preventDefault()});
+window.matclubSettings={get value(){return {...value}},set,open,motionAllowed:()=>value.motion&&!reducedQuery?.matches};
+})();
