@@ -77,3 +77,6 @@ document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if
 render();
 
 $('#physicsSection').addEventListener('change',e=>{state.section=e.target.value;state.topic=null;render()});
+
+// Stable entry point from indexable lesson pages.
+{const key=new URLSearchParams(location.search).get('topic');if(key&&lessons[key]){const [g,i]=key.split('-').map(Number);state.grade=g;state.domain=lessons[key].physics?'physics':'math';state.subject=topicSubjects[key];state.topic=i;state.level=-1;render();document.querySelector('#catalog').scrollIntoView({block:'start'})}}
