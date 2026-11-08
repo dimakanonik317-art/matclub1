@@ -1,12 +1,12 @@
 /* Run after changing lesson content. SITE_URL must be the public canonical origin. */
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const root=path.resolve(__dirname,'../dist'),origin=(process.env.SITE_URL||'https://matclub1.dimakanonik317.workers.dev').replace(/\/$/,'');const c=vm.createContext({});
-for(const f of ['data','lessons','challenges','expansion','deepening','physics','depth','advanced','grade10','strong','final-tasks','intensive','olympiad','intensive-next','ege','ege-expansion'])vm.runInContext(fs.readFileSync(path.join(root,f+'.js'),'utf8'),c);
+for(const f of ['data','lessons','challenges','expansion','deepening','physics','depth','advanced','grade10','strong','final-tasks','intensive','olympiad','intensive-next','ege','ege-expansion','ege-algebra'])vm.runInContext(fs.readFileSync(path.join(root,f+'.js'),'utf8'),c);
 // Content-based asset URLs prevent a previous exam bank from surviving an update.
 const crypto=require('node:crypto');
 const homeFile=path.join(root,'index.html');
 let home=fs.readFileSync(homeFile,'utf8');
-for(const asset of ['ege.js','ege-expansion.js','answer-set.js','app.js','assistant.js']){
+for(const asset of ['ege.js','ege-expansion.js','ege-algebra.js','answer-set.js','app.js','assistant.js']){
  const hash=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,asset))).digest('hex').slice(0,12);
  const pattern=new RegExp('src="'+asset.replace('.', '\\.')+'(?:\\?[^" ]*)?"','g');
  home=home.replace(pattern,'src="'+asset+'?v='+hash+'"');

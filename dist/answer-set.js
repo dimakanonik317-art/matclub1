@@ -1,11 +1,19 @@
 /* Parse real sets without evaluating input as JavaScript. Boundaries are compared
    numerically; interval inclusion and omitted singleton points remain significant. */
+// Small arithmetic grammar for exact-looking boundaries; never eval/Function.
 function setBound(raw){
- const s=raw.trim().replace(/\s+/g,'').replace(',','.');
- if(/^[+]?inf$/.test(s))return Infinity;if(s==='-inf')return -Infinity;
- const m=s.match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+))(?:\/([+-]?(?:\d+(?:\.\d*)?|\.\d+)))?$/);
- if(!m||m[2]!==undefined&&Number(m[2])===0)return NaN;
- const n=Number(m[1])/(m[2]===undefined?1:Number(m[2]));return Number.isFinite(n)?n:NaN;
+ const source=raw.trim().toLowerCase().replace(/\s+/g,'').replaceAll('−','-').replaceAll('∞','inf').replaceAll('π','pi').replaceAll(',','.').replace(/log_(\d+)/g,'log$1').replace(/√(\d+(?:\.\d+)?)/g,'sqrt($1)').replaceAll('√(','sqrt(');
+ if(/^[+]?inf$/.test(source))return Infinity;if(source==='-inf')return -Infinity;
+ if(!source||source.length>160)return NaN;
+ const tokens=source.match(/\d+(?:\.\d*)?|\.\d+|[a-z]+\d*|[+*/^()-]/g)||[];
+ if(tokens.length>128||tokens.join('')!==source)return NaN;
+ let i=0,depth=0;
+ function primary(){if(++depth>40)throw Error();let result;const token=tokens[i++];if(token==='('){result=sum();if(tokens[i++]!==')')throw Error()}else if(token==='pi')result=Math.PI;else if(token&&/^\d|^\.\d/.test(token))result=Number(token);else if(token==='sqrt'||token==='ln'||/^log\d+$/.test(token||'')){if(tokens[i++]!=='(')throw Error();const arg=sum();if(tokens[i++]!==')')throw Error();if(token==='sqrt')result=arg>=0?Math.sqrt(arg):NaN;else if(token==='ln')result=arg>0?Math.log(arg):NaN;else{const base=Number(token.slice(3));result=base>0&&base!==1&&arg>0?Math.log(arg)/Math.log(base):NaN}}else throw Error();depth--;if(!Number.isFinite(result))throw Error();return result}
+ function power(){let n=primary();if(tokens[i]==='^'){i++;const exponent=unary();if(Math.abs(exponent)>128||n===0&&exponent<=0)throw Error();n=n**exponent}return n}
+ function unary(){if(tokens[i]==='+'){i++;return unary()}if(tokens[i]==='-'){i++;return-unary()}return power()}
+ function product(){let n=unary();while(i<tokens.length){const op=tokens[i];if(op==='*'||op==='/'){i++;const right=unary();if(op==='/'&&right===0)throw Error();n=op==='*'?n*right:n/right}else if(op==='('||/^[a-z]/.test(op)){n*=unary()}else break}return n}
+ function sum(){let n=product();while(tokens[i]==='+'||tokens[i]==='-'){const op=tokens[i++],right=product();n=op==='+'?n+right:n-right}return n}
+ try{const value=sum();return i===tokens.length&&Number.isFinite(value)?value:NaN}catch{return NaN}
 }
 function normalizeRealSet(parts){
  const sorted=parts.map(p=>p.slice()).sort((a,b)=>a[0]-b[0]||Number(b[2])-Number(a[2])||a[1]-b[1]),out=[];
@@ -14,7 +22,7 @@ function normalizeRealSet(parts){
 }
 function parseRealSet(raw){
  if(typeof raw!=='string'||raw.length>2000)return null;
- const s=raw.trim().toLowerCase().replaceAll('−','-').replaceAll('∞','inf').replace(/^a\s*(?:∈|=)\s*/,'');
+ const s=raw.trim().toLowerCase().replaceAll('−','-').replaceAll('∞','inf').replace(/^[ax]\s*(?:∈|=)\s*/,'');
  if(/^(?:∅|пусто|нет решений)$/.test(s))return [];
  if(!s)return null;const parts=[];
  for(const token of s.split(/\s*(?:∪|\\cup|\bu\b|или)\s*/)){
