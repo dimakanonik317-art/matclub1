@@ -13,7 +13,7 @@ function setup(stored={},url='https://test.local/'){
  return{dom,w,d,errors,downloads,click,change,advance(ms){const f=[...frames.values()];frames.clear();for(const fn of f)fn(ms)}};
 }
 (async()=>{
-const t=setup(),{w,d,click,change}=t;assert.equal(w.eval('tasks.length'),864);assert.equal(d.querySelector('#labWorkspace'),null,'lazy mount');click('[data-view=laboratory]');assert.equal(d.querySelector('#labSection').hidden,false);assert.equal(d.querySelector('#catalog').hidden,true);assert.equal(d.querySelectorAll('.lab-card').length,20);assert.equal(d.querySelector('#breadcrumb').textContent,'Физическая лаборатория');assert.ok(!d.querySelector('#labSection').textContent.includes('Бета'));
+const t=setup(),{w,d,click,change}=t;assert.equal(w.eval('tasks.length'),868);assert.equal(d.querySelector('#labWorkspace'),null,'lazy mount');click('[data-view=laboratory]');assert.equal(d.querySelector('#labSection').hidden,false);assert.equal(d.querySelector('#catalog').hidden,true);assert.equal(d.querySelectorAll('.lab-card').length,20);assert.equal(d.querySelector('#breadcrumb').textContent,'Физическая лаборатория');assert.ok(!d.querySelector('#labSection').textContent.includes('Бета'));
 for(const e of w.matclubLabModels.labs){
  w.matclubLab.open(e.id);assert.equal(d.querySelector('#labExperimentTitle').textContent,e.title);assert.ok(d.querySelector('#labScene svg'));
  const ids=[...d.querySelectorAll('#labSection [id]')].map(e=>e.id);assert.equal(new Set(ids).size,ids.length,'unique DOM IDs');
@@ -36,5 +36,5 @@ const storage=w.localStorage.getItem('matclub-laboratory-v1');assert.equal(t.err
 const re=setup({'matclub-laboratory-v1':storage},'https://test.local/?lab=lens');assert.equal(re.d.querySelector('#labSection').hidden,false);assert.equal(re.w.matclubLab.state.id,'lens');re.w.matclubLab.open('projectile');assert.ok(re.d.querySelector('#labHypothesis').value.includes('<script>'));assert.equal(re.d.querySelector('#labHypothesis script'),null);assert.equal(re.w.matclubLab.state.measurements,1);assert.equal(re.errors.length,0);re.dom.window.close();
 const invalid=setup({'matclub-laboratory-v1':'{not json'},'https://test.local/?lab=bad');invalid.click('[data-view=laboratory]');assert.equal(invalid.errors.length,0);invalid.dom.window.close();
 const css=new JSDOM('<html><head></head><body></body></html>');for(const f of['app.css','experience.css','python.css','lab.css']){const style=css.window.document.createElement('style');style.textContent=fs.readFileSync(path.join(root,f),'utf8');css.window.document.head.append(style);assert.ok(style.sheet?.cssRules.length>0)}css.window.close();
-console.log('PASS: 20 interactive views, presets, graphs, answer checks, CSV/SVG exports, persistence, escaped notes, invalid input, filters, frame stepping, pause on navigation, deep links, CSS parsing and 864 preserved school tasks.');
+console.log('PASS: 20 interactive views, presets, graphs, answer checks, CSV/SVG exports, persistence, escaped notes, invalid input, filters, frame stepping, pause on navigation, deep links, CSS parsing and 868 preserved school tasks.');
 })();
