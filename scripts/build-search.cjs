@@ -2,6 +2,16 @@
 const fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
 const root=path.resolve(__dirname,'../dist'),origin=(process.env.SITE_URL||'https://matclub1.dimakanonik317.workers.dev').replace(/\/$/,'');const c=vm.createContext({});
 for(const f of ['data','lessons','challenges','expansion','deepening','physics','depth','advanced','grade10','strong','final-tasks','intensive','olympiad','intensive-next','ege'])vm.runInContext(fs.readFileSync(path.join(root,f+'.js'),'utf8'),c);
+// Content-based asset URLs prevent a previous exam bank from surviving an update.
+const crypto=require('node:crypto');
+const homeFile=path.join(root,'index.html');
+let home=fs.readFileSync(homeFile,'utf8');
+for(const asset of ['ege.js','app.js']){
+ const hash=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,asset))).digest('hex').slice(0,12);
+ const pattern=new RegExp('src="'+asset.replace('.', '\\.')+'(?:\\?[^" ]*)?"','g');
+ home=home.replace(pattern,'src="'+asset+'?v='+hash+'"');
+}
+fs.writeFileSync(homeFile,home);
 const data=vm.runInContext('({curriculum,lessons,topicSubjects,topicDepth,tasks,egeTopics})',c),esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const shell=(title,description,url,body,structured)=>`<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index,follow"><link rel="canonical" href="${url}"><meta property="og:type" content="article"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${url}"><link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/search.css"><link rel="icon" href="/icon.svg"><script type="application/ld+json">${JSON.stringify(structured).replace(/</g,'\\u003c')}</script></head><body class="search-page"><header><a class="search-brand" href="/">матклуб.</a><a href="/topics/">Все темы</a><span>Release 1.0</span></header><main>${body}</main><footer><a href="/">Матклуб · математика и физика</a><span>by ddima_dev</span></footer></body></html>`;
 const entries=[];

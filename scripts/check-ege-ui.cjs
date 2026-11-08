@@ -7,14 +7,14 @@ function setup(stored={},url='https://test.local/'){
  const w=dom.window,d=w.document;w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};w.matchMedia=()=>({matches:false,addEventListener(){}});w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};w.HTMLCanvasElement.prototype.getContext=()=>({scale(){},beginPath(){},moveTo(){},lineTo(){},stroke(){}});w.ResizeObserver=class{observe(){}};w.URL.createObjectURL=b=>{downloads.push(b);return'blob:test'};w.URL.revokeObjectURL=()=>{};w.HTMLAnchorElement.prototype.click=function(){};
  const frames=new Map();let counter=0;w.requestAnimationFrame=fn=>{frames.set(++counter,fn);return counter};w.cancelAnimationFrame=id=>frames.delete(id);
  for(const[k,v]of Object.entries(stored))w.localStorage.setItem(k,v);
- for(const f of scripts){const el=d.createElement('script');el.textContent=fs.readFileSync(path.join(root,f),'utf8');d.body.append(el)}
+ for(const f of scripts){const el=d.createElement('script');el.textContent=fs.readFileSync(path.join(root,f.split('?')[0]),'utf8');d.body.append(el)}
  const click=s=>{const el=d.querySelector(s);assert.ok(el,'missing '+s);el.click();return el};
  const change=(s,value,event='change')=>{const el=d.querySelector(s);assert.ok(el);el.value=String(value);el.dispatchEvent(new w.Event(event,{bubbles:true}));return el};
  return{dom,w,d,errors,downloads,click,change,advance(ms){const f=[...frames.values()];frames.clear();for(const fn of f)fn(ms)}};
 }
 
 const t=setup(),{w,d,click}=t;
-assert.equal(w.eval('tasks.length'),880);
+assert.equal(w.eval('tasks.length'),880);assert.ok(/ege\.js\?v=[a-f0-9]{12}/.test(raw));
 assert.equal(d.querySelector('[data-subject="ege"]').hidden,true);
 click('[data-grade="11"]');assert.equal(d.querySelector('[data-subject="ege"]').hidden,false);
 click('[data-subject="ege"]');assert.equal(d.querySelector('#egeIntro').hidden,false);
@@ -23,7 +23,7 @@ assert.equal(d.querySelector('#levelTabs').hidden,true);
 assert.ok([...d.querySelectorAll('.task-meta')].every(el=>el.textContent==='ЕГЭ'));
 for(const topic of w.eval('egeTopics')){click(`[data-exam-topic="${topic.id}"]`);assert.ok(w.eval('pool()').every(task=>task.examTopic===topic.id));if(!w.eval('pool().length')){assert.ok(d.querySelector('#tasks').textContent.includes('ещё не добавлена'));assert.equal(d.querySelector('#tasks .ege-source-link').href,topic.url);}click(`[data-exam-topic="${topic.id}"]`);}
 assert.equal(w.eval('pool().length'),12);
-assert.equal(w.eval('tasks.filter(t=>t.examTopic==="vectors").length'),5);
+assert.equal(w.eval('tasks.filter(t=>t.examTopic==="vectors").length'),5);click('[data-exam-topic="vectors"]');assert.equal(d.querySelectorAll('#tasks .task-card').length,5);assert.ok(d.querySelector('[data-exam-topic="vectors"]').textContent.includes('(5)'));click('[data-exam-topic="vectors"]');
 const bank=w.eval('tasks.filter(t=>t.exam==="ege")');
 for(const task of bank){
  assert.equal(task.grade,11);assert.ok(w.eval('egeTopics').some(t=>t.id===task.examTopic));assert.equal(task.domain,'math');
@@ -48,4 +48,4 @@ assert.equal(6/3,2);assert.equal(21/7,3);assert.equal(12*(1/2)**2*3,9);assert.eq
 let count=0;for(let a=1;a<=6;a++)for(let b=1;b<=6;b++)if(a+b===5)count++;assert.equal(count,4);
 const derivative=x=>3*x*x+4*x+1;assert.equal(derivative(-1),0);assert.ok(derivative(-1.01)>0&&derivative(-.99)<0);
 const params=setup({},'https://test.local/?exam=ege&egeTopic=parameters');assert.equal(params.w.eval('state.examTopic'),'parameters');assert.equal(params.w.eval('pool().length'),0);assert.ok(params.d.querySelector('[data-exam-topic="parameters"]').getAttribute('aria-pressed')==='true');assert.equal(params.errors.length,0);params.dom.window.close();
-console.log('PASS: EGE tab visibility, six workspaces, answers, sources, filters, next-task isolation, saved progress and deep link.');
+console.log('PASS: EGE tab visibility, all 12 workspaces and five visible vector tasks, answers, sources, filters, next-task isolation, saved progress and deep link.');
