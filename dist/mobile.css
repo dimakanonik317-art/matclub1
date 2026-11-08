@@ -52,3 +52,16 @@
 }
 @media(max-width:359px){.domain-switch b{font-size:10px!important}.hero h1{font-size:30px}.sidebar .nav .nav-label,.sidebar .nav .lab-mobile-label{font-size:9px}.hero-copy{padding:23px 20px}.lab-controls{grid-template-columns:1fr}}
 @media(max-width:767px) and (orientation:landscape){.sidebar nav{padding-bottom:6px}.sidebar .nav,.sidebar .settings-nav{min-height:44px;flex-direction:row;gap:6px}.workspace-dialog{height:100dvh}.hero-actions{grid-template-columns:1fr 1fr}}
+/* Keep account and support in the header flow, never above/behind the brand bar. */
+@media(max-width:767px){
+ .sidebar .brand{max-width:100%}
+ header{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;padding-bottom:14px}
+ header:has(.search[hidden]){padding-bottom:14px}
+ header .account-button,header .header-support{position:static;inset:auto;top:auto;right:auto;bottom:auto;left:auto;width:100%;max-width:none;min-width:0;min-height:46px;height:auto;margin:0;padding:10px 8px;z-index:auto;gap:7px;box-sizing:border-box}
+ header .account-button{grid-column:1;grid-row:1}
+ header .header-support{grid-column:2;grid-row:1;white-space:normal}
+ header .account-button>span:last-child{display:block;min-width:0;font-size:12px;line-height:1.5}
+ header .header-support .support-label{display:block;font-size:11px;line-height:1.45;white-space:normal;text-align:left}
+ header .header-support>span:first-child{font-size:22px;flex-shrink:0}
+ header .search{grid-column:1/-1;grid-row:2;min-width:0}
+}
