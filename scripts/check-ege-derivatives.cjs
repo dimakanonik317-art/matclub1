@@ -1,0 +1,18 @@
+/* Independent formula checks, extrema tests and source metadata validation. */
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const c=vm.createContext({});for(const f of ['data','lessons','challenges','expansion','deepening','physics','depth','advanced','grade10','strong','final-tasks','intensive','olympiad','intensive-next','ege','ege-expansion','ege-algebra','ege-functions','ege-derivatives','ege-figures'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),c);
+const all=vm.runInContext('tasks',c),newBank=all.filter(t=>t.examTopic==='derivatives'&&t.sourceId!==77427),byId=Object.fromEntries(newBank.map(t=>[t.sourceId,t]));
+assert.equal(all.length,1029);assert.equal(all.filter(t=>t.exam==='ege').length,161);assert.equal(newBank.length,15);assert.equal(new Set(all.map(t=>t.id)).size,all.length);
+const close=(a,b,eps=1e-7)=>assert.ok(Math.abs(a-b)<eps,`${a} != ${b}`);
+const numericalD=(f,x)=>(f(x+1e-5)-f(x-1e-5))/2e-5;
+const x=t=>t**3/2-3*t*t+2*t;close(numericalD(x,6),byId[119976].answer,1e-6);
+const x2=t=>t**3/3-3*t*t-5*t+3;close(numericalD(x2,byId[119979].answer),2,1e-6);assert.ok(byId[119979].answer>=0);
+for(const id of [27503,510384]){const t=byId[id],[a,b]=t.figure.points;close((b.y-a.y)/(b.x-a.x),t.answer);for(const p of [a,b])close(c.egeCurveValue(t.figure.curves[0],p.x),p.y);const html=c.egeFigure(t);assert.ok(!/NaN|Infinity|<image/.test(html));assert.ok(html.includes('role="img"'));}
+function local(id,f,kind){const t=byId[id],a=t.answer,dx=.01;close(numericalD(f,a),0,1e-6);for(const h of [.001,.01,.1]){assert.ok(kind==='max'?f(a)>f(a-h)&&f(a)>f(a+h):f(a)<f(a-h)&&f(a)<f(a+h),id+' local extremum');}const left=numericalD(f,a-dx),right=numericalD(f,a+dx);assert.ok(kind==='max'?left>0&&right<0:left<0&&right>0);}
+local(77419,x=>x**3-48*x+17,'max');local(77467,x=>-(x*x+289)/x,'max');local(26712,x=>(3-x)*Math.exp(3-x),'min');
+function bounded(id,f,l,r,critical,kind){const answer=byId[id].answer;close(f(critical),answer);assert.ok(critical>=l&&critical<=r);for(let n=0;n<=10000;n++){const y=f(l+(r-l)*n/10000);assert.ok(kind==='min'?y>=answer-1e-8:y<=answer+1e-8,id+' global bound');}const candidates=[l,r,critical].map(f);close(kind==='min'?Math.min(...candidates):Math.max(...candidates),answer);}
+bounded(77421,x=>x**3-27*x,0,4,3,'min');bounded(77422,x=>x**3-3*x+4,-2,0,-1,'max');bounded(77469,x=>(x*x+25)/x,1,10,5,'min');bounded(26691,x=>(x-8)*Math.exp(x-7),6,8,7,'min');bounded(26714,x=>3*x-Math.log((x+3)**3),-2.5,0,-2,'min');bounded(26718,x=>9*x-Math.log(9*x)+3,1/18,5/18,1/9,'min');bounded(26692,x=>12*Math.cos(x)+6*Math.sqrt(3)*x-2*Math.sqrt(3)*Math.PI+6,0,Math.PI/2,Math.PI/3,'max');bounded(26695,x=>15*x-3*Math.sin(x)+5,-Math.PI/2,0,0,'max');
+const expected={119976:20,119979:7,27503:2,510384:-.25,77419:-4,77421:-54,77422:6,77467:17,77469:10,26691:-1,26712:4,26714:-6,26718:4,26692:12,26695:5};
+for(const t of newBank){assert.equal(t.answer,expected[t.sourceId]);assert.equal(t.source.url,'https://math-ege.sdamgia.ru/problem?id='+t.sourceId);assert.equal(t.exam,'ege');assert.equal(t.grade,11);assert.equal(t.subject,'algebra');assert.ok(t.hints.length>=2&&t.steps.length>=3);assert.ok(t.review.plan&&t.review.verify&&t.review.trap);assert.ok(!t.isNew&&!t.new);}
+const page=fs.readFileSync('dist/ege/index.html','utf8');for(const t of newBank)assert.ok(page.includes(t.title));assert.ok(page.includes('161 задач'));assert.equal((page.match(/class="ege-task-figure"/g)||[]).length,27);
+console.log('PASS: 15 new derivative tasks, unique IDs, original source answers, numerical differentiation, local sign changes, 80,008 interval samples, tangent diagrams, static and interactive banks.');
