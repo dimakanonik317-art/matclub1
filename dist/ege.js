@@ -1,5 +1,23 @@
 /* Curated references checked on 2026-11-08. Conditions are concise retellings;
    solutions are written for Matclub. This is not a complete exam variant. */
+// Exam navigation is independent of school lesson indices and difficulty levels.
+const egeTopics=[
+ ['vectors','Векторы','Координаты, длина, действия и скалярное произведение.','→','https://math-ege.sdamgia.ru/test?category_id=182&filter=all'],
+ ['stereometry','Стереометрия','Многогранники, тела вращения, сечения, углы и расстояния.','◇'],
+ ['parameters','Параметры','Число решений, особые значения и графический метод.','a'],
+ ['planimetry','Планиметрия','Треугольники, четырёхугольники и окружности.','△'],
+ ['probability','Теория вероятностей','Случайные исходы, события и условная вероятность.','P'],
+ ['statistics','Статистика','Средние значения, математическое ожидание и разброс.','σ'],
+ ['equations','Уравнения и системы','Алгебраические, показательные, логарифмические и тригонометрические.','='],
+ ['inequalities','Неравенства','Область допустимых значений, интервалы и равносильные переходы.','≥'],
+ ['expressions','Вычисления и преобразования','Степени, корни, логарифмы и тригонометрия.','√'],
+ ['functions','Функции и графики','Свойства функций, пересечения и преобразования графиков.','ƒ'],
+ ['derivatives','Производная и исследование функций','Касательная, монотонность, экстремумы и первообразная.','ƒ′'],
+ ['applied','Прикладные и текстовые задачи','Формулы, движение, работа, смеси и проценты.','t'],
+ ['economics','Экономические задачи','Кредиты, вклады, платежи и оптимизация.','%'],
+ ['numbers','Числа и логика','Целые числа, делимость, последовательности и доказательства.','ℤ']
+].map(([id,name,description,symbol,url])=>({id,name,description,symbol,url:url||'https://math-ege.sdamgia.ru/sgia_catalog'}));
+
 (()=>{
 const bank=[
  {sourceId:245358,sourceType:'3',topic:5,level:0,title:'Высота из развёртки',question:'У цилиндра длина окружности основания — 3, а боковая поверхность имеет площадь 6. Вычисли высоту.',answer:2,
@@ -27,5 +45,5 @@ const bank=[
  steps:['Производная y′ = 3x² + 4x + 1 = (3x + 1)(x + 1).','Критические точки: x = −1 и x = −1/3. На интервалах (−∞;−1), (−1;−1/3), (−1/3;+∞) знаки производной соответственно +, −, +.','При x = −1 функция переходит от возрастания к убыванию: это локальный максимум. При x = −1/3 — минимум.','Нужная абсцисса равна −1. Глобального максимума на всей прямой нет, поскольку кубическая функция не ограничена сверху.'],
  review:{plan:'Нули производной — только кандидаты. Максимум определяет переход её знака с плюса на минус.',verify:'Например, y′(−2) = 5 > 0, а y′(−1/2) = −1/4 < 0: по обе стороны от −1 функция сначала возрастает, затем убывает.',trap:'Не отвечай 3: это y(−1), а спрашивается x. Архивный номер Д20 не обозначает позицию в современном варианте.'}}
 ];
-for(const item of bank)tasks.push({...item,id:`ege-sdamgia-${item.sourceId}`,exam:'ege',domain:'math',grade:11,subject:topicSubjects[`11-${item.topic}`],topicName:curriculum[11][item.topic][0],unit:null,challenge:item.level===1,goal:'ЕГЭ · профильная математика',source:{name:'Решу ЕГЭ',id:item.sourceId,type:item.sourceType,url:`https://math-ege.sdamgia.ru/problem?id=${item.sourceId}`,note:'Краткий пересказ условия. Разбор — Матклуб.',checked:'2026-11-08'}});
+for(const item of bank){const examTopic=item.topic===5?'stereometry':item.topic===2?'probability':'derivatives';tasks.push({...item,examTopic,id:`ege-sdamgia-${item.sourceId}`,exam:'ege',domain:'math',grade:11,subject:topicSubjects[`11-${item.topic}`],topicName:egeTopics.find(t=>t.id===examTopic).name,unit:null,challenge:item.level===1,goal:'ЕГЭ · Решу ЕГЭ',source:{name:'Решу ЕГЭ',id:item.sourceId,type:item.sourceType,url:`https://math-ege.sdamgia.ru/problem?id=${item.sourceId}`,note:'Краткий пересказ условия. Разбор — Матклуб.',checked:'2026-11-08'}});}
 })();
