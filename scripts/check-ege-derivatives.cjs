@@ -1,8 +1,8 @@
 /* Independent formula checks, extrema tests and source metadata validation. */
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const c=vm.createContext({});for(const f of ['data','lessons','challenges','expansion','deepening','physics','depth','advanced','grade10','strong','final-tasks','intensive','olympiad','intensive-next','ege','ege-expansion','ege-algebra','ege-functions','ege-derivatives','ege-word','ege-economics','ege-numbers','ege-vectors','ege-figures'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),c);
+const c=vm.createContext({});for(const f of ['data','lessons','challenges','expansion','deepening','physics','depth','advanced','grade10','strong','final-tasks','intensive','olympiad','intensive-next','ege','ege-expansion','ege-algebra','ege-functions','ege-derivatives','ege-word','ege-economics','ege-numbers','ege-vectors','ege-stereo','ege-solid-figures','ege-figures'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),c);
 const all=vm.runInContext('tasks',c),newBank=all.filter(t=>t.examTopic==='derivatives'&&t.sourceId!==77427),byId=Object.fromEntries(newBank.map(t=>[t.sourceId,t]));
-assert.equal(all.length,1129);assert.equal(all.filter(t=>t.exam==='ege').length,261);assert.equal(newBank.length,15);assert.equal(new Set(all.map(t=>t.id)).size,all.length);
+assert.equal(all.length,1179);assert.equal(all.filter(t=>t.exam==='ege').length,311);assert.equal(newBank.length,15);assert.equal(new Set(all.map(t=>t.id)).size,all.length);
 const close=(a,b,eps=1e-7)=>assert.ok(Math.abs(a-b)<eps,`${a} != ${b}`);
 const numericalD=(f,x)=>(f(x+1e-5)-f(x-1e-5))/2e-5;
 const x=t=>t**3/2-3*t*t+2*t;close(numericalD(x,6),byId[119976].answer,1e-6);
@@ -14,5 +14,5 @@ function bounded(id,f,l,r,critical,kind){const answer=byId[id].answer;close(f(cr
 bounded(77421,x=>x**3-27*x,0,4,3,'min');bounded(77422,x=>x**3-3*x+4,-2,0,-1,'max');bounded(77469,x=>(x*x+25)/x,1,10,5,'min');bounded(26691,x=>(x-8)*Math.exp(x-7),6,8,7,'min');bounded(26714,x=>3*x-Math.log((x+3)**3),-2.5,0,-2,'min');bounded(26718,x=>9*x-Math.log(9*x)+3,1/18,5/18,1/9,'min');bounded(26692,x=>12*Math.cos(x)+6*Math.sqrt(3)*x-2*Math.sqrt(3)*Math.PI+6,0,Math.PI/2,Math.PI/3,'max');bounded(26695,x=>15*x-3*Math.sin(x)+5,-Math.PI/2,0,0,'max');
 const expected={119976:20,119979:7,27503:2,510384:-.25,77419:-4,77421:-54,77422:6,77467:17,77469:10,26691:-1,26712:4,26714:-6,26718:4,26692:12,26695:5};
 for(const t of newBank){assert.equal(t.answer,expected[t.sourceId]);assert.equal(t.source.url,'https://math-ege.sdamgia.ru/problem?id='+t.sourceId);assert.equal(t.exam,'ege');assert.equal(t.grade,11);assert.equal(t.subject,'algebra');assert.ok(t.hints.length>=2&&t.steps.length>=3);assert.ok(t.review.plan&&t.review.verify&&t.review.trap);assert.ok(!t.isNew&&!t.new);}
-const page=fs.readFileSync('dist/ege/index.html','utf8');for(const t of newBank)assert.ok(page.includes(t.title));assert.ok(page.includes('261 задач'));assert.equal((page.match(/class="ege-task-figure"/g)||[]).length,57);
+const page=fs.readFileSync('dist/ege/index.html','utf8');for(const t of newBank)assert.ok(page.includes(t.title));assert.ok(page.includes('311 задач'));assert.equal((page.match(/class="ege-task-figure"/g)||[]).length,112);
 console.log('PASS: 15 new derivative tasks, unique IDs, original source answers, numerical differentiation, local sign changes, 80,008 interval samples, tangent diagrams, static and interactive banks.');
