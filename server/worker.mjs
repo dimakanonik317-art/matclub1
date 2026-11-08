@@ -34,12 +34,12 @@ async function api(request,env,ctx){
  if(!env.DB)return json({error:'Личный кабинет готовится: база данных ещё не подключена.',ready:false},503);
  if(!['GET','HEAD'].includes(method)){const origin=request.headers.get('origin');if(origin!==new URL(request.url).origin||request.headers.get('sec-fetch-site')==='cross-site')fail(403,'Запрос с другого сайта отклонён.')}
  await init(env.DB);const db=env.DB,ip=request.headers.get('CF-Connecting-IP')||'unknown';
- if(path==='/api/assistant'&&method==='GET')return json({ready:!!env.AI});
+ if(path==='/api/assistant'&&method==='GET')return json({ready:!!env.AI,model:'llama-3.1-fast'});
  if(path==='/api/assistant'&&method==='POST'){
   if(!env.AI)fail(503,'ИИ-помощник пока не подключён.');
   const data=await body(request);let input;try{input=messages(data)}catch(e){fail(400,e.message)}
   const u=await session(request,db);await rate(db,'ai-burst',ip,6,600);await rate(db,'ai-daily',u?.id||ip,u?40:15,86400);await rate(db,'ai-total','site',100,86400);
-  try{return json({answer:await answer(env.AI,input)})}catch{fail(503,'Модель сейчас не ответила. Попробуй позже; твой вопрос остался в чате.')}
+  try{return json({answer:await answer(env.AI,input)})}catch(e){const message=String(e.message).toLowerCase();if(/terms|agreement|not enabled|activation/.test(message))fail(503,'Нужно активировать Workers AI в панели Cloudflare владельца сайта.');if(/quota|limit|neurons/.test(message))fail(429,'Лимит ИИ-сервиса исчерпан. Попробуй позже.');fail(503,'ИИ-сервис временно недоступен. Попробуй позже.')}
  }
  if(path==='/api/me'&&method==='GET'){const u=await session(request,db);return json({ready:true,user:u?userView(u):null})}
  if(path==='/api/register'&&method==='POST'){
