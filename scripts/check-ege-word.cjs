@@ -1,0 +1,28 @@
+/* Check each answer against an independently expressed model of its original condition. */
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const c=vm.createContext({});for(const f of ['data','lessons','challenges','expansion','deepening','physics','depth','advanced','grade10','strong','final-tasks','intensive','olympiad','intensive-next','ege','ege-expansion','ege-algebra','ege-functions','ege-derivatives','ege-word','ege-figures'])vm.runInContext(fs.readFileSync('dist/'+f+'.js','utf8'),c);
+const all=vm.runInContext('tasks',c),bank=all.filter(t=>t.examTopic==='applied'),byId=Object.fromEntries(bank.map(t=>[t.sourceId,t]));assert.equal(bank.length,20);assert.equal(all.length,1049);assert.equal(all.filter(t=>t.exam==='ege').length,181);assert.equal(new Set(all.map(t=>t.id)).size,all.length);
+const answer=id=>{assert.ok(byId[id],id);return byId[id].answer},near=(a,b)=>assert.ok(Math.abs(a-b)<1e-8,`${a} != ${b}`);let x;
+x=answer(99566)/100;assert.ok(x>0&&x<1);near((1+x)*(1-x),.96);
+x=answer(99568)/100;near(.67+x+.06,1);near(.06*2/3,.04);
+x=answer(99569);assert.ok(x>0&&x<100);near(20000*(1-x/100)**2,15842);
+x=answer(99574);assert.ok(x>20);near(x*.1,20*.95);
+x=answer(99575);const first=(200-x)/2,second=(200+x)/2;assert.ok(first>0&&second>first);near(first*.1+second*.3,200*.25);
+x=answer(26578);assert.ok(x>0);near(96/x,48/24+48/(x+16));
+x=answer(26579);assert.ok(x>48);near(156/x,78/(x-13)+78/78);
+x=answer(26580);assert.ok(x>0);near(75/x-75/(x+40),6);
+x=answer(26581);assert.ok(x>3);near(70/(x-3),70/x+3);
+x=answer(99599);const cycle=x-30/(30/60);assert.ok(cycle>0);assert.ok(cycle*.5<30);near(x*(10/60),cycle*(40/60));near((x-cycle)*.5,30);
+x=answer(323856);assert.ok(x>0);near((x+12-x)*.25,3);near(180/x-180/(x+12),10/60);
+x=answer(26585);assert.ok(x>0&&x<11);near(112/(11-x)-112/(11+x),6);
+x=answer(26587);assert.ok(x>1);near(30/(x-1)+30/(x+1)+2.5,8);
+x=answer(26588);assert.ok(x>0&&x<15);near(200/(15+x)+200/(15-x)+10,40);
+x=answer(26592);assert.ok(x>0);near(110/x-110/(x+1),1);
+x=answer(26594);assert.ok(x>3);near(550/(x-3)-475/x,6);
+x=answer(26596);assert.ok(x>12);const p=1/x,q=2*p/3;near(p+q,1/12);near(2*p,3*q);
+x=answer(26595);assert.ok(x>0);near(110/x-99/(x+1),2);
+x=answer(99582);let d=(x-10)/2;assert.ok(d>0);near(Array.from({length:6},(_,i)=>10+i*d).reduce((a,b)=>a+b,0),120);
+x=answer(99583);d=(x-2)/8;assert.ok(d>0);near(Array.from({length:14},(_,i)=>2+i*d).reduce((a,b)=>a+b,0),210);
+const sourceAnswers={99566:20,99568:27,99569:11,99574:190,99575:100,26578:32,26579:52,26580:10,26581:10,99599:80,323856:108,26585:3,26587:11,26588:5,26592:10,26594:25,26596:20,26595:10,99582:18,99583:18};
+const page=fs.readFileSync('dist/ege/index.html','utf8');for(const t of bank){assert.equal(t.answer,sourceAnswers[t.sourceId]);assert.equal(t.source.url,'https://math-ege.sdamgia.ru/problem?id='+t.sourceId);assert.equal(t.grade,11);assert.equal(t.exam,'ege');assert.ok(t.hints.length>=2&&t.steps.length>=3);assert.ok(t.review.plan&&t.review.verify&&t.review.trap);assert.ok(!t.new&&!t.isNew);assert.ok(page.includes(t.title));}assert.ok(page.includes('181 задач'));
+console.log('PASS: 20 sourced word problems, independent original-condition models and unit conversions, admissible answers, no duplicate IDs, static exam page and bank counts.');
