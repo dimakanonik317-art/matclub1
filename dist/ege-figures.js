@@ -1,7 +1,7 @@
 /* Educational diagrams rebuilt from the cited tasks. No remote images or eval. */
 function egeCurveValue(curve,x){const p=curve.parameters;switch(curve.kind){case'line':return p[0]*x+p[1];case'quadratic':return p[0]*x*x+p[1]*x+p[2];case'hyperbola':return p[0]/(x+p[1])+p[2];case'log':return x+p[1]>0?Math.log(x+p[1])/Math.log(p[0])+p[2]:NaN;case'exp':return p[0]**x+p[1];case'sqrt':return x>=0?p[0]*Math.sqrt(x):NaN;case'cos':return p[0]*Math.cos(x)+p[1];case'sin':return p[0]*Math.sin(x)+p[1];case'tan':return p[0]*Math.tan(x)+p[1];default:return NaN}}
 function egeFigure(task){
- const g=task.figure;if(!g)return'';if(g.solid)return egeSolidFigure(task);const safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const g=task.figure;if(!g)return'';if(g.importedStatement)return `<figure class="ege-task-figure ege-source-figure"><div class="ege-source-statement">${g.importedStatement}</div><figcaption>Исходное условие «Решу ЕГЭ». Формулы и рисунки сохранены на сервере Матклуба.</figcaption></figure>`;if(g.solid)return egeSolidFigure(task);const safe=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  let [xmin,xmax,ymin,ymax]=g.range;const W=600,H=400,L=52,R=24,T=24,B=46,pw=W-L-R,ph=H-T-B;
  if(g.vectors){const cx=(xmin+xmax)/2,cy=(ymin+ymax)/2,unit=Math.max((xmax-xmin)/pw,(ymax-ymin)/ph);xmin=cx-unit*pw/2;xmax=cx+unit*pw/2;ymin=cy-unit*ph/2;ymax=cy+unit*ph/2;}
  const X=x=>L+(x-xmin)/(xmax-xmin)*pw,Y=y=>T+(ymax-y)/(ymax-ymin)*ph,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
