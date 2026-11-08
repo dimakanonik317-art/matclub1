@@ -51,8 +51,8 @@
   },
   "https://math-ege.sdamgia.ru/get_file?id=32895": {
     "path": "ege-assets/5d2d30455df60792bec9.svg",
-    "sha256": "f50912456044e8f3c0fadb3f81d809c7eb4ed101db0d5f69da81686b579a9ef6",
-    "bytes": 11147
+    "sha256": "7d34a30e622f5991aef3fd7c678eada5d54e148a6a6423682ebd2786d2462bd9",
+    "bytes": 11005
   },
   "https://ege.sdamgia.ru/formula/svg/35/356b8e5ccb42d97c49a7b84a0d3b5820.svg": {
     "path": "ege-assets/ac8e5f4ba58d969a8ff7.svg",
@@ -386,8 +386,8 @@
   },
   "https://math-ege.sdamgia.ru/get_file?id=42072": {
     "path": "ege-assets/8650de2f8826816b0b8a.svg",
-    "sha256": "3b1a9b1361299073a0ad6c74f64c1ddb9f31117b2edb4b7806a3919b941e0fd1",
-    "bytes": 7804
+    "sha256": "c63bdbe2e88afb4fe8c3b84d4e48fa057cfd2341ffc434e8bdb4eea70b78be0a",
+    "bytes": 7760
   },
   "https://ege.sdamgia.ru/formula/svg/ed/eda9b4e5bafd7c512df1c85caf4ffdde.svg": {
     "path": "ege-assets/a072c7ea9c469987f7c3.svg",
