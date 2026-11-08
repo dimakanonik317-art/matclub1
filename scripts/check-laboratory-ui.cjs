@@ -13,7 +13,7 @@ function setup(stored={},url='https://test.local/'){
  return{dom,w,d,errors,downloads,click,change,advance(ms){const f=[...frames.values()];frames.clear();for(const fn of f)fn(ms)}};
 }
 (async()=>{
-const t=setup(),{w,d,click,change}=t;assert.equal(w.eval('tasks.length'),880);assert.equal(d.querySelector('#labWorkspace'),null,'lazy mount');click('[data-view=laboratory]');assert.equal(d.querySelector('#labSection').hidden,false);assert.equal(d.querySelector('#catalog').hidden,true);assert.equal(d.querySelectorAll('.lab-card').length,20);assert.equal(d.querySelector('#breadcrumb').textContent,'Физическая лаборатория');assert.ok(!d.querySelector('#labSection').textContent.includes('Бета'));
+const t=setup(),{w,d,click,change}=t;assert.equal(w.eval('tasks.length'),882);assert.equal(d.querySelector('#labWorkspace'),null,'lazy mount');click('[data-view=laboratory]');assert.equal(d.querySelector('#labSection').hidden,false);assert.equal(d.querySelector('#catalog').hidden,true);assert.equal(d.querySelectorAll('.lab-card').length,20);assert.equal(d.querySelector('#breadcrumb').textContent,'Физическая лаборатория');assert.ok(!d.querySelector('#labSection').textContent.includes('Бета'));
 for(const e of w.matclubLabModels.labs){
  w.matclubLab.open(e.id);assert.equal(d.querySelector('#labExperimentTitle').textContent,e.title);assert.ok(d.querySelector('#labScene svg'));
  const ids=[...d.querySelectorAll('#labSection [id]')].map(e=>e.id);assert.equal(new Set(ids).size,ids.length,'unique DOM IDs');
