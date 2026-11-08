@@ -6,7 +6,7 @@ for(const f of ['data','lessons','challenges','expansion','deepening','physics',
 const crypto=require('node:crypto');
 const homeFile=path.join(root,'index.html');
 let home=fs.readFileSync(homeFile,'utf8');
-for(const asset of ['ege.js','ege-expansion.js','answer-set.js','app.js']){
+for(const asset of ['ege.js','ege-expansion.js','answer-set.js','app.js','assistant.js']){
  const hash=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,asset))).digest('hex').slice(0,12);
  const pattern=new RegExp('src="'+asset.replace('.', '\\.')+'(?:\\?[^" ]*)?"','g');
  home=home.replace(pattern,'src="'+asset+'?v='+hash+'"');

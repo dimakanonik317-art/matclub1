@@ -1,5 +1,5 @@
 import {applyGrant,mark} from './account-grant.mjs';
-import {messages,answer} from './assistant.mjs';
+import {messages,answer,MODEL,AI_LIMITS} from './assistant.mjs';
 const COOKIE='__Host-matclub_session',TTL=30*86400,ITERATIONS=100000,LIMIT=1024*1024;
 export const KEYS=['matclub-saved','matclub-solved','matclub-workbook','matclub-python-v1','matclub-cpp-v1','matclub-laboratory-v1','matclub-settings-v1','matclub-graphs-v1'];
 const schema=[
@@ -27,7 +27,7 @@ async function body(request){const limit=new URL(request.url).pathname==='/api/p
 function credentials(data){const login=typeof data.login==='string'?data.login.trim().toLowerCase():'';if(!/^[a-z0-9_]{3,24}$/.test(login))fail(400,'Логин: 3–24 латинских буквы, цифры или _.');const password=data.password;if(typeof password!=='string'||password.length<10||password.length>128)fail(400,'Пароль: от 10 до 128 символов.');return{login,password}}
 function profile(data){const name=typeof data.name==='string'?data.name.trim():'';if(name.length>60||/[\u0000-\u001f]/.test(name))fail(400,'Имя: до 60 символов.');const grade=Number(data.grade??7);if(!Number.isInteger(grade)||grade<6||grade>11)fail(400,'Выбери класс с 6 по 11.');return{name,grade}}
 async function userView(row,db){return{...(await mark(db,row.id)),id:row.id,login:row.login,name:row.name,grade:row.grade,createdAt:row.created_at}}
-async function rate(db,kind,identity,max,period){const bucket=Math.floor(now()/period),key=await digest(`${kind}:${identity}:${bucket}`);const r=await db.prepare('INSERT INTO limits (key,hits,expires_at) VALUES (?,1,?) ON CONFLICT(key) DO UPDATE SET hits=hits+1 RETURNING hits').bind(key,(bucket+2)*period).first();if(r.hits>max)throw new ApiError(429,'Лимит запросов достигнут. Попробуй позже.',{'retry-after':String((bucket+1)*period-now())})}
+async function rate(db,kind,identity,max,period,message='Лимит запросов достигнут. Попробуй позже.'){const bucket=Math.floor(now()/period),key=await digest(`${kind}:${identity}:${bucket}`);const r=await db.prepare('INSERT INTO limits (key,hits,expires_at) VALUES (?,1,?) ON CONFLICT(key) DO UPDATE SET hits=hits+1 RETURNING hits').bind(key,(bucket+2)*period).first();if(r.hits>max)throw new ApiError(429,message,{'retry-after':String((bucket+1)*period-now())})}
 async function session(request,db){const token=request.headers.get('cookie')?.split(';').map(s=>s.trim()).find(s=>s.startsWith(COOKIE+'='))?.slice(COOKIE.length+1);if(!token||!/^[a-f0-9]{64}$/.test(token))return null;return db.prepare('SELECT users.*,sessions.token_hash FROM sessions JOIN users ON users.id=sessions.user_id WHERE token_hash=? AND expires_at>?').bind(await digest(token),now()).first()}
 async function requireUser(request,db){const u=await session(request,db);if(!u)fail(401,'Войди в аккаунт.');return u}
 async function createSession(db,id){const token=random();await db.prepare('INSERT INTO sessions (token_hash,user_id,expires_at) VALUES (?,?,?)').bind(await digest(token),id,now()+TTL).run();return token}
@@ -40,12 +40,12 @@ async function api(request,env,ctx){
  if(!env.DB)return json({error:'Личный кабинет готовится: база данных ещё не подключена.',ready:false},503);
  if(!['GET','HEAD'].includes(method)){const origin=request.headers.get('origin');if(origin!==new URL(request.url).origin||request.headers.get('sec-fetch-site')==='cross-site')fail(403,'Запрос с другого сайта отклонён.')}
  await init(env.DB);const db=env.DB,ip=request.headers.get('CF-Connecting-IP')||'unknown';
- if(path==='/api/assistant'&&method==='GET')return json({ready:!!env.AI,model:'llama-3.1-fast'});
+ if(path==='/api/assistant'&&method==='GET')return json({ready:!!env.AI,model:MODEL,modelLabel:'Gemma 4',limits:AI_LIMITS});
  if(path==='/api/assistant'&&method==='POST'){
   if(!env.AI)fail(503,'ИИ-помощник пока не подключён.');
   const data=await body(request);let input;try{input=messages(data)}catch(e){fail(400,e.message)}
-  const u=await session(request,db);await rate(db,'ai-burst',ip,6,600);await rate(db,'ai-daily',u?.id||ip,u?40:15,86400);await rate(db,'ai-total','site',100,86400);
-  try{return json({answer:await answer(env.AI,input)})}catch(e){const message=String(e.message).toLowerCase();if(/terms|agreement|not enabled|activation/.test(message))fail(503,'Нужно активировать Workers AI в панели Cloudflare владельца сайта.');if(/quota|limit|neurons/.test(message))fail(429,'Лимит ИИ-сервиса исчерпан. Попробуй позже.');fail(503,'ИИ-сервис временно недоступен. Попробуй позже.')}
+  const u=await session(request,db);await rate(db,'ai-burst',u?.id||ip,AI_LIMITS.burst,AI_LIMITS.burstSeconds,'Слишком много вопросов подряд. Дай помощнику небольшую паузу.');await rate(db,'ai-daily',u?.id||ip,u?AI_LIMITS.accountDaily:AI_LIMITS.guestDaily,86400,'Достигнут суточный лимит вопросов '+(u?'аккаунта.':'гостя. После входа в кабинет доступно больше вопросов.'));await rate(db,'ai-total','site',AI_LIMITS.siteDaily,86400,'Суточный запас запросов сайта исчерпан. Он обновится после 03:00 по Минску.');
+  try{return json(await answer(env.AI,input))}catch(e){const message=String(e.message).toLowerCase();if(/terms|agreement|not enabled|activation/.test(message))fail(503,'Нужно активировать Workers AI в панели Cloudflare владельца сайта.');if(/quota|neurons|allocation|daily/.test(message))throw new ApiError(429,'Общая суточная квота Cloudflare AI исчерпана. Смена модели её не увеличивает; обновление после 03:00 по Минску.',{'retry-after':String(86400-now()%86400)});if(/rate.?limit|429|too many|busy/.test(message))throw new ApiError(429,'ИИ-сервис сейчас перегружен. Повтори вопрос немного позже.',{'retry-after':'60'});fail(503,'ИИ-сервис временно недоступен. Попробуй позже.')}
  }
  if(path==='/api/me'&&method==='GET'){const u=await session(request,db);return json({ready:true,user:u?await userView(u,db):null})}
  if(path==='/api/register'&&method==='POST'){
