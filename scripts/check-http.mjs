@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {readJson} from '../server/http.mjs';
+const req=(body,headers={},signal)=>new Request('https://test.local/api/test',{method:'POST',headers:{'content-type':'application/json',...headers},body,duplex:'half',signal});
+const rejects=async(p,status)=>assert.rejects(p,e=>e.status===status);
+assert.deepEqual(await readJson(req('{"name":"Алиса"}'),100),{name:'Алиса'});
+await rejects(readJson(req('{}',{'content-type':'text/plain'}),100),415);
+await rejects(readJson(req('{}',{'content-length':'101'}),100),413);
+let cancelled=false;const oversized=new ReadableStream({start(c){c.enqueue(new Uint8Array(60));c.enqueue(new Uint8Array(60))},cancel(){cancelled=true}});await rejects(readJson(req(oversized),100),413);assert.ok(cancelled);
+let timed=false;await rejects(readJson(req(new ReadableStream({cancel(){timed=true}})),100,20),408);assert.ok(timed);
+const ac=new AbortController();const reading=readJson(req(new ReadableStream({}),{},ac.signal),100);ac.abort();await rejects(reading,400);
+await rejects(readJson(req(new ReadableStream({pull(c){c.error(Error('transport secret'))}})),100),400);
+for(const invalid of ['null','[]','4','"text"','{"x":',''])await rejects(readJson(req(invalid),100),400);
+await rejects(readJson(req(new Uint8Array([123,34,120,34,58,34,255,34,125])),100),400);
+console.log('PASS: streamed byte limits, declared size, stalled/aborted/error streams, timeout cancellation, UTF-8 and JSON shape.');
