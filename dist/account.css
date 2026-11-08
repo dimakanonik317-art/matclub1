@@ -3,3 +3,5 @@
 @media(max-width:1100px){.account-button{width:42px;padding:8px}.account-button>span:last-child{display:none}}@media(max-width:600px){.account-dialog{padding:23px 18px;border-radius:16px}.account-stats{grid-template-columns:1fr 1fr}.account-achievements{grid-template-columns:1fr}.account-dialog-head h2{font-size:24px}.account-dialog-head button{flex-shrink:0}header{gap:7px}.account-button{flex-shrink:0}}
 
 @media(max-width:600px){header .header-help{display:none}}
+
+.account-title{display:inline-block;vertical-align:middle;padding:4px 9px;margin:4px 0;font:600 11px/1.5 system-ui,sans-serif;letter-spacing:1px;color:var(--ui-accent-text);background:var(--ui-accent-soft);border:1px solid var(--ui-accent-edge);border-radius:7px}
