@@ -14,5 +14,8 @@
       "database_name": "matclub-users",
       "database_id": "988eb434-5a6c-43c9-87cd-bc8cfe6ee801"
     }
-  ]
+  ],
+  "ai": {
+    "binding": "AI"
+  }
 }

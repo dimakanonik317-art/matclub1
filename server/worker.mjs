@@ -1,3 +1,4 @@
+import {messages,answer} from './assistant.mjs';
 const COOKIE='__Host-matclub_session',TTL=30*86400,ITERATIONS=100000,LIMIT=1024*1024;
 export const KEYS=['matclub-saved','matclub-solved','matclub-workbook','matclub-python-v1','matclub-cpp-v1','matclub-laboratory-v1','matclub-settings-v1','matclub-graphs-v1'];
 const schema=[
@@ -33,6 +34,13 @@ async function api(request,env,ctx){
  if(!env.DB)return json({error:'Личный кабинет готовится: база данных ещё не подключена.',ready:false},503);
  if(!['GET','HEAD'].includes(method)){const origin=request.headers.get('origin');if(origin!==new URL(request.url).origin||request.headers.get('sec-fetch-site')==='cross-site')fail(403,'Запрос с другого сайта отклонён.')}
  await init(env.DB);const db=env.DB,ip=request.headers.get('CF-Connecting-IP')||'unknown';
+ if(path==='/api/assistant'&&method==='GET')return json({ready:!!env.AI});
+ if(path==='/api/assistant'&&method==='POST'){
+  if(!env.AI)fail(503,'ИИ-помощник пока не подключён.');
+  const data=await body(request);let input;try{input=messages(data)}catch(e){fail(400,e.message)}
+  const u=await session(request,db);await rate(db,'ai-burst',ip,6,600);await rate(db,'ai-daily',u?.id||ip,u?40:15,86400);await rate(db,'ai-total','site',100,86400);
+  try{return json({answer:await answer(env.AI,input)})}catch{fail(503,'Модель сейчас не ответила. Попробуй позже; твой вопрос остался в чате.')}
+ }
  if(path==='/api/me'&&method==='GET'){const u=await session(request,db);return json({ready:true,user:u?userView(u):null})}
  if(path==='/api/register'&&method==='POST'){
   await rate(db,'register',ip,5,3600);const data=await body(request),{login,password}=credentials(data),p=profile(data),salt=random(16),id=crypto.randomUUID(),hash=await passwordHash(password,salt);
