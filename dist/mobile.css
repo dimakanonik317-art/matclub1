@@ -116,6 +116,6 @@
  .topics{grid-template-columns:minmax(0,1fr)}.topics .topic{padding:16px}.topic-topline{margin-bottom:8px}.topic h3{font-size:16px}.topic p{font-size:13px}
  .lab-experiments{grid-template-columns:1fr}.section-head h2{font-size:23px}
 }
-@media(min-width:600px) and (max-width:767px){
- .hero{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);padding:26px;gap:12px 20px}.hero h1{font-size:36px}.hero-art,[data-domain=physics] .hero-art{grid-row:1/6;align-self:center}.hero .eyebrow,.hero p,.hero-actions,.hero-foot{grid-column:1}.hero .primary{padding-inline:13px}.topics .topic{padding:18px}.topic h3{font-size:16px}
+@media(min-width:600px) and (max-width:767px), (min-width:768px) and (max-width:1023px) and (max-height:500px) and (orientation:landscape){
+ .hero{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);padding:26px;gap:12px 20px}.hero h1{font-size:36px}.hero-art,[data-domain=physics] .hero-art{grid-row:1/6;align-self:center}.hero .eyebrow,[data-domain=physics] .hero-copy>.eyebrow,.hero p,.hero-actions,.hero-foot{grid-column:1}.hero .primary{padding-inline:13px}.topics .topic{padding:18px}.topic h3{font-size:16px}
 }
