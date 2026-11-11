@@ -1,5 +1,5 @@
 import { ApiError, fail, json, readJson, finish } from "./http.mjs";
-export const SERVER_VERSION = "backend-2026-11-11.2";
+export const SERVER_VERSION = "backend-2026-11-11.2.1";
 import { init, cleanup, readiness } from "./database.mjs";
 import { mark } from "./account-grant.mjs";
 import { messages, answer, MODEL, AI_LIMITS } from "./assistant.mjs";
