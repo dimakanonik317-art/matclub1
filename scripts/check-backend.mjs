@@ -9,6 +9,7 @@ const tests = [
   'check-server-hardening.mjs',
   'check-backend-v2.mjs',
   'check-assistant-model.mjs',
+  'check-assistant-scope.mjs',
   'check-assistant-limits.mjs'
 ];
 for (const test of tests) {
