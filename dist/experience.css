@@ -91,3 +91,6 @@ button:active{transform:scale(.97)}
 @media(prefers-reduced-motion:reduce){.topic:hover,.task-card:hover,.language-tab:hover,.solve:hover,button:active{transform:none}}
 :root[data-motion=off] .topic:hover,:root[data-motion=off] .task-card:hover,:root[data-motion=off] .language-tab:hover,:root[data-motion=off] .solve:hover,:root[data-motion=off] button:active{transform:none}
 :root[data-motion-paused] *, :root[data-motion-paused] *::before,:root[data-motion-paused] *::after{animation-play-state:paused!important}
+
+.subject-tabs button{transition:background .2s ease,border-color .2s ease,box-shadow .2s ease,color .2s ease}
+@media(prefers-reduced-motion:no-preference){:root[data-motion=on] .subject-tabs button:active{transform:scale(.97)}}

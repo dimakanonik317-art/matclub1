@@ -3,7 +3,7 @@
   const root=document.documentElement;
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const running=new Set(), waiting=new Set();
-  let lastScene='';
+  let lastScene='', lastCatalog='';
   const allowed=()=>!document.hidden&&(window.matclubSettings?window.matclubSettings.motionAllowed():!reduced?.matches);
   function play(el,frames,options={}){
     if(!el||!allowed()||!el.animate)return;
@@ -39,6 +39,14 @@
       document.querySelectorAll('#catalog .section-head,#progress-content');
     [...targets].filter(el=>!el.closest('[hidden]')).forEach((el,i)=>play(el,[{opacity:0,transform:`translateY(${i===1?30:18}px)`},{opacity:1,transform:'translateY(0)'}],{duration:i===1?720:580,delay:Math.min(i,5)*65}));
   }
+  function catalog(key){
+    if(!key){lastCatalog='';return}
+    if(key===lastCatalog)return;
+    lastCatalog=key;
+    const exam=key.endsWith(':oge')||key.endsWith(':ege');
+    const targets=exam?document.querySelectorAll('#egeIntro:not([hidden]),#grade9ExamIntro:not([hidden]),.topics-head:not([hidden])'):document.querySelectorAll('.topics-head:not([hidden])');
+    [...targets].filter(el=>!el.closest('[hidden]')).forEach((el,i)=>play(el,[{opacity:0,transform:'translateY(18px)'},{opacity:1,transform:'translateY(0)'}],{duration:480,delay:i*55}));
+  }
   function workspace(){
     document.querySelectorAll('.workspace-top,.problem-pane .modal-title,.problem-pane>.question,.work-tabs').forEach((el,i)=>play(el,arrival,{duration:420,delay:i*45}));
   }
@@ -53,10 +61,10 @@
   reduced?.addEventListener?.('change',policy);
   if(typeof MutationObserver==='function')new MutationObserver(policy).observe(root,{attributes:true,attributeFilter:['data-motion']});
   document.addEventListener('click',event=>{
-    const button=event.target.closest('.domain-switch>button,.grade-row button,.level-tabs button,.language-tab');
+    const button=event.target.closest('.domain-switch>button,.grade-row button,.subject-tabs button,.level-tabs button,.language-tab');
     if(button)play(button,[{transform:'scale(.95)'},{transform:'scale(1.025)',offset:.65},{transform:'scale(1)'}],{duration:320});
   });
-  window.matclubMotion={scene,cards,workspace};
+  window.matclubMotion={scene,cards,catalog,workspace};
   policy();
 
   const tabs=[...document.querySelectorAll('[data-language]')];
