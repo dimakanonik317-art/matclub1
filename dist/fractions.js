@@ -1,9 +1,14 @@
 /* Present simple written fractions as stacked fractions without changing stored answers. */
 (() => {
-  const targets = '#tasks .task-info, #lessonBody .lesson-content, #modalBody .problem-pane, #modalBody .work-panel, #aiMessages .ai-assistant .ai-prose, .search-page main, #labSection';
+  const targets = '#topics .topic, #tasks .task-info, #lessonBody .lesson-content, #modalBody .problem-pane, #modalBody .work-panel, #aiMessages .ai-assistant .ai-prose, .search-page main, #labSection';
   const excluded = 'a,button,input,textarea,select,option,code,pre,kbd,samp,script,style,svg,math,.math-fraction,.input-note,.formula-help,.quick-form,[contenteditable]:not([contenteditable="false"])';
-  // Both operands must be complete numbers, variables, or bracketed expressions.
-  const fraction = /(^|[^\p{L}\p{N}_./])(\[[^\[\]\n]{1,100}\]|\((?:[^()\n]|\([^()\n]*\)){1,100}\)|[−-]?(?:\d+(?:[.,]\d+)?[a-zA-Zα-ωΑ-Ω]?|[a-zA-Zα-ωΑ-Ω][a-zA-Z0-9₀-₉]*)(?:\^[−-]?\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹])?)\s*\/\s*(\[[^\[\]\n]{1,100}\]|\((?:[^()\n]|\([^()\n]*\)){1,100}\)|[−-]?(?:\d+(?:[.,]\d+)?[a-zA-Zα-ωΑ-Ω]?|[a-zA-Zα-ωΑ-Ω][a-zA-Z0-9₀-₉]*)(?:\^[−-]?\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹])?)(?![\p{L}\p{N}_/]|\.(?=\d))/gu;
+  // Preserve complete products such as 2x(x + 1), powers, roots and bracketed expressions.
+  const group = String.raw`(?:\[[^\[\]\n]{1,160}\]|\((?:[^()\n]|\([^()\n]*\)){1,160}\))`;
+  const value = String.raw`(?:[−-]?(?:\d+(?:[.,]\d+)?|[a-zA-Zα-ωΑ-Ω][a-zA-Z0-9₀-₉ₐₑₒₓₕₖₗₘₙₚₛₜ]*)(?:\^[−-]?\d+|[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺ⁿ]|°)*)`;
+  const root = String.raw`(?:√(?:${group}|\d+))`;
+  const words = String.raw`(?:прилежащий\s+катет|противолежащий\s+катет|число\s+благоприятных\s+исходов|гипотенуза|число\s+всех\s+исходов)`;
+  const operand = String.raw`(?:${words}|(?:${root}|${group}|${value})+)`;
+  const fraction = new RegExp(String.raw`(^|[^\p{L}\p{N}_./])(${operand})\s*\/\s*(${operand})(?![\p{L}\p{N}_/]|\.(?=\d))`, 'giu');
   function processText(node) {
     const parent = node.parentElement;
     if (!parent || !parent.closest(targets) || parent.closest(excluded) || !node.data.includes('/')) return;
