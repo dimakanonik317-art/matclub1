@@ -25,17 +25,26 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Check Cloudflare credentials
+        id: credentials
         shell: bash
         env:
           CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           if [[ -z "$CF_API_TOKEN" || -z "$CF_ACCOUNT_ID" ]]; then
-            echo "::error::Add repository secret CLOUDFLARE_API_TOKEN and variable CLOUDFLARE_ACCOUNT_ID in Settings → Secrets and variables → Actions."
-            exit 1
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "### Cloudflare deployment skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "Configure repository secret CLOUDFLARE_API_TOKEN and variable CLOUDFLARE_ACCOUNT_ID to enable deployment. No site was deployed by this run." >> "$GITHUB_STEP_SUMMARY"
+            if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+              echo "::error::Manual deployment requires CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID."
+              exit 1
+            fi
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
 
       - uses: cloudflare/wrangler-action@v3
+        if: steps.credentials.outputs.ready == 'true'
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
