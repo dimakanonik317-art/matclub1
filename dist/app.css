@@ -111,3 +111,5 @@ dialog{border-radius:23px;background:var(--ui-surface)}.lesson-dialog{width:min(
 button.top-credit{border:0;background:transparent;padding:0;text-align:right;cursor:pointer;color:var(--ui-faint);font:inherit;font-size:11px;white-space:nowrap}
 .top-credit:hover b{text-decoration:underline;text-underline-offset:3px}
 .top-credit:focus-visible{outline:2px solid var(--ui-accent);outline-offset:4px;border-radius:3px}
+
+.topic-actions button.topic-task-link{color:var(--ui-accent-text);font-weight:550}
