@@ -108,3 +108,6 @@ dialog{border-radius:23px;background:var(--ui-surface)}.lesson-dialog{width:min(
 .credits-dialog p{font-size:calc(14px * var(--font-scale));line-height:1.8;color:var(--ui-text)}
 .credits-dialog .credits-signoff{border-top:1px solid var(--line);padding-top:16px;margin-top:22px;color:var(--ink)}
 .credits-page-link{display:inline-block;margin-top:8px;color:var(--ui-accent-text);text-underline-offset:3px}
+button.top-credit{border:0;background:transparent;padding:0;text-align:right;cursor:pointer;color:var(--ui-faint);font:inherit;font-size:11px;white-space:nowrap}
+.top-credit:hover b{text-decoration:underline;text-underline-offset:3px}
+.top-credit:focus-visible{outline:2px solid var(--ui-accent);outline-offset:4px;border-radius:3px}
