@@ -169,3 +169,14 @@
  .workspace-dialog .solution-note,.workspace-dialog .solution-step-status{font-size:11px;line-height:1.5;margin:8px 0}
  .workspace-dialog .next-task{min-height:44px;margin-top:8px;padding:9px 0;font-size:12px}
 }
+
+/* Keep the project credit visible and the top actions compact on phones. */
+@media(max-width:767px), (max-width:1023px) and (max-height:500px) and (orientation:landscape){
+ .sidebar .brand{max-width:calc(100% - 115px);min-width:0}
+ .sidebar button.top-credit{display:inline-flex;align-items:center;justify-content:flex-end;min-height:44px;padding:0 4px;font-size:10px;flex-shrink:0}
+ header{grid-template-columns:auto auto;justify-content:end;gap:6px}
+ header .account-button,header .header-support{width:auto;min-height:44px;padding:5px 10px;font-size:11px;gap:5px}
+ header .account-button>span:last-child,header .header-support .support-label{font-size:11px;line-height:1.2}
+ header .header-support>span:first-child{font-size:19px}
+ header .search{grid-column:1/-1}
+}
