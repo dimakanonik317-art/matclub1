@@ -97,3 +97,14 @@ dialog{border-radius:23px;background:var(--ui-surface)}.lesson-dialog{width:min(
 @media(max-width:350px){.hero-copy{padding:25px 20px}.hero h1{font-size:31px}.hero .eyebrow,[data-domain=physics] .hero-copy>.eyebrow{font-size:7px}.hero-actions{gap:8px}.domain-switch>button>span{display:none}.nav .nav-label{font-size:9px}.top-credit{font-size:8px}.challenge-banner h3{font-size:23px}.grade-row>div{gap:5px}}
 [data-focus=on] .study-ribbon{display:none!important}[data-density=compact] .topic{padding:20px;min-height:0}[data-density=compact] .task-card{padding:20px}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}[data-motion=off] *,[data-motion=off] *::before,[data-motion=off] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+
+/* Project credits open from the footer and settings without leaving the study flow. */
+.footer-credit{border:0;background:transparent;padding:0;cursor:pointer;text-align:left;font:inherit}
+.footer-credit:hover b{text-decoration:underline;text-underline-offset:3px}
+.settings-credit-link{border:0;background:transparent;padding:0;color:var(--ui-text);cursor:pointer;font:inherit}
+.settings-credit-link:hover strong{text-decoration:underline;text-underline-offset:3px}
+.credits-dialog{width:min(560px,calc(100% - 28px))}
+.credits-dialog h2{font-size:clamp(25px,4vw,36px);line-height:1.2;letter-spacing:-.03em;margin:14px 0 20px}
+.credits-dialog p{font-size:calc(14px * var(--font-scale));line-height:1.8;color:var(--ui-text)}
+.credits-dialog .credits-signoff{border-top:1px solid var(--line);padding-top:16px;margin-top:22px;color:var(--ink)}
+.credits-page-link{display:inline-block;margin-top:8px;color:var(--ui-accent-text);text-underline-offset:3px}
