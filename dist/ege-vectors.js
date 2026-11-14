@@ -1667,4 +1667,17 @@ const bank=[
   }
 ];
 for(const item of bank)tasks.push({...item,id:`ege-sdamgia-${item.sourceId}`,exam:'ege',domain:'math',grade:11,subject:'geometry',topicName:'Векторы',unit:null,challenge:true,goal:'ЕГЭ · Решу ЕГЭ',source:{name:'Решу ЕГЭ',id:item.sourceId,type:item.sourceType,url:`https://math-ege.sdamgia.ru/problem?id=${item.sourceId}`,note:'Координаты даны в тексте. Рисунок восстановлен или адаптирован. Разбор — Матклуб.',checked:'2026-11-08'}});
+
+// Author-written vector practice with coordinate diagrams.
+for(let i=0;i<40;i++){
+ const k=i%10,kind=Math.floor(i/10), ax=1+k%5,ay=1+Math.floor(k/5),bx=2+(k*3)%6,by=1+(k*2)%5;
+ const figure={range:[-2,10,-2,8],curves:[],points:[],vectors:[{from:[0,0],to:[ax,ay],label:'a'},{from:[0,0],to:[bx,by],label:'b'}],outline:[],xStep:1,yStep:1};
+ let title,question,answer,steps,sourceId;
+ if(kind===0){title='Квадрат длины вектора';question=`На рисунке a = (${ax}; ${ay}). Найди |a|².`;answer=ax*ax+ay*ay;steps=[`Координаты вектора: (${ax}; ${ay}).`,`Квадрат длины равен сумме квадратов координат.`,`${ax}² + ${ay}² = ${answer}.`];sourceId=27664;}
+ if(kind===1){title='Скалярное произведение';question=`На рисунке a = (${ax}; ${ay}), b = (${bx}; ${by}). Найди a · b.`;answer=ax*bx+ay*by;steps=[`Используй формулу a · b = ax·bx + ay·by.`,`${ax}·${bx} + ${ay}·${by}.`,`Получаем ${answer}.`];sourceId=27730;}
+ if(kind===2){title='Сумма векторов';question=`На рисунке a = (${ax}; ${ay}), b = (${bx}; ${by}). Найди сумму координат вектора a + b.`;answer=ax+ay+bx+by;steps=[`Сложи соответствующие координаты: a + b = (${ax}+${bx}; ${ay}+${by}).`,`Получаем (${ax+bx}; ${ay+by}).`,`Сумма координат: ${ax+bx} + ${ay+by} = ${answer}.`];sourceId=27738;}
+ if(kind===3){title='Разность векторов';question=`На рисунке a = (${ax}; ${ay}), b = (${bx}; ${by}). Найди квадрат длины вектора b − a.`;answer=(bx-ax)**2+(by-ay)**2;steps=[`Вычти координаты: b − a = (${bx}−${ax}; ${by}−${ay}) = (${bx-ax}; ${by-ay}).`,`Квадрат длины равен сумме квадратов координат.`,`(${bx-ax})² + (${by-ay})² = ${answer}.`];sourceId=27739;}
+ const plan='Считай координаты по клеткам и выполни действие с векторами.';
+ tasks.push({id:'ege-vector-extra-'+String(i+1).padStart(2,'0'),sourceId,examTopic:'vectors',topic:5,level:1,title,question,answer,hints:[plan,'Используй соответствующие координаты и проверь знак.'],steps,review:{plan,verify:steps[2],trap:'Не путай квадрат длины с длиной вектора.'},figure,exam:'ege',domain:'math',grade:11,subject:'geometry',topicName:'Векторы',unit:null,challenge:true,goal:'ЕГЭ · векторы',source:{name:'Решу ЕГЭ',id:sourceId,type:'векторы',url:'https://math-ege.sdamgia.ru/problem?id='+sourceId,note:'Авторский вариант по теме задания; чертёж и разбор — Матклуб.'}});
+}
 })();
