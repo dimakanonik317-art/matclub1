@@ -1,0 +1,5 @@
+.math-fraction{display:inline-flex;vertical-align:middle;flex-direction:column;align-items:stretch;text-align:center;line-height:1.12;font-size:.86em;margin:0 .12em;white-space:nowrap}
+.math-fraction-top,.math-fraction-bottom{display:block;padding:0 .18em}
+.math-fraction-top{border-bottom:1px solid currentColor;padding-bottom:.08em}
+.math-fraction-bottom{padding-top:.08em}
+.math-fraction-slash{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
