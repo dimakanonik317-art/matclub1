@@ -1,84 +1,98 @@
-/* Matclub: restrained typography, predictable spacing, shared study surfaces.
-   Motion remains owned by experience.css and the existing motion settings. */
-:root{--paper:#f6f6f4;--ink:#24272b;--line:#dedfdf;--ui-surface:#fff;--ui-soft:#eeefee;--ui-text:#535961;--ui-faint:#6c7279;--ui-field:#fff;--radius:8px;--lab-radius:8px;--lab-ink:#202a32;--lab-lime:#d7e2eb}
-:root[data-accent=forest]{--ui-accent:#304e43;--ui-accent-hover:#243e34;--ui-accent-text:#304e43;--ui-accent-soft:#edf2ef;--ui-accent-edge:#a7b8ae}
-:root[data-theme=dark]{--paper:#16181b;--ink:#e5e7e9;--line:#35383d;--ui-surface:#1d2024;--ui-soft:#272b30;--ui-text:#bbc0c7;--ui-faint:#9ca3ad;--ui-field:#191c20}
-:root[data-theme=dark][data-accent=forest]{--ui-accent:#426a58;--ui-accent-hover:#527d69;--ui-accent-text:#bdd4c7;--ui-accent-soft:#26332d;--ui-accent-edge:#60766a}
-body{font-family:Arial,Helvetica,sans-serif;line-height:1.55;background:var(--paper);color:var(--ink)}
-h1,h2,h3,h4{font-family:inherit;font-weight:600;letter-spacing:-.025em}
-button:hover{filter:none}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ui-accent-text);outline-offset:3px}
-.sidebar{min-height:76px;padding-top:14px;padding-bottom:14px;gap:28px;background:var(--ui-surface)}
-.brand{font-size:25px;font-weight:700;letter-spacing:-1px;gap:8px}.brandmark{font-size:31px}.branddot{color:var(--ui-accent-text)}
-.sidebar nav{gap:4px}.sidebar .nav{border-radius:5px;padding:10px 12px;font-size:13px;color:var(--ui-text)}
-.sidebar .nav.active{background:var(--ui-accent-soft);color:var(--ui-accent-text);box-shadow:none}
-.sidebar .nav>span:first-child{font-size:19px}.sidebar .nav .nav-label{font-size:13px}.top-credit{font-size:11px}
-.main{background:var(--paper)}.main>header{min-height:76px;gap:12px;background:transparent}
-.search{border-radius:5px!important;background:var(--ui-surface)!important;height:40px}.search input{font-size:13px}
-.beta-badge{border-radius:4px;background:var(--ui-soft);color:var(--ui-text);border-color:var(--line);font-size:10px;letter-spacing:0}
-.account-button,.header-support,.header-help,.header-settings{border-radius:5px!important;border:1px solid var(--line);background:var(--ui-surface);color:var(--ink);box-shadow:none;min-height:38px}
-.header-support{font-size:12px}.header-support .support-label{font-size:12px}.header-support>span:first-child{font-size:22px}
-main{max-width:1320px;padding-top:20px}
-.domain-switch{width:100%;max-width:none;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:0;gap:24px;margin-bottom:24px}
-.domain-switch>button,.domain-switch #computingNav{min-width:0;flex:1;justify-content:flex-start;min-height:66px;padding:10px 12px 14px;border:0;border-bottom:2px solid transparent;border-radius:0;box-shadow:none!important;background:transparent;color:var(--ui-text)}
-.domain-switch>button.selected{border-bottom-color:var(--ui-accent-text);color:var(--ink);background:transparent}
-.domain-switch>button>span{font-size:25px;color:var(--ui-faint)}.domain-switch b{font-size:15px;font-weight:600}.domain-switch small{font-size:11px;color:var(--ui-faint)}
-.hero,[data-domain=physics] .hero{background:var(--ui-surface)!important;border:1px solid var(--line);border-radius:8px;min-height:290px;grid-template-columns:1.3fr 1fr;color:var(--ink);box-shadow:none}
-.hero::before,.hero::after{background:none;pointer-events:none}
-.hero-copy{padding:34px 38px;width:auto;background:none!important}.hero .eyebrow,[data-domain=physics] .hero-copy>.eyebrow{font-size:10px;letter-spacing:1px;color:var(--ui-faint)}
-.hero h1{font-size:clamp(32px,3.5vw,46px);font-weight:600;line-height:1.12;letter-spacing:-1.6px;margin-top:22px;white-space:normal;color:var(--ink)}
-.hero h1 em,[data-domain=physics] .hero h1 em{color:var(--ui-accent-text);font-family:inherit;font-weight:600}
-.hero p,[data-domain=physics] .hero p{font-size:14px;line-height:1.7;color:var(--ui-text);max-width:430px;margin:18px 0 22px}
-.hero .primary,[data-domain=physics] .hero .primary{background:var(--ui-accent);border:1px solid var(--ui-accent);color:#fff;border-radius:5px;padding:11px 17px;min-height:42px;font-size:13px}
-.hero .hero-graph,[data-domain=physics] .hero-graph{color:var(--ui-text);font-size:13px;min-height:42px}
-.hero-foot,[data-domain=physics] .hero-foot{color:var(--ui-faint);font-size:11px;letter-spacing:0;margin-top:22px}
-.hero-art{padding:22px;opacity:.85;background:var(--ui-soft);border-left:1px solid var(--line)}
-.orbital{max-width:285px;filter:saturate(.3)}.physics-visual{max-width:320px;filter:saturate(.35)}.physics-caption{color:#526d79;letter-spacing:.5px}
-:root[data-theme=dark] .hero-art{background:#26312f}:root[data-theme=dark] .physics-caption{color:#c2d2d9}
-.study-ribbon{border-bottom:1px solid var(--line);padding:20px 0;margin:0 0 24px;gap:24px}.study-ribbon h3{font-size:13px}.study-ribbon p{font-size:11px}
-.section-head{margin-top:28px;align-items:center}.section-head h2{font-size:27px;letter-spacing:-.6px}.section-head .eyebrow{color:var(--ui-faint);font-size:10px;letter-spacing:.7px}
-.catalog-note{font-size:12px}.grade-row{margin-top:20px;gap:20px;padding-bottom:20px}.grade-row button{border-radius:5px;width:46px;height:40px;min-height:40px;font-size:14px;box-shadow:none!important}
-.subject-tabs{gap:8px}.subject-tabs button,.level-tabs button{border-radius:5px;box-shadow:none;font-size:13px;min-height:38px;padding:8px 15px}
-.curriculum-note{font-size:12px;line-height:1.7;color:var(--ui-faint)}.topics-head h3{font-size:20px}.topics-head>span{font-size:12px}
-.topics{gap:14px}.topic{border-radius:6px;background:var(--ui-surface);padding:22px;min-height:190px;box-shadow:none}
-.topic.active{background:var(--ui-accent-soft);border-color:var(--ui-accent-edge)}.topic-symbol{background:var(--ui-soft)!important;color:var(--ui-accent-text)!important;border-radius:4px;width:36px;height:36px;font-size:24px}
-.topic-topline{margin-bottom:18px}.topic-index{font-size:11px;color:var(--ui-faint)}.topic h3{font-size:18px;line-height:1.4;font-weight:600}.topic p{font-size:13px;line-height:1.65;color:var(--ui-text)}
-.topic-actions{border-top:1px solid var(--line);padding-top:14px;margin-top:20px}.topic-actions button:first-child,.topic-actions button:last-child{font-size:12px}
-.task-card{border-radius:6px;background:var(--ui-surface);box-shadow:none;padding:20px 22px}.task-info h3{font-size:16px;font-weight:600}.task-info p{font-size:14px;line-height:1.75}.task-caption{font-size:11px}.task-num{font-size:12px;color:var(--ui-faint)}
-.solve,.primary,.next-task{border-radius:5px}.task-meta{font-size:11px}.level-header h3{font-size:22px}.level-tabs{gap:7px;background:transparent}
-.challenge-banner,.discovery{border-radius:6px;background:var(--ui-surface);border:1px solid var(--line);color:var(--ink);padding:28px}
-.challenge-banner h3,.discovery h3{font-size:25px;color:var(--ink)}.challenge-banner p,.discovery p{color:var(--ui-text);font-size:14px}
-.computing-hero{border-radius:8px;background:#222b34;padding:36px;min-height:300px}.computing-hero:before{background:none}.computing-intro h1{font-size:40px;letter-spacing:-1px}.computing-intro h1 em{font-family:inherit;color:#d5dfe8}.computing-intro>p{font-size:14px}.computing-terminal{transform:none;border-radius:6px;box-shadow:none;background:#18212a}.terminal-code{font-size:12px}
-.language-tab,.language-panel,.py-theory,.py-workspace,.py-lesson-card,.lab-apparatus,.lab-controls,.lab-chart-card,.lab-experiment-card,.cpp-lesson-card,.account-achievements article{border-radius:6px;box-shadow:none}
-.language-tab b{font-size:18px}.language-tab small{font-size:12px}.language-symbol{border-radius:5px}.language-panel h3{font-size:23px}
-dialog,.workspace-dialog,.lesson-dialog,.settings-dialog,.account-dialog,.credits-dialog{border-radius:8px;border:1px solid var(--line);box-shadow:0 18px 70px #0003}
-dialog::backdrop{background:#12182080;backdrop-filter:blur(3px)}
-.workspace-top{background:var(--ui-soft);border-bottom:1px solid var(--line)}.workspace-dialog .modal-title{font-size:28px;letter-spacing:-.5px}.workspace-dialog .question{font-size:16px;line-height:1.8}.problem-pane,.work-panel{background:var(--ui-surface)}
-.answer-form input,.answer-form button,.work-tabs button,.custom-presets button,.settings-preview,.support-card,.support-card input,.support-card button{border-radius:5px}
-.assistant-launcher{border-radius:8px!important;box-shadow:0 3px 16px #0002!important}.assistant-panel{border-radius:8px!important;box-shadow:0 12px 48px #0003!important}
-@media(hover:hover) and (pointer:fine){.topic:hover,.language-tab:hover{transform:translateY(-3px);box-shadow:0 5px 15px #00000008}.task-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px #00000008}}
-@media(min-width:768px) and (max-width:1100px){.sidebar{gap:14px;padding-left:22px;padding-right:22px}.sidebar .nav{padding:9px 8px}.sidebar .nav .nav-label{font-size:12px}.brand{font-size:23px}.hero-copy{padding:28px}.hero h1{font-size:36px}.hero-art{padding:12px}}
+/* Study desk redesign. Layout is explicit; existing motion and preferences remain active. */
+:root{--paper:#f3f4f7;--ink:#202632;--line:#dce0e8;--ui-surface:#fff;--ui-soft:#edf0f5;--ui-text:#505b6c;--ui-faint:#697487;--ui-field:#fff;--radius:12px;--lab-radius:12px;--desk-nav:220px;--desk-blue:#294bbc}
+:root[data-accent=forest]{--ui-accent:#294bbc;--ui-accent-hover:#203d9d;--ui-accent-text:#294bbc;--ui-accent-soft:#edf1ff;--ui-accent-edge:#a5b6ec}
+:root[data-theme=dark]{--paper:#131720;--ink:#e9edf5;--line:#30394a;--ui-surface:#1b2230;--ui-soft:#252e3e;--ui-text:#b9c4d6;--ui-faint:#9caac0;--ui-field:#171d28}
+:root[data-theme=dark][data-accent=forest]{--ui-accent:#4668d4;--ui-accent-hover:#5578e6;--ui-accent-text:#a7beff;--ui-accent-soft:#263657;--ui-accent-edge:#5770a9}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55}h1,h2,h3,h4{font-family:inherit;letter-spacing:-.025em;font-weight:650}button:hover{filter:none}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--ui-accent-text);outline-offset:3px}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--desk-nav);height:100dvh;min-height:0;padding:28px 18px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:0;background:var(--ui-surface);color:var(--ink);border:0;border-right:1px solid var(--line);z-index:35;overflow:auto}
+.brand{font-size:25px;letter-spacing:-1px;gap:7px;padding:0 8px 28px;border-bottom:1px solid var(--line)}.brandmark{font-size:31px;color:var(--ui-accent-text)}.branddot{color:var(--ui-accent-text)}
+.sidebar nav{display:flex;flex-direction:column;margin:26px 0 0;padding:0;gap:5px;width:100%;position:static;background:transparent;border:0;box-shadow:none}
+.sidebar .nav{display:flex;flex-direction:row;justify-content:flex-start;align-items:center;width:100%;min-height:46px;margin:0;padding:12px;gap:12px;border-radius:7px;color:var(--ui-text);background:transparent;font-size:13px}
+.sidebar .nav .nav-label{font-size:13px}.sidebar .nav.active{background:var(--ui-accent-soft);color:var(--ui-accent-text);box-shadow:none;font-weight:600}
+.sidebar .nav>span:first-child{display:grid;place-items:center;width:20px;height:20px;font-size:19px;flex-shrink:0}.sidebar .nav i{display:none}.sidebar .nav b{margin-left:auto;background:var(--ui-soft);color:var(--ui-text);border-radius:4px}.sidebar .lab-mobile-label{display:none}.sidebar .lab-desktop-label{display:inline}
+.nav svg,.domain-switch svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.sidebar button.top-credit{display:block;margin-top:auto;padding:24px 10px 0;text-align:left;font-size:11px;border-top:1px solid var(--line);color:var(--ui-faint)}
+.main{margin-left:var(--desk-nav);min-width:0;background:var(--paper)}
+.main>header{height:78px;min-height:78px;padding:15px 36px;gap:12px;display:flex;flex-wrap:nowrap;background:var(--ui-surface);border-bottom:1px solid var(--line)}
+.crumb{font-size:11px;min-width:0}.crumb span{margin:0 9px}.crumb b{color:var(--ink)}
+.search{height:40px;min-width:140px;width:260px;margin-left:auto;border-radius:7px!important;background:var(--paper)!important;border-color:var(--line);padding:0 12px}.search input{font-size:13px}.search kbd{display:none}
+.beta-badge{font-size:9px;border-radius:4px;letter-spacing:0;padding:4px 7px;border:1px solid var(--line);background:var(--ui-soft);color:var(--ui-faint);white-space:nowrap}
+.account-button,.header-support,.header-help,.header-settings{height:40px;min-height:40px;border-radius:7px!important;background:var(--ui-surface);border:1px solid var(--line);color:var(--ui-text);box-shadow:none;padding:8px 11px;flex-shrink:0;font-size:12px}.header-support .support-label{font-size:12px}.header-support>span:first-child{font-size:23px}.header-help{width:36px}.header-settings{width:36px}
+main,[data-page=graphs] main{width:100%;max-width:1420px;margin:0 auto;padding:28px 36px 48px;min-width:0}
+.domain-switch{display:flex;width:100%;max-width:none;padding:4px;margin:0 0 24px;gap:4px;border:1px solid var(--line);border-radius:9px;background:var(--ui-surface)}
+.domain-switch>button,.domain-switch #computingNav{flex:1;min-width:0;min-height:58px;padding:10px 16px;gap:12px;border-radius:6px;border:1px solid transparent;background:transparent;box-shadow:none;color:var(--ui-text);justify-content:flex-start}
+.domain-switch>button.selected{background:var(--ui-accent-soft);border-color:var(--ui-accent-edge);box-shadow:none;color:var(--ui-accent-text)}
+.domain-switch>button>span{font-size:24px;width:26px;flex-shrink:0}.domain-switch b{font-size:14px;font-weight:600}.domain-switch small{font-size:10px;margin-top:2px;color:var(--ui-faint)}.domain-switch>button i{display:none}
+.hero,[data-domain=physics] .hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);padding:0;gap:0;border:0;border-radius:12px;min-height:340px;background:#192746!important;color:#fff;overflow:hidden;box-shadow:none}
+[data-domain=physics] .hero{background:#153c43!important}.hero:before,.hero:after{content:none}
+.hero-copy{display:block;position:relative;z-index:1;padding:34px 36px;width:auto;min-width:0;background:none!important}
+.hero .eyebrow,[data-domain=physics] .hero-copy>.eyebrow{display:flex;font-size:9px;letter-spacing:1.2px;color:#aabbdc}.hero .eyebrow>span{background:#b6c9fb}
+.hero h1{font-size:clamp(30px,3.2vw,44px);line-height:1.14;font-weight:600;letter-spacing:-1.4px;white-space:normal;margin:23px 0 0;color:#fff}
+.hero h1 em,[data-domain=physics] .hero h1 em{color:#a9c2ff;font-family:inherit;font-style:normal;font-weight:600}[data-domain=physics] .hero h1 em{color:#9fdfd8}
+.hero p,[data-domain=physics] .hero p{font-size:13px;line-height:1.75;color:#d2dbee;margin:18px 0 22px;max-width:380px}
+.hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;width:auto}.hero .primary,[data-domain=physics] .hero .primary{border:1px solid #fff;border-radius:6px;min-height:42px;padding:10px 16px;background:#fff;color:#192746;font-size:12px;box-shadow:none}.hero .primary span{margin-left:18px}
+.hero .hero-graph,[data-domain=physics] .hero-graph{font-size:12px;min-height:42px;padding:8px 10px;color:#d5e1ff;width:auto}.hero-foot,[data-domain=physics] .hero-foot{display:block;margin:24px 0 0;font-size:10px;letter-spacing:0;color:#a9b9d5}
+.hero-art{display:flex;align-items:center;justify-content:center;position:relative;width:auto;min-width:0;padding:26px 24px 26px 0;background:none;border:0;opacity:1;overflow:hidden}
+.orbital{width:100%;max-width:360px;filter:none}.hero-art svg{width:100%;min-width:0;margin:0}.orbit-caption{display:none}.physics-visual{width:100%;max-width:360px;filter:none}.physics-caption{color:#add2d5;font-size:8px;letter-spacing:1px}
+.math-plot .plot-line{stroke-dasharray:620;stroke-dashoffset:0}.math-plot text{font-family:Arial,sans-serif}
+@media(prefers-reduced-motion:no-preference){[data-motion=on] .math-plot .plot-line{animation:plot-reveal 1.4s ease-out both}@keyframes plot-reveal{from{stroke-dashoffset:620}to{stroke-dashoffset:0}}}
+.study-ribbon{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:20px 0;margin:0;border-bottom:1px solid var(--line);gap:16px}.study-ribbon h3{font-size:12px}.study-ribbon p{font-size:10px}.study-ribbon>div>span{width:28px;height:28px;font-size:10px}
+.section-head{display:flex;margin:28px 0 20px;align-items:flex-end}.section-head .eyebrow{font-size:9px;letter-spacing:1px;color:var(--ui-faint)}.section-head h2{font-size:26px;letter-spacing:-.7px;margin-top:7px}.catalog-note{font-size:11px;max-width:230px;color:var(--ui-faint)}
+.grade-row{margin:0 0 18px;padding:0 0 18px;gap:18px;display:flex;border-bottom:1px solid var(--line)}.grade-row>span{font-size:10px}.grade-row>div{display:flex;flex:0 1 auto;gap:6px}.grade-row button{width:44px;max-width:none;min-width:0;height:38px;min-height:38px;flex:none;border-radius:6px;border-color:var(--line);background:var(--ui-surface);font-size:13px;box-shadow:none}.grade-row button.selected{background:var(--ui-accent);border-color:var(--ui-accent);color:#fff;box-shadow:none}
+.subject-tabs{display:flex;gap:7px;flex-wrap:wrap}.subject-tabs button{border-radius:6px;min-height:38px;font-size:12px;padding:9px 15px;box-shadow:none}.subject-tabs button.selected{background:var(--ui-accent-soft);color:var(--ui-accent-text);border-color:var(--ui-accent-edge)}.curriculum-note{font-size:11px;color:var(--ui-faint);line-height:1.7}
+.topics-head{margin:26px 0 14px}.topics-head h3{font-size:19px}.topics-head>span{font-size:11px}.topics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.topic{display:flex;flex-direction:column;text-align:left;min-width:0;min-height:210px;padding:20px;border:1px solid var(--line);border-radius:9px;background:var(--ui-surface);box-shadow:none}
+.topic.active{background:var(--ui-accent-soft);border-color:var(--ui-accent-edge)}.topic-topline{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.topic-symbol{display:grid;place-items:center;width:34px;height:34px;font-size:24px;border-radius:5px;background:var(--ui-soft)!important;color:var(--ui-accent-text)!important}.topic-index{font:11px ui-monospace,monospace;color:var(--ui-faint)}
+.topic h3{font-size:17px;line-height:1.4;font-weight:600;letter-spacing:-.3px}.topic p{font-size:12px;color:var(--ui-text);line-height:1.7;margin:9px 0 18px}.topic-actions{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-top:1px solid var(--line);padding-top:12px;margin-top:auto}.topic-actions button:first-child,.topic-actions button:last-child,.topic-actions a{font-size:11px;min-height:32px;line-height:1.5;text-align:left}.topic-actions button.topic-task-link{font-weight:600}.ege-topic-status{font-size:10px;color:var(--ui-faint);margin-top:9px}
+.level-header h3{font-size:22px}.level-tabs{display:flex;flex-wrap:wrap;padding:0;gap:6px;background:transparent}.level-tabs button{border-radius:6px;font-size:12px;padding:9px 13px;min-height:38px}
+.task-card{border:1px solid var(--line);border-radius:8px;background:var(--ui-surface);padding:20px;box-shadow:none;min-width:0}.task-info h3{font-size:16px;font-weight:600}.task-info p{font-size:14px;line-height:1.75}.task-caption,.task-meta{font-size:11px}.task-num{font:12px ui-monospace,monospace;color:var(--ui-faint)}.solve,.primary,.next-task{border-radius:6px}.solve{font-size:12px;min-height:38px}
+.challenge-banner,.discovery{border:1px solid var(--line);border-radius:9px;background:var(--ui-surface);color:var(--ink);padding:26px}.challenge-banner h3,.discovery h3{font-size:25px;color:var(--ink)}.challenge-banner p,.discovery p{font-size:13px;color:var(--ui-text)}
+.computing-hero{border-radius:12px;background:#222c43;min-height:300px;padding:34px;gap:28px}.computing-hero:before{background:none}.computing-intro h1{font-size:36px;letter-spacing:-1px}.computing-intro h1 em{font-family:inherit;color:#b9cbff}.computing-intro>p{font-size:14px}.computing-terminal{transform:none;background:#172033;border-radius:8px;box-shadow:none}.terminal-code{font-size:12px}
+.language-tab,.language-panel,.py-theory,.py-workspace,.py-lesson-card,.lab-apparatus,.lab-controls,.lab-chart-card,.lab-experiment-card,.cpp-lesson-card,.account-achievements article{border-radius:9px;box-shadow:none}.language-tab b{font-size:18px}.language-tab small{font-size:11px}.language-symbol{border-radius:6px}.language-panel h3{font-size:23px}
+dialog,.workspace-dialog,.lesson-dialog,.settings-dialog,.account-dialog,.credits-dialog{border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 80px #090f2440}dialog::backdrop{background:#0a122a88;backdrop-filter:blur(4px)}
+.workspace-top{background:var(--ui-soft);border-bottom:1px solid var(--line)}.workspace-dialog .modal-title{font-size:28px}.workspace-dialog .question{font-size:16px;line-height:1.8}.problem-pane,.work-panel{background:var(--ui-surface)}.work-tabs button,.answer-form input,.answer-form button,.custom-presets button,.settings-preview,.support-card,.support-card input,.support-card button{border-radius:6px}
+#aiToggle{border-radius:10px;box-shadow:0 5px 20px #14244b26}.ai-assistant{border-radius:12px}
+@media(hover:hover) and (pointer:fine){.topic:hover,.language-tab:hover{transform:translateY(-3px);border-color:var(--ui-accent-edge);box-shadow:0 6px 18px #14244b0a}.task-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px #14244b0a}}
+@media(min-width:1101px){.sidebar .nav .lab-desktop-label{display:inline}.sidebar .nav .lab-mobile-label{display:none}}
+@media(min-width:768px) and (max-width:1100px){:root{--desk-nav:76px}.sidebar{padding:24px 10px}.brand{font-size:0;padding:0 7px 24px;gap:0}.brandmark{font-size:32px}.branddot{display:none}.sidebar nav{margin-top:20px}.sidebar .nav{justify-content:center;padding:12px 8px}.sidebar .nav .nav-label,.sidebar .nav .lab-desktop-label,.sidebar .nav .lab-mobile-label,.sidebar .nav b{display:none}.sidebar button.top-credit{font-size:9px;white-space:normal;padding:15px 2px}.main>header{padding:14px 22px}.crumb{display:none}main,[data-page=graphs] main{padding:22px}.hero-copy{padding:28px}.hero h1{font-size:34px}.hero-art{padding:18px 12px 18px 0}.topics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:768px) and (max-width:1280px){.header-support .support-label{display:none}.header-support{width:40px;padding:6px}.beta-badge{display:none}}
 @media(max-width:767px){
- .sidebar{min-height:64px;padding-top:calc(8px + env(safe-area-inset-top));padding-bottom:8px}.sidebar .brand{font-size:23px}.sidebar .brandmark{font-size:28px}
- .sidebar nav{background:var(--ui-surface);box-shadow:none;padding-top:5px}.sidebar .nav{border-radius:4px;padding:5px 1px;min-height:48px}.sidebar .nav .nav-label,.sidebar .nav .lab-mobile-label{font-size:9px}.sidebar .nav>span:first-child{font-size:20px}
- .main>header{min-height:0;padding-bottom:12px}.search{height:38px!important}.account-button,.header-support{border-radius:5px!important}
- main{padding-top:14px}.domain-switch{gap:4px;margin-bottom:16px;grid-template-columns:repeat(3,minmax(0,1fr))}.domain-switch>button,.domain-switch #computingNav{min-height:44px;padding:8px 2px;justify-content:center;border-radius:0}.domain-switch b{font-size:12px!important;letter-spacing:-.25px}
- .hero,[data-domain=physics] .hero{display:grid!important;grid-template-columns:minmax(0,1fr) 96px;min-height:0;border-radius:6px}
- .hero[hidden]{display:none!important}.hero-copy{padding:22px 18px}.hero h1{font-size:29px;letter-spacing:-.9px;margin-top:14px}.hero .eyebrow{font-size:8px;letter-spacing:.5px}.hero p{font-size:12px;line-height:1.65;margin:13px 0 17px}.hero-art{display:flex!important;width:auto;min-width:0;padding:8px;overflow:hidden}.hero-art .orbital{width:160px;min-width:160px}.hero-art .physics-visual{width:150px;min-width:150px}.physics-caption{display:none}.hero .hero-actions{display:flex;flex-direction:column;align-items:flex-start;gap:4px}.hero .primary{min-height:38px;padding:8px 12px;font-size:12px;width:auto}.hero .hero-graph{min-height:36px;font-size:11px;width:auto}.hero-foot{font-size:10px;margin-top:14px}
- .section-head{margin:22px 0 15px}.section-head h2{font-size:23px}.catalog-note{font-size:11px}.grade-row{gap:12px;margin-top:14px;padding-bottom:16px}.grade-row button{font-size:14px;min-height:38px;height:38px;border-radius:4px}.subject-tabs button{min-height:38px;font-size:12px;padding:8px 12px}
- .topics{gap:10px}.topic{display:flex;min-height:0;padding:17px;border-radius:5px}.topic-topline{margin-bottom:12px}.topic h3{font-size:17px}.topic p{font-size:12px}.topic-symbol{width:30px;height:30px;font-size:21px}.topic-actions{padding-top:10px;margin-top:14px}.topic-actions button:first-child,.topic-actions button:last-child{font-size:11px;min-height:36px}.topics-head h3{font-size:19px}
- .task-card{padding:16px;border-radius:5px}.task-info h3{font-size:15px}.task-info p{font-size:13px;line-height:1.7}.task-caption{font-size:10px}.solve{min-height:38px;font-size:12px}.level-tabs button{font-size:11px;min-height:38px}.level-header h3{font-size:20px}
- .computing-hero{padding:24px 20px;gap:20px;border-radius:6px}.computing-intro h1{font-size:30px}.computing-intro>p{font-size:13px}.language-tab{padding:14px}.language-panel{padding:20px}.language-panel>p{font-size:13px}.terminal-code{font-size:11px}.challenge-banner,.discovery{padding:20px}.challenge-banner h3,.discovery h3{font-size:22px}
- .workspace-dialog .modal-title{font-size:23px}.workspace-dialog .question{font-size:14px}.problem-pane,.work-panel{padding:20px 16px}.lesson-content>h2{font-size:25px}.lesson-intro{font-size:14px}
+ :root{--desk-nav:0px}.main{margin-left:0}.sidebar{position:relative;inset:auto;width:100%;height:auto;min-height:64px;overflow:visible;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;flex-direction:row;align-items:center;justify-content:space-between;border:0;border-bottom:1px solid var(--line)}
+ .sidebar .brand{font-size:24px;max-width:none;min-height:0;padding:0;border:0}.sidebar .brandmark{font-size:29px}.sidebar button.top-credit{display:block;margin:0;padding:0;border:0;text-align:right;font-size:10px;white-space:nowrap}
+ .sidebar nav{position:fixed;inset:auto 0 0;z-index:40;width:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:2px;margin:0;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:var(--ui-surface);border-top:1px solid var(--line);box-shadow:0 -4px 20px #17254208}
+ .sidebar .nav{display:flex;flex-direction:column;justify-content:center;min-height:48px;gap:5px;padding:5px 1px;border-radius:6px}.sidebar .nav>span:first-child{font-size:20px;height:20px;width:20px}.sidebar .nav .nav-label,.sidebar .nav .lab-mobile-label{display:block;font-size:9px;line-height:1.2;letter-spacing:0}.sidebar .nav .lab-desktop-label,.sidebar .nav b{display:none}
+ .main>header{display:grid;grid-template-columns:1fr auto auto;align-items:center;min-height:0;height:auto;gap:8px;padding:12px 16px;background:var(--ui-surface)}
+ header .crumb,header .beta-badge,header .header-help,header .header-settings{display:none}header .search{grid-column:1;grid-row:1;display:flex;width:100%;min-width:0;margin:0;height:40px!important;border-radius:6px!important}header .search input{width:100%;font-size:16px!important}
+ header .account-button,header .header-support{position:static;inset:auto;display:flex;align-items:center;justify-content:center;min-width:40px;width:40px;max-width:40px;height:40px;min-height:40px;padding:7px;border-radius:6px!important;margin:0}
+ header .account-button{grid-column:2;grid-row:1}header .header-support{grid-column:3;grid-row:1}header .account-button>span:last-child,header .header-support .support-label{display:none}header:has(.search[hidden]){display:flex;justify-content:flex-end;padding-bottom:10px}header .search[hidden]{display:none!important}
+ main,[data-page=graphs] main{padding:18px 16px calc(100px + env(safe-area-inset-bottom));width:100%;max-width:100%}
+ .domain-switch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:3px;margin-bottom:16px;border-radius:8px}.domain-switch>button,.domain-switch #computingNav{justify-content:center;min-height:42px;padding:8px 3px;gap:0;border-radius:5px}.domain-switch b{font-size:11px!important;letter-spacing:0;white-space:nowrap}.domain-switch>button>span,.domain-switch small{display:none!important}
+ .hero,[data-domain=physics] .hero{display:grid;grid-template-columns:minmax(0,1fr) 104px;min-height:0;padding:0;gap:0;border-radius:10px}
+ .hero-copy{display:block;padding:24px 0 24px 20px;width:auto;min-width:0}.hero .eyebrow,[data-domain=physics] .hero-copy>.eyebrow{font-size:7px;letter-spacing:.7px;line-height:1.6}.hero h1{font-size:28px;letter-spacing:-1px;margin:16px 0 0;max-width:none;white-space:normal;line-height:1.13}.hero p,[data-domain=physics] .hero p{font-size:12px;line-height:1.65;margin:15px -80px 18px 0;padding-right:5px;max-width:none}
+ .hero-art{display:flex!important;position:relative;inset:auto;align-self:start;width:104px;height:125px;padding:0;margin-top:35px;overflow:hidden;opacity:.85;background:none;border:0}.hero-art .orbital,.hero-art .physics-visual{width:180px;min-width:180px;max-width:none;flex-shrink:0}.physics-caption{display:none}
+ .hero-actions{display:flex;flex-wrap:wrap;gap:5px;margin-right:-80px;align-items:center;width:auto}.hero .primary,[data-domain=physics] .hero .primary{width:auto;min-height:38px;padding:9px 12px;font-size:11px}.hero .hero-graph,[data-domain=physics] .hero-graph{width:auto;min-height:38px;font-size:10px;padding:8px}.hero-foot,[data-domain=physics] .hero-foot{font-size:9px;line-height:1.5;max-width:none;margin:16px -80px 0 0}
+ .study-ribbon{display:none}.section-head{display:block;margin:24px 0 18px}.section-head h2{font-size:23px}.section-head .eyebrow{font-size:8px}.catalog-note{font-size:11px;margin-top:8px;max-width:none}.grade-row{gap:12px;padding-bottom:16px;margin-bottom:16px}.grade-row>span{font-size:9px}.grade-row>div{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));flex:1;gap:5px}.grade-row button{width:100%;height:37px;min-height:37px;font-size:13px}.subject-tabs button{flex:1;min-width:0;min-height:38px;padding:8px;font-size:11px}.curriculum-note{font-size:10px}
+ .topics{grid-template-columns:1fr;gap:10px}.topic{padding:18px;min-height:0;border-radius:8px}.topic-topline{margin-bottom:13px}.topic-symbol{width:30px;height:30px;font-size:22px}.topic h3{font-size:17px}.topic p{font-size:12px;margin:8px 0 15px}.topic-actions{padding-top:10px}.topic-actions button:first-child,.topic-actions button:last-child{font-size:11px;min-height:34px}.topics-head h3{font-size:19px}.topics-head>span{font-size:10px}
+ .level-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px}.level-tabs button{font-size:11px;min-height:38px}.task-card{padding:16px;border-radius:8px}.task-info h3{font-size:15px}.task-info p{font-size:13px;line-height:1.7}.task-caption,.task-meta{font-size:10px}.solve{min-height:38px;font-size:12px}.level-header h3{font-size:20px}
+ .computing-hero{display:block;padding:25px 20px;border-radius:10px;min-height:0}.computing-intro h1{font-size:29px}.computing-intro>p{font-size:13px}.computing-terminal{margin-top:24px}.terminal-code{font-size:11px}.language-tab{padding:15px}.language-panel{padding:20px}.language-panel h3{font-size:22px}.challenge-banner,.discovery{padding:20px}.challenge-banner h3,.discovery h3{font-size:22px}
+ .workspace-dialog .modal-title{font-size:23px}.workspace-dialog .question{font-size:14px;line-height:1.8}.problem-pane,.work-panel{padding:20px 16px}.lesson-content>h2{font-size:25px}.lesson-intro{font-size:14px}
 }
-@media(max-width:360px){.hero,[data-domain=physics] .hero{grid-template-columns:minmax(0,1fr) 64px}.hero h1{font-size:25px}.hero-copy{padding:19px 14px}.domain-switch b{font-size:11px!important}}
-@media(min-width:540px) and (max-width:767px){.topics{grid-template-columns:repeat(2,minmax(0,1fr))}.hero,[data-domain=physics] .hero{grid-template-columns:1.5fr 1fr}.hero-art .orbital{width:210px;min-width:0}.hero-art .physics-visual{width:210px;min-width:0}}
-/* Keep the compact mobile introduction independent of the legacy contents grid. */
+@media(min-width:540px) and (max-width:767px){.topics{grid-template-columns:repeat(2,minmax(0,1fr))}.hero,[data-domain=physics] .hero{grid-template-columns:1.4fr 1fr}.hero-copy{padding:28px}.hero h1{font-size:34px}.hero-art{width:auto;height:210px;margin-top:20px}.hero-art .orbital,.hero-art .physics-visual{width:240px;min-width:0}.hero p,.hero-actions,.hero-foot{margin-right:0}}
+@media(max-width:350px){.hero h1{font-size:24px}.hero-copy{padding-left:16px}.hero-actions{gap:0}.hero .hero-graph{font-size:9px;padding-left:6px}.domain-switch b{font-size:10px!important}}
+[hidden]{display:none!important}
+/* Override the former mobile display:contents layout as a complete component. */
+.hero .hero-copy{display:block}
+@media(max-width:767px){.hero .hero-copy{display:block}.hero-art{grid-column:auto;grid-row:auto}.hero h1,.hero p,.hero-actions,.hero-foot{grid-column:auto;grid-row:auto}}
 @media(max-width:767px){
- .hero,[data-domain=physics] .hero{display:block!important;padding:0;min-height:0}
- .hero[hidden]{display:none!important}.hero-copy{display:block;width:100%;padding:22px 18px}
- .hero h1{max-width:calc(100% - 84px);font-size:28px;margin-top:20px;margin-bottom:18px}
- .hero-art{position:absolute;top:57px;right:12px;width:80px;height:100px;padding:0;border:0;background:transparent;opacity:.9}
- .hero-art .orbital,.hero-art .physics-visual{width:130px;min-width:130px}.hero p{margin:14px 0 18px}.hero .hero-actions{flex-direction:row;flex-wrap:wrap;gap:8px;align-items:center}.hero-foot{margin-top:16px}
+ .hero,[data-domain=physics] .hero{display:block}
+ .hero .hero-copy{padding:24px 20px}
+ .hero h1{max-width:calc(100% - 64px);font-size:28px}
+ .hero p,[data-domain=physics] .hero p{margin:17px 0 20px;padding:0;max-width:none}
+ .hero-actions{margin:0;gap:6px}.hero-foot,[data-domain=physics] .hero-foot{margin:18px 0 0}
+ .hero-art{position:absolute;top:36px;right:0;width:85px;height:110px;margin:0;opacity:.65}
+ .hero-art .orbital,.hero-art .physics-visual{width:150px;min-width:150px}
 }
-@media(max-width:360px){.hero h1{font-size:25px}.hero-copy{padding:20px 14px}.hero-art{right:6px;width:72px}}
-#aiToggle{border-radius:6px;box-shadow:0 4px 16px #0002}
+@media(max-width:350px){.hero h1{font-size:25px}.hero .hero-copy{padding:22px 16px}}
+@media(max-width:767px){.hero-art{top:40px;height:85px}.hero-art .orbital,.hero-art .physics-visual{width:120px;min-width:120px}}
+#aiLaunch{border-radius:10px;box-shadow:0 5px 20px #14244b26}
