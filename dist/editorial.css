@@ -178,3 +178,14 @@ button:active{transform:none}
 }
 .physics-visual>svg.physics-mobile-visual{display:none}
 @media(max-width:767px), (max-width:1023px) and (max-height:500px) and (orientation:landscape){.physics-visual>svg.physics-mobile-visual{display:block}}
+@media(prefers-reduced-motion:no-preference){
+ :root[data-motion=on] .physics-mobile-rays path{stroke-dasharray:8 6;animation:mobile-ray-flow 2.8s linear infinite}
+ :root[data-motion=on] .physics-mobile-rays path:nth-child(2){animation-delay:-.7s}
+ :root[data-motion=on] .physics-mobile-rays path:nth-child(3){animation-delay:-1.4s}
+ :root[data-motion=on] .physics-mobile-focus{transform-box:fill-box;transform-origin:center;animation:mobile-focus-pulse 2.4s ease-in-out infinite}
+}
+@keyframes mobile-ray-flow{to{stroke-dashoffset:-56}}
+@keyframes mobile-focus-pulse{0%,100%{opacity:.72;transform:scale(.86)}50%{opacity:1;transform:scale(1.25)}}
+:root[data-motion-paused] .physics-mobile-rays path,:root[data-motion-paused] .physics-mobile-focus{animation-play-state:paused!important}
+:root[data-motion=off] .physics-mobile-rays path,:root[data-motion=off] .physics-mobile-focus{animation:none!important}
+@media(prefers-reduced-motion:reduce){.physics-mobile-rays path,.physics-mobile-focus{animation:none!important}}
