@@ -20,3 +20,50 @@ function egeFigure(task){
  const legend=g.vectors?'<span>Стрелки показывают направление; масштаб по осям одинаковый.</span>':g.curves.length>1?'<span>f — синяя линия; g — оранжевая.</span>':'';
  return `<figure class="ege-task-figure"><div class="ege-figure-scroll" tabindex="0" role="region" aria-label="Рисунок к задаче; при необходимости прокручивается по горизонтали"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" role="img" aria-labelledby="${id}-title ${id}-desc"><title id="${id}-title">${safe(task.title)}</title><desc id="${id}-desc">${safe(task.question)} Точные данные графика продублированы в условии.</desc><rect width="600" height="400" rx="12" fill="#ffffff"/><defs><clipPath id="${id}-clip"><rect x="${L}" y="${T}" width="${pw}" height="${ph}"/></clipPath></defs><g stroke="#dde5ee" stroke-width="1" fill="none">${grid}</g><g stroke="#334155" stroke-width="1.5" fill="none"><path d="M${L} ${y0}H${L+pw}M${x0} ${T}V${T+ph}"/></g><g font-family="Arial,sans-serif" font-size="18" fill="#334155">${labels}<text x="${L+pw-8}" y="${clamp(y0-10,T+18,T+ph-8)}">x</text><text x="${clamp(x0+12,L+8,L+pw-16)}" y="${T+16}">y</text></g><g clip-path="url(#${id}-clip)"><g stroke="#7c8798" stroke-width="1.4" stroke-dasharray="6 5" fill="none">${asymptotes}</g><g fill="none" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">${curves}</g>${arrows}<g font-family="Arial,sans-serif" font-size="20">${points}</g></g></svg></div><figcaption>${legend} Рисунок восстановлен или адаптирован по данным задачи; ключевые координаты указаны в тексте.<span class="ege-scroll-hint">На узком экране рисунок можно прокрутить по горизонтали.</span></figcaption></figure>`;
 }
+
+/* Circuit symbols for original OGE electricity diagrams. */
+const egeFigureWithoutCircuitSymbols=egeFigure;
+egeFigure=function(task){
+  const symbols=task&&task.figure&&task.figure.geometry&&task.figure.geometry.symbols;
+  if(!symbols||!symbols.length)return egeFigureWithoutCircuitSymbols(task);
+  const html=egeFigureWithoutCircuitSymbols(task);
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const symbolSvg=s=>{
+    const x=Number(s.x)||0,y=Number(s.y)||0,vertical=s.orientation==='vertical';
+    const transform='translate('+x+' '+y+')'+(vertical?' rotate(90)':'');
+    const stroke='#526e68';
+    let body='';
+    switch(s.type){
+      case 'resistor': case 'heater':
+        body='<rect x="-30" y="-12" width="60" height="24" rx="2" fill="#fff" stroke="'+stroke+'" stroke-width="3"/>';
+        break;
+      case 'rheostat':
+        body='<rect x="-30" y="-12" width="60" height="24" rx="2" fill="#fff" stroke="'+stroke+'" stroke-width="3"/><path d="M-17 20 L18 -20 M8 -20 L18 -20 L18 -10" fill="none" stroke="'+stroke+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+        break;
+      case 'lamp':
+        body='<circle r="20" fill="#fff" stroke="'+stroke+'" stroke-width="3"/><path d="M-11 -11 L11 11 M11 -11 L-11 11" stroke="'+stroke+'" stroke-width="3"/>';
+        break;
+      case 'ammeter': case 'voltmeter':
+        body='<circle r="20" fill="#fff" stroke="'+stroke+'" stroke-width="3"/><text x="0" y="1" text-anchor="middle" dominant-baseline="middle" fill="#263633" stroke="none" font-size="18" font-weight="700">'+(s.type==='ammeter'?'A':'V')+'</text>';
+        break;
+      case 'battery':
+        body='<rect x="-20" y="-30" width="40" height="60" fill="#fff"/><path d="M-9 -24 V24 M9 -14 V14" stroke="'+stroke+'" stroke-width="4"/><text x="-18" y="-27" fill="#263633" stroke="none" font-size="14">+</text><text x="13" y="-12" fill="#263633" stroke="none" font-size="14">−</text>';
+        break;
+      case 'switch':
+        body='<rect x="-34" y="-20" width="68" height="40" fill="#fff"/><path d="M-30 0 H-8 M8 0 H30" stroke="'+stroke+'" stroke-width="3"/><circle cx="-8" cy="0" r="4" fill="#fff" stroke="'+stroke+'" stroke-width="3"/><circle cx="8" cy="0" r="4" fill="#fff" stroke="'+stroke+'" stroke-width="3"/>'+(s.closed?'<path d="M-8 0 H8" stroke="'+stroke+'" stroke-width="3"/>':'<path d="M-8 0 L10 -14" stroke="'+stroke+'" stroke-width="3"/>');
+        break;
+      case 'fuse':
+        body='<rect x="-30" y="-12" width="60" height="24" rx="2" fill="#fff" stroke="'+stroke+'" stroke-width="3"/><path d="M-20 0 L-10 -6 L0 6 L10 -6 L20 0" fill="none" stroke="'+stroke+'" stroke-width="2"/>';
+        break;
+      case 'motor':
+        body='<circle r="20" fill="#fff" stroke="'+stroke+'" stroke-width="3"/><text x="0" y="1" text-anchor="middle" dominant-baseline="middle" fill="#263633" stroke="none" font-size="17" font-weight="700">M</text>';
+        break;
+      default:
+        body='<circle r="5" fill="'+stroke+'"/>';
+    }
+    const label=s.label?'<text x="'+(x+(Number(s.labelDx)||(vertical?36:0)))+'" y="'+(y+(Number(s.labelDy)||(vertical?5:38)))+'" text-anchor="middle" dominant-baseline="middle" fill="#263633" stroke="none" font-family="Arial,sans-serif" font-size="15">'+esc(s.label)+'</text>':'';
+    return '<g transform="'+transform+'" stroke-linecap="round" stroke-linejoin="round">'+body+'</g>'+label;
+  };
+  return html.replace('</g></svg>',symbols.map(symbolSvg).join('')+'</g></svg>');
+};
+
