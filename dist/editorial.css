@@ -1,0 +1,84 @@
+/* Matclub: restrained typography, predictable spacing, shared study surfaces.
+   Motion remains owned by experience.css and the existing motion settings. */
+:root{--paper:#f6f6f4;--ink:#24272b;--line:#dedfdf;--ui-surface:#fff;--ui-soft:#eeefee;--ui-text:#535961;--ui-faint:#6c7279;--ui-field:#fff;--radius:8px;--lab-radius:8px;--lab-ink:#202a32;--lab-lime:#d7e2eb}
+:root[data-accent=forest]{--ui-accent:#304e43;--ui-accent-hover:#243e34;--ui-accent-text:#304e43;--ui-accent-soft:#edf2ef;--ui-accent-edge:#a7b8ae}
+:root[data-theme=dark]{--paper:#16181b;--ink:#e5e7e9;--line:#35383d;--ui-surface:#1d2024;--ui-soft:#272b30;--ui-text:#bbc0c7;--ui-faint:#9ca3ad;--ui-field:#191c20}
+:root[data-theme=dark][data-accent=forest]{--ui-accent:#426a58;--ui-accent-hover:#527d69;--ui-accent-text:#bdd4c7;--ui-accent-soft:#26332d;--ui-accent-edge:#60766a}
+body{font-family:Arial,Helvetica,sans-serif;line-height:1.55;background:var(--paper);color:var(--ink)}
+h1,h2,h3,h4{font-family:inherit;font-weight:600;letter-spacing:-.025em}
+button:hover{filter:none}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ui-accent-text);outline-offset:3px}
+.sidebar{min-height:76px;padding-top:14px;padding-bottom:14px;gap:28px;background:var(--ui-surface)}
+.brand{font-size:25px;font-weight:700;letter-spacing:-1px;gap:8px}.brandmark{font-size:31px}.branddot{color:var(--ui-accent-text)}
+.sidebar nav{gap:4px}.sidebar .nav{border-radius:5px;padding:10px 12px;font-size:13px;color:var(--ui-text)}
+.sidebar .nav.active{background:var(--ui-accent-soft);color:var(--ui-accent-text);box-shadow:none}
+.sidebar .nav>span:first-child{font-size:19px}.sidebar .nav .nav-label{font-size:13px}.top-credit{font-size:11px}
+.main{background:var(--paper)}.main>header{min-height:76px;gap:12px;background:transparent}
+.search{border-radius:5px!important;background:var(--ui-surface)!important;height:40px}.search input{font-size:13px}
+.beta-badge{border-radius:4px;background:var(--ui-soft);color:var(--ui-text);border-color:var(--line);font-size:10px;letter-spacing:0}
+.account-button,.header-support,.header-help,.header-settings{border-radius:5px!important;border:1px solid var(--line);background:var(--ui-surface);color:var(--ink);box-shadow:none;min-height:38px}
+.header-support{font-size:12px}.header-support .support-label{font-size:12px}.header-support>span:first-child{font-size:22px}
+main{max-width:1320px;padding-top:20px}
+.domain-switch{width:100%;max-width:none;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:0;gap:24px;margin-bottom:24px}
+.domain-switch>button,.domain-switch #computingNav{min-width:0;flex:1;justify-content:flex-start;min-height:66px;padding:10px 12px 14px;border:0;border-bottom:2px solid transparent;border-radius:0;box-shadow:none!important;background:transparent;color:var(--ui-text)}
+.domain-switch>button.selected{border-bottom-color:var(--ui-accent-text);color:var(--ink);background:transparent}
+.domain-switch>button>span{font-size:25px;color:var(--ui-faint)}.domain-switch b{font-size:15px;font-weight:600}.domain-switch small{font-size:11px;color:var(--ui-faint)}
+.hero,[data-domain=physics] .hero{background:var(--ui-surface)!important;border:1px solid var(--line);border-radius:8px;min-height:290px;grid-template-columns:1.3fr 1fr;color:var(--ink);box-shadow:none}
+.hero::before,.hero::after{background:none;pointer-events:none}
+.hero-copy{padding:34px 38px;width:auto;background:none!important}.hero .eyebrow,[data-domain=physics] .hero-copy>.eyebrow{font-size:10px;letter-spacing:1px;color:var(--ui-faint)}
+.hero h1{font-size:clamp(32px,3.5vw,46px);font-weight:600;line-height:1.12;letter-spacing:-1.6px;margin-top:22px;white-space:normal;color:var(--ink)}
+.hero h1 em,[data-domain=physics] .hero h1 em{color:var(--ui-accent-text);font-family:inherit;font-weight:600}
+.hero p,[data-domain=physics] .hero p{font-size:14px;line-height:1.7;color:var(--ui-text);max-width:430px;margin:18px 0 22px}
+.hero .primary,[data-domain=physics] .hero .primary{background:var(--ui-accent);border:1px solid var(--ui-accent);color:#fff;border-radius:5px;padding:11px 17px;min-height:42px;font-size:13px}
+.hero .hero-graph,[data-domain=physics] .hero-graph{color:var(--ui-text);font-size:13px;min-height:42px}
+.hero-foot,[data-domain=physics] .hero-foot{color:var(--ui-faint);font-size:11px;letter-spacing:0;margin-top:22px}
+.hero-art{padding:22px;opacity:.85;background:var(--ui-soft);border-left:1px solid var(--line)}
+.orbital{max-width:285px;filter:saturate(.3)}.physics-visual{max-width:320px;filter:saturate(.35)}.physics-caption{color:#526d79;letter-spacing:.5px}
+:root[data-theme=dark] .hero-art{background:#26312f}:root[data-theme=dark] .physics-caption{color:#c2d2d9}
+.study-ribbon{border-bottom:1px solid var(--line);padding:20px 0;margin:0 0 24px;gap:24px}.study-ribbon h3{font-size:13px}.study-ribbon p{font-size:11px}
+.section-head{margin-top:28px;align-items:center}.section-head h2{font-size:27px;letter-spacing:-.6px}.section-head .eyebrow{color:var(--ui-faint);font-size:10px;letter-spacing:.7px}
+.catalog-note{font-size:12px}.grade-row{margin-top:20px;gap:20px;padding-bottom:20px}.grade-row button{border-radius:5px;width:46px;height:40px;min-height:40px;font-size:14px;box-shadow:none!important}
+.subject-tabs{gap:8px}.subject-tabs button,.level-tabs button{border-radius:5px;box-shadow:none;font-size:13px;min-height:38px;padding:8px 15px}
+.curriculum-note{font-size:12px;line-height:1.7;color:var(--ui-faint)}.topics-head h3{font-size:20px}.topics-head>span{font-size:12px}
+.topics{gap:14px}.topic{border-radius:6px;background:var(--ui-surface);padding:22px;min-height:190px;box-shadow:none}
+.topic.active{background:var(--ui-accent-soft);border-color:var(--ui-accent-edge)}.topic-symbol{background:var(--ui-soft)!important;color:var(--ui-accent-text)!important;border-radius:4px;width:36px;height:36px;font-size:24px}
+.topic-topline{margin-bottom:18px}.topic-index{font-size:11px;color:var(--ui-faint)}.topic h3{font-size:18px;line-height:1.4;font-weight:600}.topic p{font-size:13px;line-height:1.65;color:var(--ui-text)}
+.topic-actions{border-top:1px solid var(--line);padding-top:14px;margin-top:20px}.topic-actions button:first-child,.topic-actions button:last-child{font-size:12px}
+.task-card{border-radius:6px;background:var(--ui-surface);box-shadow:none;padding:20px 22px}.task-info h3{font-size:16px;font-weight:600}.task-info p{font-size:14px;line-height:1.75}.task-caption{font-size:11px}.task-num{font-size:12px;color:var(--ui-faint)}
+.solve,.primary,.next-task{border-radius:5px}.task-meta{font-size:11px}.level-header h3{font-size:22px}.level-tabs{gap:7px;background:transparent}
+.challenge-banner,.discovery{border-radius:6px;background:var(--ui-surface);border:1px solid var(--line);color:var(--ink);padding:28px}
+.challenge-banner h3,.discovery h3{font-size:25px;color:var(--ink)}.challenge-banner p,.discovery p{color:var(--ui-text);font-size:14px}
+.computing-hero{border-radius:8px;background:#222b34;padding:36px;min-height:300px}.computing-hero:before{background:none}.computing-intro h1{font-size:40px;letter-spacing:-1px}.computing-intro h1 em{font-family:inherit;color:#d5dfe8}.computing-intro>p{font-size:14px}.computing-terminal{transform:none;border-radius:6px;box-shadow:none;background:#18212a}.terminal-code{font-size:12px}
+.language-tab,.language-panel,.py-theory,.py-workspace,.py-lesson-card,.lab-apparatus,.lab-controls,.lab-chart-card,.lab-experiment-card,.cpp-lesson-card,.account-achievements article{border-radius:6px;box-shadow:none}
+.language-tab b{font-size:18px}.language-tab small{font-size:12px}.language-symbol{border-radius:5px}.language-panel h3{font-size:23px}
+dialog,.workspace-dialog,.lesson-dialog,.settings-dialog,.account-dialog,.credits-dialog{border-radius:8px;border:1px solid var(--line);box-shadow:0 18px 70px #0003}
+dialog::backdrop{background:#12182080;backdrop-filter:blur(3px)}
+.workspace-top{background:var(--ui-soft);border-bottom:1px solid var(--line)}.workspace-dialog .modal-title{font-size:28px;letter-spacing:-.5px}.workspace-dialog .question{font-size:16px;line-height:1.8}.problem-pane,.work-panel{background:var(--ui-surface)}
+.answer-form input,.answer-form button,.work-tabs button,.custom-presets button,.settings-preview,.support-card,.support-card input,.support-card button{border-radius:5px}
+.assistant-launcher{border-radius:8px!important;box-shadow:0 3px 16px #0002!important}.assistant-panel{border-radius:8px!important;box-shadow:0 12px 48px #0003!important}
+@media(hover:hover) and (pointer:fine){.topic:hover,.language-tab:hover{transform:translateY(-3px);box-shadow:0 5px 15px #00000008}.task-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px #00000008}}
+@media(min-width:768px) and (max-width:1100px){.sidebar{gap:14px;padding-left:22px;padding-right:22px}.sidebar .nav{padding:9px 8px}.sidebar .nav .nav-label{font-size:12px}.brand{font-size:23px}.hero-copy{padding:28px}.hero h1{font-size:36px}.hero-art{padding:12px}}
+@media(max-width:767px){
+ .sidebar{min-height:64px;padding-top:calc(8px + env(safe-area-inset-top));padding-bottom:8px}.sidebar .brand{font-size:23px}.sidebar .brandmark{font-size:28px}
+ .sidebar nav{background:var(--ui-surface);box-shadow:none;padding-top:5px}.sidebar .nav{border-radius:4px;padding:5px 1px;min-height:48px}.sidebar .nav .nav-label,.sidebar .nav .lab-mobile-label{font-size:9px}.sidebar .nav>span:first-child{font-size:20px}
+ .main>header{min-height:0;padding-bottom:12px}.search{height:38px!important}.account-button,.header-support{border-radius:5px!important}
+ main{padding-top:14px}.domain-switch{gap:4px;margin-bottom:16px;grid-template-columns:repeat(3,minmax(0,1fr))}.domain-switch>button,.domain-switch #computingNav{min-height:44px;padding:8px 2px;justify-content:center;border-radius:0}.domain-switch b{font-size:12px!important;letter-spacing:-.25px}
+ .hero,[data-domain=physics] .hero{display:grid!important;grid-template-columns:minmax(0,1fr) 96px;min-height:0;border-radius:6px}
+ .hero[hidden]{display:none!important}.hero-copy{padding:22px 18px}.hero h1{font-size:29px;letter-spacing:-.9px;margin-top:14px}.hero .eyebrow{font-size:8px;letter-spacing:.5px}.hero p{font-size:12px;line-height:1.65;margin:13px 0 17px}.hero-art{display:flex!important;width:auto;min-width:0;padding:8px;overflow:hidden}.hero-art .orbital{width:160px;min-width:160px}.hero-art .physics-visual{width:150px;min-width:150px}.physics-caption{display:none}.hero .hero-actions{display:flex;flex-direction:column;align-items:flex-start;gap:4px}.hero .primary{min-height:38px;padding:8px 12px;font-size:12px;width:auto}.hero .hero-graph{min-height:36px;font-size:11px;width:auto}.hero-foot{font-size:10px;margin-top:14px}
+ .section-head{margin:22px 0 15px}.section-head h2{font-size:23px}.catalog-note{font-size:11px}.grade-row{gap:12px;margin-top:14px;padding-bottom:16px}.grade-row button{font-size:14px;min-height:38px;height:38px;border-radius:4px}.subject-tabs button{min-height:38px;font-size:12px;padding:8px 12px}
+ .topics{gap:10px}.topic{display:flex;min-height:0;padding:17px;border-radius:5px}.topic-topline{margin-bottom:12px}.topic h3{font-size:17px}.topic p{font-size:12px}.topic-symbol{width:30px;height:30px;font-size:21px}.topic-actions{padding-top:10px;margin-top:14px}.topic-actions button:first-child,.topic-actions button:last-child{font-size:11px;min-height:36px}.topics-head h3{font-size:19px}
+ .task-card{padding:16px;border-radius:5px}.task-info h3{font-size:15px}.task-info p{font-size:13px;line-height:1.7}.task-caption{font-size:10px}.solve{min-height:38px;font-size:12px}.level-tabs button{font-size:11px;min-height:38px}.level-header h3{font-size:20px}
+ .computing-hero{padding:24px 20px;gap:20px;border-radius:6px}.computing-intro h1{font-size:30px}.computing-intro>p{font-size:13px}.language-tab{padding:14px}.language-panel{padding:20px}.language-panel>p{font-size:13px}.terminal-code{font-size:11px}.challenge-banner,.discovery{padding:20px}.challenge-banner h3,.discovery h3{font-size:22px}
+ .workspace-dialog .modal-title{font-size:23px}.workspace-dialog .question{font-size:14px}.problem-pane,.work-panel{padding:20px 16px}.lesson-content>h2{font-size:25px}.lesson-intro{font-size:14px}
+}
+@media(max-width:360px){.hero,[data-domain=physics] .hero{grid-template-columns:minmax(0,1fr) 64px}.hero h1{font-size:25px}.hero-copy{padding:19px 14px}.domain-switch b{font-size:11px!important}}
+@media(min-width:540px) and (max-width:767px){.topics{grid-template-columns:repeat(2,minmax(0,1fr))}.hero,[data-domain=physics] .hero{grid-template-columns:1.5fr 1fr}.hero-art .orbital{width:210px;min-width:0}.hero-art .physics-visual{width:210px;min-width:0}}
+/* Keep the compact mobile introduction independent of the legacy contents grid. */
+@media(max-width:767px){
+ .hero,[data-domain=physics] .hero{display:block!important;padding:0;min-height:0}
+ .hero[hidden]{display:none!important}.hero-copy{display:block;width:100%;padding:22px 18px}
+ .hero h1{max-width:calc(100% - 84px);font-size:28px;margin-top:20px;margin-bottom:18px}
+ .hero-art{position:absolute;top:57px;right:12px;width:80px;height:100px;padding:0;border:0;background:transparent;opacity:.9}
+ .hero-art .orbital,.hero-art .physics-visual{width:130px;min-width:130px}.hero p{margin:14px 0 18px}.hero .hero-actions{flex-direction:row;flex-wrap:wrap;gap:8px;align-items:center}.hero-foot{margin-top:16px}
+}
+@media(max-width:360px){.hero h1{font-size:25px}.hero-copy{padding:20px 14px}.hero-art{right:6px;width:72px}}
+#aiToggle{border-radius:6px;box-shadow:0 4px 16px #0002}
