@@ -7,19 +7,19 @@
   const allowed=()=>!document.hidden&&(window.matclubSettings?window.matclubSettings.motionAllowed():!reduced?.matches);
   function play(el,frames,options={}){
     if(!el||!allowed()||!el.animate)return;
-    const animation=el.animate(frames,{duration:540,easing:'cubic-bezier(.16,1,.3,1)',...options});
+    const animation=el.animate(frames,{duration:280,easing:'cubic-bezier(.2,.7,.2,1)',...options});
     running.add(animation);
     const release=()=>running.delete(animation);
     animation.addEventListener?.('finish',release,{once:true});
     animation.addEventListener?.('cancel',release,{once:true});
   }
-  const arrival=[{opacity:0,transform:'translateY(26px) scale(.975)'},{opacity:1,transform:'translateY(0) scale(1)'}];
+  const arrival=[{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'translateY(0)'}];
   const observer=typeof IntersectionObserver==='function'?new IntersectionObserver(entries=>{
     let i=0;
     for(const entry of entries){
       if(!entry.isIntersecting)continue;
       observer.unobserve(entry.target);waiting.delete(entry.target);
-      play(entry.target,arrival,{delay:Math.min(i++,4)*45});
+      play(entry.target,arrival,{delay:Math.min(i++,3)*25});
     }
   },{threshold:.08}):null;
   function cards(){
@@ -27,7 +27,7 @@
     if(!allowed())return;
     const cards=[...document.querySelectorAll('.topic,.task-card')].filter(el=>!el.closest('[hidden]'));
     if(observer){for(const card of cards){waiting.add(card);observer.observe(card)}}
-    else cards.slice(0,12).forEach((card,i)=>play(card,arrival,{delay:Math.min(i,4)*40}));
+    else cards.slice(0,12).forEach((card,i)=>play(card,arrival,{delay:Math.min(i,3)*25}));
   }
   function scene(key){
     if(key===lastScene)return;lastScene=key;
@@ -37,7 +37,7 @@
       isGraph?document.querySelectorAll('.graph-heading,.graph-controls,.graph-canvas-card'):
       key.startsWith('catalog:')?document.querySelectorAll('.hero-copy>.eyebrow,.hero h1,.hero-copy>p,.hero-actions,.hero-foot,.hero-art'):
       document.querySelectorAll('#catalog .section-head,#progress-content');
-    [...targets].filter(el=>!el.closest('[hidden]')).forEach((el,i)=>play(el,[{opacity:0,transform:`translateY(${i===1?30:18}px)`},{opacity:1,transform:'translateY(0)'}],{duration:i===1?720:580,delay:Math.min(i,5)*65}));
+    [...targets].filter(el=>!el.closest('[hidden]')).forEach((el,i)=>play(el,[{opacity:0,transform:`translateY(8px)`},{opacity:1,transform:'translateY(0)'}],{duration:300,delay:Math.min(i,3)*25}));
   }
   function catalog(key){
     if(!key){lastCatalog='';return}
@@ -45,10 +45,10 @@
     lastCatalog=key;
     const exam=key.endsWith(':oge')||key.endsWith(':ege');
     const targets=exam?document.querySelectorAll('#egeIntro:not([hidden]),#grade9ExamIntro:not([hidden]),.topics-head:not([hidden])'):document.querySelectorAll('.topics-head:not([hidden])');
-    [...targets].filter(el=>!el.closest('[hidden]')).forEach((el,i)=>play(el,[{opacity:0,transform:'translateY(18px)'},{opacity:1,transform:'translateY(0)'}],{duration:480,delay:i*55}));
+    [...targets].filter(el=>!el.closest('[hidden]')).forEach((el,i)=>play(el,[{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],{duration:250,delay:i*25}));
   }
   function workspace(){
-    document.querySelectorAll('.workspace-top,.problem-pane .modal-title,.problem-pane>.question,.work-tabs').forEach((el,i)=>play(el,arrival,{duration:420,delay:i*45}));
+    document.querySelectorAll('.workspace-top,.problem-pane .modal-title,.problem-pane>.question,.work-tabs').forEach((el,i)=>play(el,arrival,{duration:250,delay:i*20}));
   }
   function policy(){
     root.toggleAttribute('data-motion-paused',document.hidden);
@@ -62,7 +62,7 @@
   if(typeof MutationObserver==='function')new MutationObserver(policy).observe(root,{attributes:true,attributeFilter:['data-motion']});
   document.addEventListener('click',event=>{
     const button=event.target.closest('.domain-switch>button,.grade-row button,.subject-tabs button,.level-tabs button,.language-tab');
-    if(button)play(button,[{transform:'scale(.95)'},{transform:'scale(1.025)',offset:.65},{transform:'scale(1)'}],{duration:320});
+    if(button)play(button,[{opacity:.8},{opacity:1}],{duration:160});
   });
   window.matclubMotion={scene,cards,catalog,workspace};
   policy();
@@ -72,7 +72,7 @@
     for(const item of tabs){
       const selected=item===tab,panel=document.getElementById(item.getAttribute('aria-controls'));
       item.setAttribute('aria-selected',String(selected));item.tabIndex=selected?0:-1;panel.hidden=!selected;
-      if(selected)play(panel,[{opacity:0,transform:'translateX(16px)'},{opacity:1,transform:'translateX(0)'}],{duration:380});
+      if(selected)play(panel,[{opacity:0,transform:'translateX(6px)'},{opacity:1,transform:'translateX(0)'}],{duration:250});
     }
   }
   tabs.forEach(tab=>{
