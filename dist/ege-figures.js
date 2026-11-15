@@ -67,3 +67,59 @@ egeFigure=function(task){
   return html.replace('</g></svg>',symbols.map(symbolSvg).join('')+'</g></svg>');
 };
 
+
+/* Magnetic-field diagrams for original OGE physics tasks. */
+const egeFigureMagneticBase=egeFigure;
+egeFigure=function(task){
+  const magnetic=task&&task.figure&&task.figure.geometry&&task.figure.geometry.magnetic;
+  const html=egeFigureMagneticBase(task);
+  if(!magnetic)return html;
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const num=(v,d)=>Number.isFinite(Number(v))?Number(v):d;
+  const arrowId='mag-arrow-'+String(task.id||'figure').replace(/[^a-z0-9-]/gi,'');
+  const defs='<defs><marker id="'+arrowId+'" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#b65143"/></marker></defs>';
+  const paths=(magnetic.fieldPaths||[]).map(p=>'<path d="'+esc(p.d||'')+'" fill="none" stroke="#89784f" stroke-width="2.4"'+(p.arrow?' marker-end="url(#'+arrowId+')"':'')+'/>').join('');
+  const magnets=(magnetic.magnets||[]).map(m=>{
+    const x=num(m.x,320),y=num(m.y,160),w=num(m.w,140),h=num(m.h,50),leftN=m.north!=='right',tf='translate('+x+' '+y+')'+(m.orientation==='vertical'?' rotate(90)':'');
+    return '<g transform="'+tf+'" font-family="Arial,sans-serif" font-weight="700" text-anchor="middle"><rect x="'+(-w/2)+'" y="'+(-h/2)+'" width="'+(w/2)+'" height="'+h+'" rx="5" fill="'+(leftN?'#d85a4b':'#537eb3')+'" stroke="#394b5e" stroke-width="2"/><rect x="0" y="'+(-h/2)+'" width="'+(w/2)+'" height="'+h+'" rx="5" fill="'+(leftN?'#537eb3':'#d85a4b')+'" stroke="#394b5e" stroke-width="2"/><text x="'+(-w/4)+'" y="6" fill="#fff" font-size="20">'+(leftN?'N':'S')+'</text><text x="'+(w/4)+'" y="6" fill="#fff" font-size="20">'+(leftN?'S':'N')+'</text></g>';
+  }).join('');
+  const poles=(magnetic.poles||[]).map(p=>{
+    const x=num(p.x,180),y=num(p.y,160),w=num(p.w,76),h=num(p.h,118),north=p.label==='N';
+    return '<g font-family="Arial,sans-serif" font-weight="700" text-anchor="middle"><rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'" rx="7" fill="'+(north?'#d85a4b':'#537eb3')+'" stroke="#394b5e" stroke-width="2"/><text x="'+x+'" y="'+(y+7)+'" fill="#fff" font-size="22">'+esc(p.label||'N')+'</text></g>';
+  }).join('');
+  const coils=(magnetic.coils||[]).map(c=>{
+    const x=num(c.x,360),y=num(c.y,160),w=num(c.w,190),h=num(c.h,86),turns=Math.max(3,Math.min(12,Math.round(num(c.turns,7)))),start=x-w/2,step=w/(turns-1);
+    let loops='';for(let i=0;i<turns;i++)loops+='<ellipse cx="'+(start+i*step)+'" cy="'+y+'" rx="9" ry="'+(h/2)+'" fill="#f7f8f8" stroke="#bd703e" stroke-width="3"/>';
+    return '<g><rect x="'+(x-w/2+4)+'" y="'+(y-h/4)+'" width="'+(w-8)+'" height="'+(h/2)+'" rx="4" fill="#aeb7bc" stroke="#687980" stroke-width="2"/>'+loops+'<path d="M'+(x-w/2-26)+' '+y+' H'+(x-w/2)+' M'+(x+w/2)+' '+y+' H'+(x+w/2+26)+'" fill="none" stroke="#bd703e" stroke-width="3"/><text x="'+(x-w/2-8)+'" y="'+(y-h/2-10)+'" text-anchor="middle" fill="#d85a4b" font-family="Arial,sans-serif" font-weight="700" font-size="18">'+(c.north==='right'?'S':'N')+'</text><text x="'+(x+w/2+8)+'" y="'+(y-h/2-10)+'" text-anchor="middle" fill="#537eb3" font-family="Arial,sans-serif" font-weight="700" font-size="18">'+(c.north==='right'?'N':'S')+'</text></g>';
+  }).join('');
+  const compasses=(magnetic.compasses||[]).map(c=>{
+    const x=num(c.x,150),y=num(c.y,150),a=num(c.angle,0)*Math.PI/180,r=num(c.r,22),dx=Math.cos(a)*r,dy=Math.sin(a)*r;
+    const label=c.label?'<text x="'+x+'" y="'+(y+r+23)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-size="13">'+esc(c.label)+'</text>':'';
+    return '<g><circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="#fff" stroke="#526e68" stroke-width="2"/><path d="M'+x+' '+y+' L'+(x+dx)+' '+(y+dy)+'" stroke="#d34f45" stroke-width="4" marker-end="url(#'+arrowId+')"/><path d="M'+x+' '+y+' L'+(x-dx)+' '+(y-dy)+'" stroke="#537eb3" stroke-width="4"/><circle cx="'+x+'" cy="'+y+'" r="3" fill="#394b5e"/></g>'+label;
+  }).join('');
+  const current=(magnetic.currentSymbols||[]).map(c=>{
+    const x=num(c.x,320),y=num(c.y,160),r=num(c.r,19),mark=c.direction==='out'?'<circle cx="'+x+'" cy="'+y+'" r="5" fill="#263633"/>':'<path d="M'+(x-8)+' '+(y-8)+' L'+(x+8)+' '+(y+8)+' M'+(x+8)+' '+(y-8)+' L'+(x-8)+' '+(y+8)+'" stroke="#263633" stroke-width="3"/>';
+    const label=c.label?'<text x="'+x+'" y="'+(y+r+20)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-size="14">'+esc(c.label)+'</text>':'';
+    return '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="#fff" stroke="#526e68" stroke-width="2"/>'+mark+label;
+  }).join('');
+  const conductors=(magnetic.conductors||[]).map(c=>{
+    const x1=num(c.x1,180),y1=num(c.y1,160),x2=num(c.x2,460),y2=num(c.y2,160),label=c.label?'<text x="'+((x1+x2)/2)+'" y="'+(((y1+y2)/2)-12)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-size="15">'+esc(c.label)+'</text>':'';
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#344d59" stroke-width="5" stroke-linecap="round" marker-end="url(#'+arrowId+')"/>'+label;
+  }).join('');
+  const arrows=(magnetic.arrows||[]).map(a=>{
+    const x1=num(a.x1,120),y1=num(a.y1,160),x2=num(a.x2,520),y2=num(a.y2,160),label=a.label?'<text x="'+((x1+x2)/2)+'" y="'+(((y1+y2)/2)-10)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-size="14">'+esc(a.label)+'</text>':'';
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#344d59" stroke-width="3" stroke-linecap="round" marker-end="url(#'+arrowId+')"/>'+label;
+  }).join('');
+  const galvanometers=(magnetic.galvanometers||[]).map(g=>{
+    const x=num(g.x,555),y=num(g.y,160),angle=num(g.deflection,0),letter=esc(g.letter||'G');
+    return '<g><circle cx="'+x+'" cy="'+y+'" r="27" fill="#fff" stroke="#526e68" stroke-width="3"/><path d="M'+(x-18)+' '+(y+9)+' Q'+x+' '+(y-12)+' '+(x+18)+' '+(y+9)+'" fill="none" stroke="#526e68" stroke-width="2"/><path d="M'+x+' '+(y+7)+' L'+(x+Math.sin(angle*Math.PI/180)*18)+' '+(y-Math.cos(angle*Math.PI/180)*18)+'" stroke="#d85a4b" stroke-width="3"/><circle cx="'+x+'" cy="'+y+'" r="4" fill="#d85a4b"/><text x="'+x+'" y="'+(y+45)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-size="14">'+letter+'</text></g>';
+  }).join('');
+  const armatures=(magnetic.armatures||[]).map(a=>{
+    const x=num(a.x,320),y=num(a.y,160),w=num(a.w,70),h=num(a.h,24),angle=num(a.angle,0);
+    return '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'" rx="4" transform="rotate('+angle+' '+x+' '+y+')" fill="none" stroke="#526e68" stroke-width="4"/>';
+  }).join('');
+  const labels=(magnetic.labels||[]).map(l=>'<text x="'+num(l.x,320)+'" y="'+num(l.y,40)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-size="16">'+esc(l.text||'')+'</text>').join('');
+  const overlay=defs+paths+poles+magnets+coils+conductors+current+compasses+galvanometers+armatures+arrows+labels;
+  return html.replace('</g></svg>',overlay+'</g></svg>');
+};
+
