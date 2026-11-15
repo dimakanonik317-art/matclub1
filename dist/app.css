@@ -113,7 +113,7 @@ button.top-credit{border:0;background:transparent;padding:0;text-align:right;cur
 .top-credit:focus-visible{outline:2px solid var(--ui-accent);outline-offset:4px;border-radius:3px}
 
 .topic-actions button.topic-task-link{color:var(--ui-accent-text);font-weight:550}
-:root[data-theme=dark] .level-tabs{background:var(--ui-soft);border:1px solid var(--line)}
-:root[data-theme=dark] .level-tabs button{background:var(--ui-surface);border:1px solid var(--line);color:var(--ui-text)}
-:root[data-theme=dark] .level-tabs button.selected{background:var(--ui-accent);border-color:var(--ui-accent-edge);color:#fff;box-shadow:0 1px 4px #0006}
-:root[data-theme=dark] .level-tabs button:not(.selected):hover{background:var(--ui-accent-soft);border-color:var(--ui-accent-edge);color:var(--ink)}
+:root[data-theme=dark] .level-tabs{background:transparent;border:0;padding:0;gap:8px}
+:root[data-theme=dark] .level-tabs button{background:transparent;border:1px solid var(--ui-accent-edge);color:var(--ui-text);min-height:44px}
+:root[data-theme=dark] .level-tabs button.selected{background:var(--ui-accent);border-color:var(--ui-accent);color:#fff;box-shadow:none}
+:root[data-theme=dark] .level-tabs button:not(.selected):hover{background:transparent;border-color:var(--ui-accent-hover);color:var(--ink)}
