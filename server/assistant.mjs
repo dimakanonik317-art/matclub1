@@ -3,7 +3,6 @@ export const FALLBACK_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 export const AI_LIMITS = Object.freeze({
   burst: 12,
   burstSeconds: 600,
-  guestDaily: 30,
   accountDaily: 120,
   siteDaily: 300,
 });

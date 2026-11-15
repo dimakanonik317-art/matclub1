@@ -11,21 +11,32 @@ function status(result,n){assert.equal(result.r.status,n,JSON.stringify(result.b
 const originalNow=Date.now;let stamp=Date.UTC(2026,10,8,12);Date.now=()=>stamp;
 try{
  let invocations=0;env.AI={run:async()=>{invocations++;return{choices:[{message:{content:'Ответ'}}]}}};
- const info=await call('/api/assistant');status(info,200);assert.equal(info.body.limits.accountDaily,120);assert.ok(info.body.model.includes('gemma-4'));
- for(let i=0;i<12;i++)status(await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},ip:'burst'}),200);
- let hit=await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},ip:'burst'});status(hit,429);assert.ok(+hit.r.headers.get('retry-after')>0);assert.equal(invocations,12);
- sql.exec('DELETE FROM limits');
- for(let i=0;i<30;i++){if(i%12===0)stamp+=601000;status(await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},ip:'guest'}),200)}
- hit=await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},ip:'guest'});status(hit,429);assert.ok(hit.body.error.includes('гостя'));
- sql.exec('DELETE FROM limits');
+ for(const token of [undefined,'invalid','0'.repeat(64)]){
+  status(await call('/api/assistant',{token}),401);
+  status(await call('/api/assistant',{method:'POST',token,data:{message:'Вопрос'}}),401);
+ }
+ assert.equal(invocations,0);
+ assert.equal(sql.prepare("SELECT count(*) AS n FROM limits").get().n,0);
  const registered=await call('/api/register',{method:'POST',data:{login:'aitester',password:'testPassword123'}});status(registered,201);
- for(let i=0;i<120;i++){if(i%12===0)stamp+=601000;status(await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},token:registered.token,ip:'account'}),200)}
- stamp+=601000;hit=await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},token:registered.token,ip:'another-ip'});status(hit,429);assert.ok(hit.body.error.includes('аккаунта'));
+ const token=registered.token;
+ const info=await call('/api/assistant',{token});status(info,200);assert.equal(info.body.limits.accountDaily,120);assert.ok(info.body.model.includes('gemma-4'));assert.equal(info.body.limits.guestDaily,undefined);
+ for(let i=0;i<12;i++)status(await call('/api/assistant',{method:'POST',token,data:{message:'Вопрос'},ip:'burst'}),200);
+ let hit=await call('/api/assistant',{method:'POST',token,data:{message:'Вопрос'},ip:'different-ip'});status(hit,429);assert.ok(+hit.r.headers.get('retry-after')>0);assert.equal(invocations,12);
  sql.exec('DELETE FROM limits');
- for(let i=0;i<300;i++)status(await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},ip:'site-'+i}),200);
- hit=await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},ip:'site-extra'});status(hit,429);assert.ok(hit.body.error.includes('сайта'));
+ for(let i=0;i<120;i++){if(i%12===0)stamp+=601000;status(await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},token,ip:'account'}),200)}
+ stamp+=601000;hit=await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},token,ip:'another-ip'});status(hit,429);assert.ok(hit.body.error.includes('аккаунта'));
+ sql.exec('DELETE FROM limits');
+ const tokens=[token];
+ for(let i=1;i<4;i++){const u=await call('/api/register',{method:'POST',ip:'site-register-'+i,data:{login:'aitester'+i,password:'testPassword123'}});status(u,201);tokens.push(u.token)}
+ for(let i=0;i<300;i++){if(i%12===0)stamp+=601000;status(await call('/api/assistant',{method:'POST',token:tokens[Math.floor(i/100)],data:{message:'Вопрос'},ip:'site-'+i}),200)}
+ hit=await call('/api/assistant',{method:'POST',token:tokens[3],data:{message:'Вопрос'},ip:'site-extra'});status(hit,429);assert.ok(hit.body.error.includes('сайта'));
  sql.exec('DELETE FROM limits');let attempts=0;env.AI={run:async()=>{attempts++;throw Error('daily neurons quota exceeded')}};
- hit=await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},ip:'provider'});status(hit,429);assert.ok(hit.body.error.includes('Cloudflare'));assert.ok(+hit.r.headers.get('retry-after')>0);assert.equal(attempts,1);
- env.AI={run:async()=>{throw Error('429 rate limit')}};hit=await call('/api/assistant',{method:'POST',data:{message:'Вопрос'},ip:'busy'});status(hit,429);assert.equal(hit.r.headers.get('retry-after'),'60');
- await Promise.all(pending);console.log('PASS: model metadata, 12/10min, guest30, account120 across IPs, site300, provider quota vs overload and Retry-After.');
+ hit=await call('/api/assistant',{method:'POST',token,data:{message:'Вопрос'},ip:'provider'});status(hit,429);assert.ok(hit.body.error.includes('Cloudflare'));assert.ok(+hit.r.headers.get('retry-after')>0);assert.equal(attempts,1);
+ env.AI={run:async()=>{throw Error('429 rate limit')}};hit=await call('/api/assistant',{method:'POST',token,data:{message:'Вопрос'},ip:'busy'});status(hit,429);assert.equal(hit.r.headers.get('retry-after'),'60');
+ sql.prepare('UPDATE sessions SET expires_at=0 WHERE user_id=?').run(registered.body.user.id);
+ status(await call('/api/assistant',{method:'POST',token,data:{message:'Вопрос'}}),401);
+ status(await call('/api/assistant',{token}),401);
+ status(await call('/api/logout',{method:'POST',token:tokens[3],data:{}}),200);
+ status(await call('/api/assistant',{method:'POST',token:tokens[3],data:{message:'Вопрос'}}),401);
+ await Promise.all(pending);console.log('PASS: assistant requires valid sessions, no guest AI calls or quotas, expired/logged-out sessions denied, account120 across IPs, burst12, site300 and provider errors.');
 }finally{Date.now=originalNow;sql.close()}

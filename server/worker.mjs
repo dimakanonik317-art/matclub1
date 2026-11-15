@@ -242,14 +242,17 @@ async function api(request, env, ctx) {
   await init(env.DB);
   const db = env.DB,
     ip = request.headers.get("CF-Connecting-IP") || "unknown";
-  if (path === "/api/assistant" && method === "GET")
+  if (path === "/api/assistant" && method === "GET") {
+    await requireUser(request, db);
     return json({
       ready: !!env.AI,
       model: MODEL,
       modelLabel: "Gemma 4",
       limits: AI_LIMITS,
     });
+  }
   if (path === "/api/assistant" && method === "POST") {
+    const u = await requireUser(request, db);
     if (!env.AI) fail(503, "ИИ-помощник пока не подключён.");
     const data = await body(request);
     let input;
@@ -258,11 +261,10 @@ async function api(request, env, ctx) {
     } catch (e) {
       fail(400, e.message);
     }
-    const u = await session(request, db);
     await rate(
       db,
       "ai-burst",
-      u?.id || ip,
+      u.id,
       AI_LIMITS.burst,
       AI_LIMITS.burstSeconds,
       "Слишком много вопросов подряд. Дай помощнику небольшую паузу.",
@@ -270,13 +272,10 @@ async function api(request, env, ctx) {
     await rate(
       db,
       "ai-daily",
-      u?.id || ip,
-      u ? AI_LIMITS.accountDaily : AI_LIMITS.guestDaily,
+      u.id,
+      AI_LIMITS.accountDaily,
       86400,
-      "Достигнут суточный лимит вопросов " +
-        (u
-          ? "аккаунта."
-          : "гостя. После входа в кабинет доступно больше вопросов."),
+      "Достигнут суточный лимит вопросов аккаунта.",
     );
     await rate(
       db,
