@@ -123,3 +123,62 @@ egeFigure=function(task){
   return html.replace('</g></svg>',overlay+'</g></svg>');
 };
 
+
+/* Ray diagrams for original OGE physics optics tasks. */
+const egeFigureOpticsBase=egeFigure;
+egeFigure=function(task){
+  const optics=task&&task.figure&&task.figure.geometry&&task.figure.geometry.optics;
+  const html=egeFigureOpticsBase(task);
+  if(!optics)return html;
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const num=(v,d)=>Number.isFinite(Number(v))?Number(v):d;
+  const id='opt-ray-'+String(task.id||'figure').replace(/[^a-z0-9-]/gi,'');
+  const defs='<defs><marker id="'+id+'" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#2583b7"/></marker></defs>';
+  const lines=(optics.lines||[]).map(l=>{
+    const x1=num(l.x1,0),y1=num(l.y1,0),x2=num(l.x2,0),y2=num(l.y2,0),style=l.style||'guide';
+    const color=style==='axis'?'#7d8794':style==='normal'?'#8a6ca8':style==='interface'?'#536c78':'#708090';
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+color+'" stroke-width="'+(style==='interface'?3:1.8)+'"'+(style==='normal'||style==='dashed'?' stroke-dasharray="7 6"':'')+'/>';
+  }).join('');
+  const rays=(optics.rays||[]).map(r=>{
+    const color=r.color||'#2583b7',dash=r.style==='dashed'?' stroke-dasharray="7 6"':'';
+    const marker=r.arrow===false?'':' marker-end="url(#'+id+')"';
+    if(r.d)return '<path d="'+esc(r.d)+'" fill="none" stroke="'+color+'" stroke-width="2.7"'+dash+marker+'/>';
+    return '<line x1="'+num(r.x1,0)+'" y1="'+num(r.y1,0)+'" x2="'+num(r.x2,0)+'" y2="'+num(r.y2,0)+'" fill="none" stroke="'+color+'" stroke-width="2.7"'+dash+marker+'/>';
+  }).join('');
+  const objects=(optics.objects||[]).map(o=>{
+    const x=num(o.x,160),y=num(o.y,160),h=num(o.h,48),color=o.virtual?'#a267b5':'#334d5d',dash=o.virtual?' stroke-dasharray="6 5"':'';
+    return '<line x1="'+x+'" y1="'+y+'" x2="'+x+'" y2="'+(y-h)+'" stroke="'+color+'" stroke-width="4"'+dash+' marker-end="url(#'+id+')"/><line x1="'+(x-10)+'" y1="'+y+'" x2="'+(x+10)+'" y2="'+y+'" stroke="#334d5d" stroke-width="2"/><text x="'+(x+8)+'" y="'+(y-h-8)+'" fill="#263633" font-family="Arial,sans-serif" font-size="14">'+esc(o.label||'предмет')+'</text>';
+  }).join('');
+  const sources=(optics.sources||[]).map(p=>'<circle cx="'+num(p.x,80)+'" cy="'+num(p.y,160)+'" r="8" fill="#e9a83b" stroke="#76571b" stroke-width="2"/><text x="'+num(p.x,80)+'" y="'+(num(p.y,160)-15)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-weight="700" font-size="15">'+esc(p.label||'S')+'</text>').join('');
+  const mirrors=(optics.mirrors||[]).map(m=>{
+    const x=num(m.x,420),y=num(m.y,160),h=num(m.h,150),ang=num(m.tilt,0),rot=ang?' transform="rotate('+ang+' '+x+' '+y+')"':'';
+    let hatch='';for(let k=-2;k<=2;k++)hatch+='<path d="M'+(x-6)+' '+(y+k*18+7)+' L'+(x+5)+' '+(y+k*18-4)+'" stroke="#89949d" stroke-width="1.5"/>';
+    return '<g'+rot+'><line x1="'+x+'" y1="'+(y-h/2)+'" x2="'+x+'" y2="'+(y+h/2)+'" stroke="#354f60" stroke-width="6" stroke-linecap="round"/>'+hatch+'</g>';
+  }).join('');
+  const lenses=(optics.lenses||[]).map(l=>{
+    const x=num(l.x,320),y=num(l.y,160),h=num(l.h,130),top=y-h/2,bottom=y+h/2;
+    const d=l.type==='diverging'
+      ?'M '+(x-10)+' '+top+' Q '+(x+14)+' '+y+' '+(x-10)+' '+bottom+' Q '+(x+10)+' '+y+' '+(x+10)+' '+top+' Q '+(x-14)+' '+y+' '+(x-10)+' '+top+' Z'
+      :'M '+x+' '+top+' Q '+(x-28)+' '+y+' '+x+' '+bottom+' Q '+(x+28)+' '+y+' '+x+' '+top+' Z';
+    return '<path d="'+d+'" fill="#d9eff2" fill-opacity="0.78" stroke="#39778b" stroke-width="3"/><line x1="'+x+'" y1="'+top+'" x2="'+x+'" y2="'+bottom+'" stroke="#39778b" stroke-width="1" stroke-dasharray="3 5"/>';
+  }).join('');
+  const screens=(optics.screens||[]).map(p=>{
+    const x=num(p.x,520),y=num(p.y,160),h=num(p.h,120);let hatch='';for(let k=-3;k<=3;k++)hatch+='<path d="M'+(x+3)+' '+(y+k*14)+' l10 8" stroke="#9aa4aa" stroke-width="1.5"/>';
+    return '<line x1="'+x+'" y1="'+(y-h/2)+'" x2="'+x+'" y2="'+(y+h/2)+'" stroke="#394e58" stroke-width="5"/>'+hatch+(p.label?'<text x="'+(x+18)+'" y="'+(y+h/2+16)+'" fill="#263633" font-family="Arial,sans-serif" font-size="13">'+esc(p.label)+'</text>':'');
+  }).join('');
+  const prisms=(optics.prisms||[]).map(p=>{const x=num(p.x,320),y=num(p.y,160),z=num(p.size,90);return '<path d="M'+(x-z/2)+' '+(y-z/2)+' L'+(x+z/2)+' '+y+' L'+(x-z/2)+' '+(y+z/2)+' Z" fill="#dcecf3" fill-opacity="0.8" stroke="#557d91" stroke-width="3"/>';}).join('');
+  const eyes=(optics.eyes||[]).map(e=>{
+    const x=num(e.x,435),y=num(e.y,160),w=num(e.w,170),h=num(e.h,116),retina=x+w/2-20;
+    return '<g><ellipse cx="'+x+'" cy="'+y+'" rx="'+(w/2)+'" ry="'+(h/2)+'" fill="#f5f0e8" stroke="#667984" stroke-width="3"/><path d="M'+(x-w/2+24)+' '+(y-h/2+10)+' Q '+(x-w/2+52)+' '+y+' '+(x-w/2+24)+' '+(y+h/2-10)+'" fill="#dcecf3" stroke="#39778b" stroke-width="3"/><line x1="'+retina+'" y1="'+(y-h/2+16)+'" x2="'+retina+'" y2="'+(y+h/2-16)+'" stroke="#c55b5b" stroke-width="5"/><circle cx="'+(x-w/2+28)+'" cy="'+y+'" r="5" fill="#263633"/></g>';
+  }).join('');
+  const blocks=(optics.blocks||[]).map(b=>{
+    const x=num(b.x,300),y=num(b.y,160),w=num(b.w,20),h=num(b.h,70);
+    if(b.gap)return '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+((h-16)/2)+'" fill="#7b858d"/><rect x="'+(x-w/2)+'" y="'+(y+8)+'" width="'+w+'" height="'+((h-16)/2)+'" fill="#7b858d"/><circle cx="'+x+'" cy="'+y+'" r="4" fill="#e9a83b" stroke="#76571b"/><text x="'+x+'" y="'+(y-h/2-8)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-size="13">'+esc(b.label||'отверстие')+'</text>';
+    if(b.circle)return '<circle cx="'+x+'" cy="'+y+'" r="'+(h/2)+'" fill="#78838a" stroke="#394e58" stroke-width="2"/>';
+    return '<rect x="'+(x-w/2)+'" y="'+(y-h/2)+'" width="'+w+'" height="'+h+'" rx="3" fill="#78838a" stroke="#394e58" stroke-width="2"/>';
+  }).join('');
+  const markers=(optics.markers||[]).map(m=>'<circle cx="'+num(m.x,320)+'" cy="'+num(m.y,160)+'" r="5" fill="#b95045"/><text x="'+num(m.x,320)+'" y="'+(num(m.y,160)+22)+'" text-anchor="middle" fill="#263633" font-family="Arial,sans-serif" font-size="14">'+esc(m.label||'F')+'</text>').join('');
+  const labels=(optics.labels||[]).map(l=>'<text x="'+num(l.x,320)+'" y="'+num(l.y,40)+'" text-anchor="'+(l.anchor||'middle')+'" fill="#263633" font-family="Arial,sans-serif" font-size="14">'+esc(l.text||'')+'</text>').join('');
+  const overlay=defs+lines+rays+objects+sources+mirrors+lenses+screens+prisms+eyes+blocks+markers+labels;
+  return html.replace('</g></svg>',overlay+'</g></svg>');
+};
