@@ -246,3 +246,55 @@ egeFigure=function(task){
  const overlay=defs+art;
  return html.replace('</g></svg>',overlay+'</g></svg>');
 };
+
+/* Measuring instruments and experimental setups for original OGE physics tasks. */
+const egeFigureExperimentBase=egeFigure;
+egeFigure=function(task){
+ const e=task&&task.figure&&task.figure.geometry&&task.figure.geometry.experiment,html=egeFigureExperimentBase(task);if(!e)return html;
+ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const n=(v,d=0)=>Number.isFinite(Number(v))?Number(v):d;
+ const f=v=>String(Number(Number(v).toFixed(3))).replace('.',',');
+ const txt=(x,y,s,size=14,color='#263633',anchor='middle',weight='normal')=>'<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" fill="'+color+'" font-family="Arial,sans-serif" font-size="'+size+'" font-weight="'+weight+'">'+esc(s)+'</text>';
+ let art='',kind=e.kind;
+ if(kind==='scale'){
+  const x1=82,x2=558,y=164,min=n(e.min),max=n(e.max,10),divisions=Math.max(1,n(e.divisions,10)),step=(max-min)/divisions,dx=(x2-x1)/divisions;
+  art+='<rect x="62" y="82" width="516" height="138" rx="12" fill="#f8fafc" stroke="#aab8c3" stroke-width="2"/><path d="M'+x1+' '+y+'H'+x2+'" stroke="#435968" stroke-width="3"/>';
+  for(let i=0;i<=divisions;i++){const x=x1+i*dx,major=i===0||i===divisions||i%Math.max(1,Math.round(divisions/5))===0,h=major?30:14;art+='<path d="M'+x+' '+y+'v'+h+'" stroke="#435968" stroke-width="'+(major?2:1.4)+'"/>';if(major)art+=txt(x,y+h+19,f(min+i*step),12);}
+  art+=txt(320,112,e.label||'шкала',16,'#354b5a','middle','700')+txt(320,207,'Цена деления: '+f(step)+' '+(e.unit||''),13,'#526777');
+  if(e.pointer!==null&&e.pointer!==undefined){const x=x1+n(e.pointer)*dx;art+='<path d="M'+(x-10)+' 128 L'+(x+10)+' 128 L'+x+' 150 Z" fill="#cb5149" stroke="#8d3733" stroke-width="1.5"/>';}
+  art+=txt(546,103,e.unit||'',13,'#526777','end','700');
+ }else if(kind==='ruler'){
+  const x1=70,x2=570,y=178,min=n(e.min),max=n(e.max,10),scale=(x2-x1)/(max-min),start=n(e.start),end=n(e.end);
+  art+='<rect x="'+(x1+(start-min)*scale)+'" y="119" width="'+((end-start)*scale)+'" height="44" rx="4" fill="#d9e3e8" stroke="#435968" stroke-width="2"/><path d="M'+x1+' '+y+'H'+x2+'" stroke="#435968" stroke-width="3"/>';
+  for(let i=0;i<=50;i++){const x=x1+i*(x2-x1)/50,major=i%5===0,h=major?28:12;art+='<path d="M'+x+' '+y+'v'+h+'" stroke="#435968" stroke-width="'+(major?2:1)+'"/>';if(major)art+=txt(x,y+h+18,f(min+(max-min)*i/50),12);}
+  art+=txt(320,75,'Края предмета на шкале, см',15,'#354b5a','middle','700')+txt(x1+(start-min)*scale,112,f(start),13,'#b44840','middle','700')+txt(x1+(end-min)*scale,112,f(end),13,'#b44840','middle','700');
+ }else if(kind==='displacement'){
+  const x=244,y=58,w=132,h=212,bottom=y+h,min=n(e.min),max=n(e.max,100),sy=v=>bottom-(v-min)/(max-min)*(h-12),yi=sy(n(e.initial)),yf=sy(n(e.final));
+  art+='<path d="M'+(x+15)+' '+y+'V'+(bottom-14)+' Q'+(x+15)+' '+bottom+' '+(x+29)+' '+bottom+' H'+(x+w-29)+' Q'+(x+w-15)+' '+bottom+' '+(x+w-15)+' '+(bottom-14)+' V'+y+'" fill="#fff" stroke="#526b79" stroke-width="4"/><rect x="'+(x+20)+'" y="'+yf+'" width="'+(w-40)+'" height="'+(bottom-yf)+'" fill="#bddde8" opacity="0.82"/><path d="M'+(x+18)+' '+yi+'H'+(x+w-18)+'" stroke="#577c99" stroke-width="3" stroke-dasharray="7 5"/><path d="M'+(x+18)+' '+yf+'H'+(x+w-18)+'" stroke="#277c9b" stroke-width="3"/>';
+  for(let k=0;k<=10;k++){const val=min+(max-min)*k/10,yy=bottom-k*h/10;art+='<path d="M'+(x+w-12)+' '+yy+'h18" stroke="#526b79" stroke-width="1.5"/>';if(k%2===0)art+=txt(x+w+32,yy+4,f(val),11,'#526777','start');}
+  art+=txt(310,43,'Объём, '+(e.unit||'мл'),14,'#354b5a','middle','700')+txt(138,yi-6,'До: '+f(e.initial),13,'#526777','middle','700')+txt(138,yf-6,'После: '+f(e.final),13,'#277c9b','middle','700');
+ }else if(kind==='density'){
+  art+='<path d="M80 115H235 M102 115L126 187 M213 115L189 187 M115 187H200" fill="none" stroke="#526b79" stroke-width="4"/><path d="M125 188 Q157 212 190 188 L181 216H134Z" fill="#e7edf1" stroke="#526b79" stroke-width="2"/>'+txt(158,241,'m = '+f(e.mass)+' '+e.massUnit,14,'#354b5a','middle','700');
+  const vmax=Math.ceil(n(e.volume)/40)*40,level=240-n(e.volume)/vmax*160;
+  art+='<path d="M365 70V240 Q365 258 383 258H495 Q513 258 513 240V70" fill="#fff" stroke="#526b79" stroke-width="4"/><path d="M369 '+level+'H509V240Q509 254 493 254H385Q369 254 369 240Z" fill="#bddde8" opacity="0.82"/>';
+  for(let k=0;k<=8;k++){const yy=240-k*20;art+='<path d="M493 '+yy+'h20" stroke="#526b79" stroke-width="1.5"/>';if(k%2===0)art+=txt(522,yy+4,String(k*vmax/8),11,'#526777','start');}
+  art+=txt(438,53,'Измерение объёма',14,'#354b5a','middle','700')+txt(438,281,'V = '+f(e.volume)+' '+e.volumeUnit,14,'#354b5a','middle','700');
+ }else if(kind==='measurements'){
+  const rows=e.rows||[],headers=e.headers||['№','Значение'],x0=86,y0=91,w=468,rowH=Math.min(35,145/(rows.length+1)),colW=w/headers.length;
+  art+='<rect x="'+x0+'" y="'+y0+'" width="'+w+'" height="'+(rowH*(rows.length+1))+'" rx="5" fill="#fff" stroke="#8095a2" stroke-width="2"/>';
+  for(let r=0;r<=rows.length+1;r++)art+='<path d="M'+x0+' '+(y0+r*rowH)+'H'+(x0+w)+'" stroke="#aab8c3" stroke-width="1"/>';
+  for(let c=1;c<headers.length;c++)art+='<path d="M'+(x0+c*colW)+' '+y0+'V'+(y0+rowH*(rows.length+1))+'" stroke="#aab8c3" stroke-width="1"/>';
+  headers.forEach((h,c)=>art+=txt(x0+(c+.5)*colW,y0+rowH*.67,h,13,'#354b5a','middle','700'));
+  rows.forEach((row,r)=>row.forEach((v,c)=>art+=txt(x0+(c+.5)*colW,y0+(r+1.5)*rowH,String(v),13)));
+  art+=txt(320,66,e.label||'Результаты опыта',15,'#354b5a','middle','700')+txt(320,282,e.unit?'Единицы: '+e.unit:'',12,'#526777');
+ }else if(kind==='design'){
+  const setups=e.setups||[],x0=45,w=132,gap=17,y=87,h=170;
+  art+=txt(320,57,'Сравните значения x и контрольной величины y',15,'#354b5a','middle','700');
+  setups.forEach((s,i)=>{const x=x0+i*(w+gap);art+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="10" fill="#f8fafc" stroke="#9aabb6" stroke-width="2"/>'+txt(x+w/2,y+28,['А','Б','В','Г'][i],17,'#354b5a','middle','700')+'<path d="M'+(x+12)+' '+(y+41)+'H'+(x+w-12)+'" stroke="#c2cbd1"/>'+txt(x+w/2,y+78,'x = '+f(s.x)+' '+e.xUnit,14,'#277c9b','middle','700')+txt(x+w/2,y+121,'y = '+f(s.y)+' '+e.yUnit,13,'#526777')+txt(x+w/2,y+151,'установка '+['А','Б','В','Г'][i],11,'#84919a');});
+ }else if(kind==='pendulum'){
+  art+='<path d="M72 82H265 M168 82V106" stroke="#526b79" stroke-width="5"/><path d="M168 106L220 224" stroke="#526b79" stroke-width="3"/><circle cx="220" cy="224" r="22" fill="#d9e4ea" stroke="#435968" stroke-width="3"/><path d="M142 122A74 74 0 0 0 209 249" fill="none" stroke="#a8b6bf" stroke-width="2" stroke-dasharray="6 5"/>';
+  art+='<rect x="355" y="100" width="190" height="112" rx="14" fill="#f8fafc" stroke="#9aabb6" stroke-width="2"/>'+txt(450,138,'Колебаний: '+f(e.count),17,'#354b5a','middle','700')+txt(450,176,'Общее время: '+f(e.total)+' с',15,'#526777')+txt(320,277,'Время серии делят на число колебаний',14,'#526777');
+ }
+ const overlay='<g font-family="Arial,sans-serif" fill="#263633">'+art+'</g>';
+ return html.replace('</g></svg>',overlay+'</g></svg>').replace('Все числовые данные продублированы в условии.','Шкалы и результаты опыта показаны на рисунке.');
+};
