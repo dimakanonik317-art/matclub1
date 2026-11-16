@@ -182,3 +182,67 @@ egeFigure=function(task){
   const overlay=defs+lines+rays+objects+sources+mirrors+lenses+screens+prisms+eyes+blocks+markers+labels;
   return html.replace('</g></svg>',overlay+'</g></svg>');
 };
+
+/* Diagrams for OGE atomic and nuclear physics tasks. */
+const egeFigureAtomicBase=egeFigure;
+egeFigure=function(task){
+ const a=task&&task.figure&&task.figure.geometry&&task.figure.geometry.atomic,html=egeFigureAtomicBase(task);if(!a)return html;
+ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const id='atom-'+String(task.id||'figure').replace(/[^a-z0-9-]/gi,''),blue='#527ca4',red='#cf5a4f',dark='#354b5a',gold='#d8a33a';
+ const defs='<defs><marker id="'+id+'-arr" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="'+blue+'"/></marker></defs>';
+ const text=(x,y,s,size=14,color='#263633',anchor='middle',weight='normal')=>'<text x="'+x+'" y="'+y+'" text-anchor="'+anchor+'" fill="'+color+'" font-family="Arial,sans-serif" font-size="'+size+'" font-weight="'+weight+'">'+esc(s)+'</text>';
+ const arrow=(x1,y1,x2,y2,label,color=blue)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+color+'" stroke-width="3" marker-end="url(#'+id+'-arr)"/>'+text((x1+x2)/2,(y1+y2)/2-9,label,13,color,'middle','700');
+ const ball=(x,y,type,label)=>{const fill=type==='proton'?red:type==='neutron'?blue:type==='electron'?'#4d9b78':type==='alpha'?gold:type==='nucleus'?'#bd6b42':'#d9a33a';return '<circle cx="'+x+'" cy="'+y+'" r="'+(type==='nucleus'?26:12)+'" fill="'+fill+'" stroke="#354b5a" stroke-width="2"/>'+text(x,y+5,label||({proton:'p+',neutron:'n',electron:'e−',alpha:'α',nucleus:'+'}[type]||'S'),12,'#fff','middle','700');};
+ const kind=a.kind,i=Number(a.index)||1;let art='';
+ if(kind==='radiation'){
+  art+=ball(82,160,'source','Ra');art+='<path d="M105 140 L570 82 M105 160 H570 M105 180 L570 238" fill="none" stroke-width="3" stroke-dasharray="'+''+'"/>';
+  art+='<path d="M105 140 L570 82" stroke="#667d94" stroke-width="3" marker-end="url(#'+id+'-arr)"/><path d="M105 160 H570" stroke="#cf5a4f" stroke-width="3" marker-end="url(#'+id+'-arr)"/><path d="M105 180 L570 238" stroke="#4786b2" stroke-width="3" marker-end="url(#'+id+'-arr)"/>';
+  art+=text(555,67,'γ',16,'#667d94','end','700')+text(555,153,'α',16,red,'end','700')+text(555,257,'β⁻',16,'#4786b2','end','700');
+  for(const [x,l] of [[245,'бумага'],[365,'Al'],[485,'Pb']])art+='<rect x="'+(x-8)+'" y="102" width="16" height="116" rx="2" fill="#adb7bd" stroke="'+dark+'" stroke-width="2"/>'+text(x,92,l,13);
+ }else if(kind==='half'){
+  const vals=[16,8,4,2],labels=['начало','T½','2T½','3T½'];
+  for(let k=0;k<4;k++){const x=95+k*150;art+=text(x,72,labels[k],13,'#263633','middle','700');for(let j=0;j<vals[k];j++){const col=j%4,row=Math.floor(j/4);art+='<circle cx="'+(x-22+col*15)+'" cy="'+(104+row*14)+'" r="5" fill="'+(k%2?blue:red)+'"/>'}art+=text(x,200,`${vals[k]} условных ядер`,12,'#536572');if(k<3)art+=arrow(x+38,150,x+95,150,'деление на 2')}
+ }else if(kind==='scattering'){
+  art+='<rect x="390" y="58" width="18" height="205" fill="#d7c4a3" stroke="#715e42" stroke-width="2"/>'+text(400,282,'фольга',13);
+  art+='<circle cx="400" cy="160" r="15" fill="'+red+'" stroke="#743a35" stroke-width="2"/>'+text(400,165,'+',15,'#fff','middle','700');
+  art+='<path d="M55 93 H585 M55 150 H362 Q390 150 420 119 M55 220 H108 Q145 205 114 174" fill="none" stroke="'+gold+'" stroke-width="3" marker-end="url(#'+id+'-arr)"/>';
+  art+=text(180,80,'большинство проходит прямо',13)+text(236,139,'часть отклоняется',13)+text(92,246,'редкие частицы отскакивают',13);
+  art+=arrow(82,160,275,160,'пучок α');
+ }else if(kind==='decay'){
+  art+='<circle cx="160" cy="160" r="54" fill="#e6edf1" stroke="'+dark+'" stroke-width="3"/><circle cx="480" cy="160" r="54" fill="#e6edf1" stroke="'+dark+'" stroke-width="3"/>';
+  for(let k=0;k<5;k++){art+=ball(138+(k%3)*20,145+Math.floor(k/3)*25,k%2?'neutron':'proton',k%2?'n':'p+')}
+  for(let k=0;k<4;k++)art+=ball(460+(k%2)*22,148+Math.floor(k/2)*24,k%2?'neutron':'proton',k%2?'n':'p+');
+  art+=text(160,91,'исходное ядро',14)+text(480,91,'дочернее ядро',14)+arrow(225,160,403,160,i%2?'β⁻-распад':'α-распад')+ball(322,i%2?94:226,i%2?'electron':'alpha',i%2?'β⁻':'α');
+ }else if(kind==='atom'||kind==='nucleus'||kind==='isotopes'){
+  if(kind==='isotopes'){
+   for(const [cx,count,label] of [[185,5,'X-A'],[450,7,'X-B']]){art+='<circle cx="'+cx+'" cy="155" r="65" fill="none" stroke="#9ba8b0" stroke-dasharray="5 5"/>';for(let k=0;k<count;k++)art+=ball(cx-22+(k%4)*15,137+Math.floor(k/4)*18,k%2?'neutron':'proton',k%2?'n':'p+');art+=text(cx,246,label,14,'#263633','middle','700')}
+   art+=text(320,78,'одинаковое Z, разное A',15,'#354b5a','middle','700');
+  }else if(kind==='atom'){
+   art+='<circle cx="320" cy="158" r="65" fill="none" stroke="#9ba8b0" stroke-dasharray="5 5"/><circle cx="320" cy="158" r="112" fill="none" stroke="#9ba8b0" stroke-dasharray="5 5"/>';
+   for(let k=0;k<8;k++)art+=ball(305+(k%4)*10,145+Math.floor(k/4)*15,k%2?'neutron':'proton',k%2?'n':'p+');
+   for(const [x,y] of [[320,46],[432,158],[208,158],[320,270]])art+=ball(x,y,'electron','e−');
+   art+=text(320,303,'нейтральный атом',14);
+  }else{
+   for(let k=0;k<12;k++)art+=ball(275+(k%4)*31,108+Math.floor(k/4)*31,k%2?'neutron':'proton',k%2?'n⁰':'p⁺');
+   art+=text(320,70,'ядро состоит из нуклонов',15,'#354b5a','middle','700');art+=text(320,255,'A = Z + N',18,'#263633','middle','700');
+  }
+ }else if(kind==='reaction'||kind==='decay'){
+  art+=text(105,141,'исходное ядро',15)+text(262,141,'частица',15)+text(462,141,'продукты',15);
+  art+='<circle cx="105" cy="175" r="38" fill="#f2e2d6" stroke="'+dark+'" stroke-width="2"/><circle cx="262" cy="175" r="30" fill="#f7edcf" stroke="'+dark+'" stroke-width="2"/><circle cx="490" cy="175" r="43" fill="#e3edf3" stroke="'+dark+'" stroke-width="2"/>';
+  art+=text(105,181,'A, Z',18,'#263633','middle','700')+text(262,181,'X',18,'#263633','middle','700')+text(490,181,'A, Z',18,'#263633','middle','700');
+  art+=arrow(153,175,218,175,'+')+arrow(302,175,436,175,'→')+text(320,252,'сохраняются сумма A и сумма Z',15,'#354b5a','middle','700');
+ }else if(kind==='fission'){
+  art+=ball(235,160,'nucleus','U-235');art+=arrow(60,160,178,160,'n');
+  art+='<path d="M272 151 Q350 95 460 83 M272 169 Q350 225 460 237" fill="none" stroke="'+blue+'" stroke-width="3" marker-end="url(#'+id+'-arr)"/>';
+  art+=text(500,87,'осколок',14)+text(500,243,'осколок',14)+arrow(450,155,580,125,'нейтроны');
+ }else if(kind==='reactor'){
+  art+='<rect x="170" y="70" width="300" height="190" rx="28" fill="#e5eef2" stroke="'+dark+'" stroke-width="4"/><rect x="225" y="113" width="190" height="104" rx="14" fill="#f3dfb7" stroke="#846b3e" stroke-width="2"/>';
+  for(let k=0;k<5;k++)art+='<rect x="'+(245+k*34)+'" y="78" width="10" height="90" fill="'+(k===2?'#b8524b':'#697f8f')+'"/>';
+  art+=text(320,197,'активная зона',15,'#263633','middle','700')+arrow(470,135,565,135,'пар')+text(320,288,'управляющие стержни поглощают нейтроны',14);
+ }else if(kind==='fusion'){
+  for(const [x,t,l] of [[130,'proton','²H'],[220,'neutron',''],[280,'proton','³H'],[370,'neutron',''],[465,'nucleus','⁴He']])art+=ball(x,160,t,l||undefined);
+  art+=arrow(310,160,420,160,'синтез')+text(320,68,'лёгкие ядра → более тяжёлое ядро + энергия',15,'#354b5a','middle','700');
+ }
+ const overlay=defs+art;
+ return html.replace('</g></svg>',overlay+'</g></svg>');
+};
