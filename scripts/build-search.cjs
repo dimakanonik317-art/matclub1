@@ -140,7 +140,15 @@ if(new Set(ogePhysicsAtomic.map(t=>t.id)).size!==100||new Set(ogePhysicsAtomic.m
 if(ogePhysicsExperiment.length!==100)throw new Error(`Expected 100 OGE measurement and experiment tasks, found ${ogePhysicsExperiment.length}`);
 if(ogePhysicsExperiment.some(t=>t.grade!==9||t.domain!=="physics"||t.subject!=="physics"||t.topicName!=="Измерения и эксперимент"||t.challenge||t.olympiad||!Number.isFinite(t.answer)||!t.unit||!t.steps?.length||!t.source?.url||!t.figure?.geometry?.experiment||t.sourceCategory!==215||t.source.id!==t.sourceId||t.source.type!==t.sourceType||t.source.url!==`https://phys-oge.sdamgia.ru/problem?id=${t.sourceId}`))throw new Error('OGE measurement and experiment tasks need complete solutions, Reshu OGE sources, and diagrams');
 for(let section=1;section<=10;section++)if(ogePhysicsExperiment.filter(t=>t.experimentSection===section).length!==10)throw new Error(`OGE experiment section ${section}: expected 10 tasks`);
-if(new Set(ogePhysicsExperiment.map(t=>t.id)).size!==100||new Set(ogePhysicsExperiment.map(t=>t.question)).size!==100)throw new Error('OGE experiment task IDs and prompts must be unique');const ogePhysicsData=vm.runInContext('tasks.filter(t=>t.examTopic===\"physics-data\"&&t.exam===\"oge\")',c);\nif(ogePhysicsData.length!==100||new Set(ogePhysicsData.map(t=>t.id)).size!==100||new Set(ogePhysicsData.map(t=>t.question)).size!==100)throw new Error('Expected 100 unique OGE physics data-analysis tasks');\nif(ogePhysicsData.some(t=>t.grade!==9||t.domain!==\"physics\"||t.topicName!==\"Графики, таблицы и текст\"||t.challenge||t.olympiad||!Number.isFinite(t.answer)||!t.unit||!t.steps?.length||!t.figure?.geometry||!t.source?.url||t.source.name!==\"Решу ОГЭ\"||t.sourceCategory!==Number(t.sourceCategory)))throw new Error('OGE graph, table, and text tasks require diagrams, solutions, and Reshu OGE links');\nfor(const [section,count] of Object.entries({graphs:55,tables:25,text:20}))if(ogePhysicsData.filter(t=>t.dataSection===section).length!==count)throw new Error('Unexpected OGE physics data task distribution');\n// Content-based asset URLs prevent a previous exam bank from surviving an update.
+if(new Set(ogePhysicsExperiment.map(t=>t.id)).size!==100||new Set(ogePhysicsExperiment.map(t=>t.question)).size!==100)throw new Error('OGE experiment task IDs and prompts must be unique');// Content-based asset URLs prevent a previous exam bank from surviving an update.
+const ogePhysicsData=vm.runInContext('tasks.filter(t=>t.examTopic==="physics-data"&&t.exam==="oge")',c);
+if(ogePhysicsData.length!==100||new Set(ogePhysicsData.map(t=>t.id)).size!==100||new Set(ogePhysicsData.map(t=>t.question)).size!==100)throw new Error('Expected 100 unique OGE physics data-analysis tasks');
+if(ogePhysicsData.some(t=>t.grade!==9||t.domain!=="physics"||t.topicName!=="Графики, таблицы и текст"||t.challenge||t.olympiad||!Number.isFinite(t.answer)||!t.unit||!t.steps?.length||!(t.figure?.geometry||t.figure?.dataChart||t.figure?.textCard)||!t.source?.url||t.source.name!=="Решу ОГЭ"||t.source.id!==t.sourceId||t.source.type!==t.sourceType||t.sourceCategory!==Number(t.sourceCategory)))throw new Error('OGE graph, table, and text tasks require valid illustrations, solutions, and Reshu OGE links');
+if(ogePhysicsData.some(t=>t.dataSection==='graphs'&&(!t.figure?.dataChart||t.sourceType!=='14')))throw new Error('OGE graph tasks require type-14 charts');
+if(ogePhysicsData.some(t=>t.dataSection==='tables'&&(t.figure?.dataChart?.kind!=='table'||!t.figure.dataChart.columns?.length||!t.figure.dataChart.rows?.length||t.sourceType!=='14')))throw new Error('OGE table tasks require accessible type-14 tables');
+if(ogePhysicsData.some(t=>t.dataSection==='text'&&(!t.figure?.textCard||t.sourceCategory!==143||t.sourceType!=='18'||!t.source.url.includes('extra_id=143'))))throw new Error('OGE text tasks require physical text excerpts and type-18 sources');
+for(const [section,count] of Object.entries({graphs:55,tables:25,text:20}))if(ogePhysicsData.filter(t=>t.dataSection===section).length!==count)throw new Error('Unexpected OGE physics data task distribution');
+// Content-based asset URLs prevent a previous exam bank from surviving an update.
 const crypto=require('node:crypto');
 const homeFile=path.join(root,'index.html');
 let home=fs.readFileSync(homeFile,'utf8');
@@ -180,3 +188,7 @@ fs.writeFileSync(path.join(root,'sitemap.xml'),'<?xml version="1.0" encoding="UT
 console.log(`Built ${entries.length} school lesson pages and ${entries.length+4+pythonEntries.length+labEntries.length+cppEntries.length} sitemap URLs`);
 
 
+
+require("./apply-scientific.cjs");
+
+require("./apply-workbench.cjs");
