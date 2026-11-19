@@ -1,5 +1,5 @@
 import { ApiError, fail, json, readJson, finish } from "./http.mjs";
-export const SERVER_VERSION = "backend-2026-11-11.2.1";
+export const SERVER_VERSION = "backend-2026-11-19.1";
 import { init, cleanup, readiness } from "./database.mjs";
 import { mark } from "./account-grant.mjs";
 import { messages, answer, MODEL, AI_LIMITS } from "./assistant.mjs";
@@ -7,6 +7,7 @@ const COOKIE = "__Host-matclub_session",
   TTL = 30 * 86400,
   ITERATIONS = 100000,
   LIMIT = 1024 * 1024;
+const PREFERENCE_KEYS = ["matclub-domain", "matclub-sidebar-hidden", "matclub-ai-position-v1"];
 export const KEYS = [
   "matclub-saved",
   "matclub-solved",
@@ -16,6 +17,7 @@ export const KEYS = [
   "matclub-laboratory-v1",
   "matclub-settings-v1",
   "matclub-graphs-v1",
+  ...PREFERENCE_KEYS,
 ];
 const now = () => Math.floor(Date.now() / 1000),
   enc = new TextEncoder();
@@ -179,6 +181,64 @@ function validateDocument(value) {
   if (enc.encode(document).length > LIMIT)
     fail(413, "Прогресс превышает 1 МБ. Скачай и сократи большие черновики.");
   return document;
+}
+async function progressHashes(data) {
+  const pairs = await Promise.all(Object.entries(data).map(async ([key, value]) =>
+    [key, await digest(value)]));
+  return Object.fromEntries(pairs);
+}
+
+async function cloudSnapshot(row, userId) {
+  const data = JSON.parse(row.document);
+  return { userId, revision: row.revision, updatedAt: row.updated_at, data, hashes: await progressHashes(data) };
+}
+
+function readActiveProgress(db, user) {
+  return db.prepare(
+    "SELECT revision,document,updated_at FROM progress WHERE user_id=? AND EXISTS (SELECT 1 FROM sessions WHERE token_hash=? AND user_id=progress.user_id AND expires_at>?)"
+  ).bind(user.id, user.token_hash, now()).first();
+}
+
+function writeProgress(db, user, revision, document, updatedAt) {
+  return db.prepare(
+    "UPDATE progress SET revision=revision+1,document=?,updated_at=? WHERE user_id=? AND revision=? AND EXISTS (SELECT 1 FROM sessions WHERE token_hash=? AND user_id=progress.user_id AND expires_at>?)"
+  ).bind(document, updatedAt, user.id, revision, user.token_hash, now()).run();
+}
+
+// Compare only the sections this device edited. Keep the row revision as the
+// atomic write guard, including when two requests arrive in the same instant.
+async function saveChanges(db, user, changes) {
+  if (!changes || typeof changes !== "object" || Array.isArray(changes))
+    fail(400, "Неверный формат изменений.");
+  const entries = Object.entries(changes);
+  for (const [key, edit] of entries) {
+    if (!KEYS.includes(key) || !edit ||
+        !(edit.base === null || (typeof edit.base === "string" && /^[0-9a-f]{64}$/.test(edit.base))) ||
+        !(edit.value === null || typeof edit.value === "string"))
+      fail(400, "Неизвестные данные прогресса.");
+    if (edit.value !== null) validateDocument({ [key]: edit.value });
+  }
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const row = await readActiveProgress(db, user);
+    if (!row) fail(401, "Сессия завершилась. Войди ещё раз.");
+    const data = JSON.parse(row.document), hashes = {};
+    let changed = false;
+    for (const [key, {base, value}] of entries) {
+      const before = data[key] ?? null;
+      hashes[key] = value === null ? null : await digest(value);
+      if (before === value) continue; // A retry after a lost acknowledgment.
+      if ((before === null ? null : await digest(before)) !== base)
+        return json({conflict:true, error:"Этот раздел изменён на другом устройстве."}, 409);
+      if (value === null) delete data[key];
+      else data[key] = value;
+      changed = true;
+    }
+    if (!changed) return json({revision:row.revision, updatedAt:row.updated_at, hashes});
+    const updatedAt = now();
+    const result = await writeProgress(db, user, row.revision, validateDocument(data), updatedAt);
+    if (result.meta.changes) return json({revision:row.revision + 1, updatedAt, hashes});
+  }
+  throw new ApiError(503, "Прогресс обновляется. Повтори попытку.", {"retry-after":"2"});
 }
 async function api(request, env, ctx) {
   const path = new URL(request.url).pathname,
@@ -458,11 +518,7 @@ async function api(request, env, ctx) {
         .bind(u.id)
         .first();
     if (!p) fail(503, "Не удалось загрузить прогресс. Повтори попытку.");
-    return json({
-      revision: p.revision,
-      data: JSON.parse(p.document),
-      updatedAt: p.updated_at,
-    });
+    return json(await cloudSnapshot(p, u.id));
   }
   if (path === "/api/progress" && method === "PUT") {
     const u = await requireUser(request, db);
@@ -474,24 +530,29 @@ async function api(request, env, ctx) {
       data.revision === Number.MAX_SAFE_INTEGER
     )
       fail(400, "Неверная версия прогресса.");
-    const document = validateDocument(data.data),
-      updatedAt = now();
-    const result = await db
-      .prepare(
-        "UPDATE progress SET revision=revision+1,document=?,updated_at=? WHERE user_id=? AND revision=? AND EXISTS (SELECT 1 FROM sessions WHERE token_hash=? AND user_id=progress.user_id AND expires_at>?)",
-      )
-      .bind(document, updatedAt, u.id, data.revision, u.token_hash, now())
-      .run();
+    if (data.userId !== undefined && data.userId !== u.id)
+      fail(401, "Аккаунт изменился. Обнови страницу.");
+    if ("changes" in data) {
+      if (data.userId !== u.id) fail(400, "Не указан владелец прогресса.");
+      return saveChanges(db, u, data.changes);
+    }
+    let document = validateDocument(data.data);
+    // Older clients write full documents and do not know about these keys.
+    if (data.format !== 2) {
+      const row = await readActiveProgress(db, u);
+      if (!row) fail(401, "Сессия завершилась. Войди ещё раз.");
+      const previous = JSON.parse(row.document);
+      for (const key of PREFERENCE_KEYS)
+        if (!(key in data.data) && key in previous) data.data[key] = previous[key];
+      document = validateDocument(data.data);
+    }
+    const updatedAt = now();
+    const result = await writeProgress(db, u, data.revision, document, updatedAt);
     if (result.meta.changes)
       return json({ revision: data.revision + 1, updatedAt });
     // A lost success response may cause an identical retry. Acknowledge only the
     // immediately following revision, and only while this session is still valid.
-    const current = await db
-      .prepare(
-        "SELECT revision,document,updated_at FROM progress WHERE user_id=? AND EXISTS (SELECT 1 FROM sessions WHERE token_hash=? AND user_id=progress.user_id AND expires_at>?)",
-      )
-      .bind(u.id, u.token_hash, now())
-      .first();
+    const current = await readActiveProgress(db, u);
     if (!current) fail(401, "Сессия завершилась. Войди ещё раз.");
     if (current.revision === data.revision + 1 && current.document === document)
       return json({
@@ -550,11 +611,7 @@ async function page(request, env) {
             )
               .bind(u.id)
               .first();
-            state.progress = {
-              revision: p.revision,
-              data: JSON.parse(p.document),
-              updatedAt: p.updated_at,
-            };
+            state.progress = await cloudSnapshot(p, u.id);
           }
           return state;
         })(),
@@ -574,7 +631,7 @@ async function page(request, env) {
   const payload = JSON.stringify(boot).replace(/</g, "\\u003c"),
     html = (await response.text()).replace(
       "<head>",
-      "<head><script>window.matclubBoot=" + payload + ";</script>",
+      () => "<head><script>window.matclubBoot=" + payload + ";</script>",
     );
   headers.delete("content-encoding");
   return new Response(html, { status: response.status, headers });

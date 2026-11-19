@@ -34,6 +34,37 @@ status(await call('/api/progress',{method:'PUT',token:alice,data:{revision:1,dat
 result=await call('/api/profile',{method:'PUT',token:alice,data:{name:'</script><script>alert(1)</script>',grade:10}});status(result,200);assert.equal(result.body.user.grade,10);
 const page=await worker.fetch(new Request('https://school.test/',{headers:{cookie:'__Host-matclub_session='+alice}}),env,ctx);const html=await page.text();assert.ok(html.includes('window.matclubBoot='));assert.ok(html.includes('\\u003c/script>'));assert.ok(!html.includes('<script>alert(1)</script>'));assert.match(page.headers.get('cache-control'),/no-store/);assert.equal(page.headers.get('etag'),null);assert.ok(!html.includes(stored.password_hash));
 status(await call('/api/profile',{method:'PUT',token:alice,data:{grade:3}}),400);
+// Two devices can commit different sections based on the same snapshot.
+const baseline = (await call('/api/progress', { token: alice })).body;
+const patch = (token, changes, userId=id) => call('/api/progress', {
+  method:'PUT', token, data:{userId, revision:baseline.revision, changes},
+});
+const journal = JSON.stringify({draft:"$& and $' are literal text"});
+const workbook = {'matclub-workbook':{base:null, value:journal}};
+const pref = {'matclub-sidebar-hidden':{base:null, value:'1'}};
+const [onComputer, onPhone] = await Promise.all([patch(alice, workbook), patch(second, pref)]);
+status(onComputer, 200);
+status(onPhone, 200);
+const merged = (await call('/api/progress', {token:second})).body;
+assert.equal(merged.userId, id);
+assert.equal(merged.data['matclub-workbook'], journal);
+assert.equal(merged.data['matclub-sidebar-hidden'], '1');
+assert.equal(merged.revision, baseline.revision + 2);
+const retry = await patch(alice, workbook);
+status(retry, 200);
+assert.equal(retry.body.revision, merged.revision);
+status(await patch(second, {'matclub-workbook':{base:null, value:'{}'}}), 409);
+status(await patch(bob.token, workbook), 401);
+const htmlWithDraft = await worker.fetch(new Request('https://school.test/', {headers:{cookie:'__Host-matclub_session='+alice}}), env, ctx);
+const bootText = (await htmlWithDraft.text()).match(/window\.matclubBoot=(.*?);<\/script>/s)[1];
+assert.equal(JSON.parse(bootText).progress.data['matclub-workbook'], journal);
+const oldFormat = await call('/api/progress', {method:'PUT', token:second, data:{revision:merged.revision, data}});
+status(oldFormat, 200);
+const kept = (await call('/api/progress', {token:alice})).body;
+assert.equal(kept.data['matclub-sidebar-hidden'], '1');
+const removed = await patch(second, {'matclub-sidebar-hidden':{base:kept.hashes['matclub-sidebar-hidden'], value:null}});
+status(removed, 200);
+assert.equal((await call('/api/progress', {token:alice})).body.data['matclub-sidebar-hidden'], undefined);
 status(await call('/api/password',{method:'POST',token:alice,data:{currentPassword:'wrong-passphrase',password:'new-passphrase'}}),401);
 const changed=await call('/api/password',{method:'POST',token:alice,data:{currentPassword:'correct-passphrase-42',password:'new-passphrase-42'}});status(changed,200);assert.ok(changed.token);
 assert.equal((await call('/api/me',{token:alice})).body.user,null);assert.equal((await call('/api/me',{token:second})).body.user,null);assert.equal((await call('/api/me',{token:changed.token})).body.user.id,id);

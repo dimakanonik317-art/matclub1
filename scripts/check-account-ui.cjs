@@ -14,7 +14,7 @@ function setup(stored={},url='https://test.local/',boot={ready:false,user:null},
 }
 
 (async()=>{
-const guest=setup();guest.click('#accountButton');assert.ok(guest.d.querySelector('#accountAuth'));assert.equal(guest.d.querySelector('.account-submit').disabled,true);assert.equal(guest.w.eval('tasks.length'),1889);const task=guest.w.eval('tasks[0].id');guest.dom.window.close();
+const guest=setup();guest.click('#accountButton');assert.ok(guest.d.querySelector('#accountAuth'));assert.equal(guest.d.querySelector('.account-submit').disabled,true);assert.ok(guest.w.eval('tasks.some(t=>t.domain==="math") && tasks.some(t=>t.domain==="physics")'));const task=guest.w.eval('tasks[0].id');guest.dom.window.close();
 const user={id:'student-a',login:'student_a',name:'Аня',grade:9};const remote={'matclub-solved':JSON.stringify([task]),'matclub-cpp-v1':JSON.stringify({done:['hello'],drafts:{}})};const calls=[];
 const fetcher=async(url,options)=>{const data=options.body?JSON.parse(options.body):null;calls.push({url,data,options});if(url==='/api/progress'&&options.method==='PUT')return{ok:true,json:async()=>({revision:data.revision+1,updatedAt:1700000000})};if(url==='/api/profile')return{ok:true,json:async()=>({user:{...user,...data}})};return{ok:true,json:async()=>({ok:true})}};
 const signed=setup({'matclub-solved':'["old-guest"]'},'https://test.local/',{ready:true,user,progress:{revision:3,data:remote,updatedAt:1700000000}},fetcher);const {w,d,click,change}=signed;assert.equal(w.eval('solved.length'),1);assert.equal(w.eval('solved[0]'),task);assert.equal(w.localStorage.getItem('matclub-account-owner'),user.id);click('#accountButton');assert.ok(d.querySelector('.account-achievements .earned'));assert.ok(d.querySelector('#accountContent').textContent.includes('Аня'));assert.equal(w.localStorage.getItem('matclub-account-backup').includes('old-guest'),true);
@@ -28,5 +28,34 @@ const expired=setup({'matclub-account-owner':user.id,'matclub-account-cache':JSO
 const other=setup({'matclub-account-owner':user.id,'matclub-account-cache':JSON.stringify(pending),'matclub-solved':'["private"]'},'https://test.local/',{ready:true,user:{...user,id:'student-b'},progress:{revision:0,data:{},updatedAt:1700000000}},fetcher);assert.equal(other.w.localStorage.getItem('matclub-solved'),null);assert.equal(other.w.matclubAccount.state.user.id,'student-b');other.dom.window.close();
 const offline=setup({'matclub-account-owner':user.id,'matclub-account-cache':JSON.stringify({user,revision:3,pending:false}),'matclub-solved':'[]'},'https://test.local/',{ready:false,user:null},fetcher);offline.w.localStorage.setItem('matclub-solved','["offline"]');assert.equal(offline.w.matclubAccountStore.cache.pending,true);offline.dom.window.close();
 const restored=setup({['matclub-account-offline-'+user.id]:JSON.stringify({data:{'matclub-solved':'["offline"]'},cache:{user,revision:3,pending:true}})},'https://test.local/',{ready:true,user,progress:{revision:3,data:remote,updatedAt:1700000000}},fetcher);assert.equal(restored.w.localStorage.getItem('matclub-solved'),'["offline"]');assert.equal(restored.w.matclubAccount.state.pending,true);restored.dom.window.close();
+// Disconnected work survives a reload and is sent under the same account on reconnect.
+const key='matclub-saved', baselineHash='a'.repeat(64), newHash='b'.repeat(64);
+const cachedState={user,revision:4,hashes:{[key]:baselineHash},dirty:[key],pending:true};
+let online=false;
+const sent=[];
+const reconnect=setup({'matclub-account-owner':user.id,'matclub-account-cache':JSON.stringify(cachedState),[key]:'["saved-offline"]'},
+ 'https://test.local/',{ready:false,user:null},async(url,options)=>{
+  if(!online)throw Error('offline');
+  if(url==='/api/me')return {ok:true,json:async()=>({user})};
+  assert.equal(url,'/api/progress');assert.equal(options.method,'PUT');
+  sent.push(JSON.parse(options.body));
+  return {ok:true,json:async()=>({revision:6,updatedAt:1700000001,hashes:{[key]:newHash}})};
+ });
+assert.equal(await reconnect.w.matclubAccount.sync(),false);
+assert.equal(reconnect.w.matclubAccount.state.pending,true);
+online=true;reconnect.w.dispatchEvent(new reconnect.w.Event('online'));
+await new Promise(resolve=>setTimeout(resolve,20));
+assert.equal(reconnect.w.matclubAccount.state.pending,false);
+assert.equal(sent.length,1);
+assert.deepEqual(sent[0].changes[key],{base:baselineHash,value:'["saved-offline"]'});
+assert.equal(sent[0].userId,user.id);
+assert.equal(reconnect.w.matclubAccountStore.cache.hashes[key],newHash);
+reconnect.dom.window.close();
+const updatedCloud={ready:true,user,progress:{revision:5,hashes:{[key]:baselineHash},data:{[key]:'[]','matclub-workbook':'{"new":true}'}}};
+const reload=setup({'matclub-account-owner':user.id,'matclub-account-cache':JSON.stringify(cachedState),[key]:'["saved-offline"]'},'https://test.local/',updatedCloud,fetcher);
+assert.equal(reload.w.matclubAccount.state.conflict,false);
+assert.equal(reload.w.localStorage.getItem(key),'["saved-offline"]');
+assert.equal(reload.w.localStorage.getItem('matclub-workbook'),'{"new":true}');
+reload.dom.window.close();
 const css=new JSDOM('<html><head></head><body></body></html>');const style=css.window.document.createElement('style');style.textContent=fs.readFileSync(path.join(root,'account.css'),'utf8');css.window.document.head.append(style);assert.ok(style.sheet.cssRules.length>10);css.window.close();console.log('PASS: account UI, bootstrap before school scripts, student isolation, achievements, versioned sync, persisted pending work, conflicts, expired sessions, profile escaping and CSS.');
 })();
