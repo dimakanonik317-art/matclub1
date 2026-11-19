@@ -1,0 +1,390 @@
+/* MatКлуб · обложка, оглавление и рабочие поверхности */
+.workbench-shell {
+  --night:#181a1c; --rule:#373a3d; --mint:#b7ef63; --brass:#e0e6ec;
+  --book:Georgia,Cambria,serif; --grotesk:'Golos Text','Segoe UI',sans-serif;
+  --mono:Consolas,'Courier New',monospace;
+  --gutter:clamp(18px,4.4vw,76px); --measure:1580px;
+  background:var(--paper); color:var(--ink); font-family:var(--grotesk);
+}
+.workbench-shell [hidden] {display:none!important}
+.workbench-shell :is(.main,main,.hero-copy,.hero-art,.course-directory,.task-info) {min-width:0}
+.workbench-shell .main>header {position:relative;z-index:4}
+.workbench-shell main,.workbench-shell[data-page] main {width:100%;max-width:var(--measure);padding:0 var(--gutter) 48px;margin:auto}
+.workbench-shell .sidebar {background:var(--night);color:#eff1f4;border:0}
+.workbench-shell .brand {color:#f4f6f8;align-items:center;gap:9px;font:600 26px/1 var(--book);letter-spacing:-1.6px}
+.wb-mark {display:block;width:32px;height:32px;color:var(--mint);stroke-linejoin:round}
+.workbench-shell .sidebar .nav {color:#bfc6cd;background:none;border-color:transparent;box-shadow:none}
+.workbench-shell .sidebar .nav:is(:hover,:focus-visible) {color:white;background:#2b2e30}
+.workbench-shell .sidebar .nav.active {color:var(--mint);background:#292e29;border-color:transparent}
+.workbench-shell .sidebar .nav b {color:#e6e8ea;background:#3c4144}
+.workbench-shell .sidebar button.top-credit {color:#aeb4bc}
+.workbench-shell .main>header {border-bottom:1px solid var(--line);background:var(--paper);gap:10px}
+.workbench-shell .search {margin-left:auto;border:1px solid var(--line)!important;background:var(--ui-field)!important;border-radius:4px!important;padding:0 12px;gap:9px;height:39px;min-height:39px!important}
+.workbench-shell .search kbd {display:inline-block;color:var(--ui-text);font:12px var(--mono);padding:1px 5px;border:1px solid var(--line);border-radius:2px}
+.workbench-shell .crumb,.workbench-shell .beta-badge {display:none}
+.workbench-shell .domain-switch {gap:22px;align-items:center;background:transparent}
+.workbench-shell .domain-switch>button,.workbench-shell .domain-switch #computingNav {min-height:52px;gap:7px;padding:8px 0}
+.workbench-shell .domain-switch b {font:500 14px var(--grotesk)}
+.workbench-shell .domain-switch small {display:none}
+.workbench-shell .domain-switch .selected {border-bottom-color:var(--sci-accent)}
+.workbench-shell .main>header :is(.account-button,.header-help,.header-support,.header-settings) {min-height:38px;border-radius:4px!important}
+.workbench-shell .header-support .support-label {display:none}
+@media(min-width:1080px) {
+  html[data-theme] .workbench-shell .main {margin:0!important}
+  .workbench-shell #siteSidebar {position:relative;inset:auto;width:100%;height:auto;min-height:62px;padding:0 max(var(--gutter),calc((100vw - var(--measure))/2 + var(--gutter)));display:flex;flex-flow:row;align-items:center;gap:clamp(12px,2vw,38px);overflow:visible}
+  html[data-sidebar=hidden] .workbench-shell #siteSidebar {display:none}
+  .workbench-shell #siteSidebar .brand {font:600 27px/1 var(--book)!important;border:0;padding:0}
+  .workbench-shell #siteSidebar nav {display:flex;flex-flow:row;align-items:center;gap:2px;flex:0 1 auto;margin:0;padding:0}
+  .workbench-shell #siteSidebar .nav {display:flex;flex-direction:row;align-items:center;justify-content:center;gap:6px;padding:8px clamp(6px,.78vw,15px);border:0;border-radius:3px;min-height:36px}
+  .workbench-shell #siteSidebar .nav-label {display:inline;font-size:12px}
+  .workbench-shell #siteSidebar .lab-mobile-label,.workbench-shell #siteSidebar .nav i {display:none}
+  .workbench-shell #siteSidebar .nav svg {width:16px;height:16px}
+  .workbench-shell #siteSidebar .top-credit {margin:0;padding:0;border:0;font-size:10px}
+  .workbench-shell .main>header {max-width:var(--measure);margin:auto;padding:0 var(--gutter);height:58px;min-height:58px;justify-content:flex-start}
+  .workbench-shell .main>header .domain-switch {margin:0 0 0 6px;padding:0;border:0;align-self:stretch}
+  .workbench-shell .main>header .search {width:clamp(160px,18vw,292px)!important}
+}
+@media(min-width:768px) and (max-width:1079px) {
+  .workbench-shell {--gutter:22px}
+  .workbench-shell .sidebar {width:64px;padding:20px 7px}
+  .workbench-shell .sidebar .brand {justify-content:center;padding:0}
+  .workbench-shell .sidebar :is(.wb-wordmark,.nav-label,.lab-mobile-label,.lab-desktop-label,.nav b,.nav i,.top-credit) {display:none!important}
+  .workbench-shell .sidebar .nav {justify-content:center;padding:9px}
+  .workbench-shell .main {margin-left:64px}
+  .workbench-shell .main>header {height:55px;padding:0 var(--gutter)}
+}
+@media(max-width:767px) {
+  .workbench-shell {--gutter:14px}
+  .workbench-shell .main {margin:0}
+  .workbench-shell #siteSidebar {position:relative;inset:auto;width:100%;height:49px;min-height:49px;padding:0 var(--gutter);display:flex;align-items:center;flex-direction:row;z-index:10}
+  .workbench-shell .sidebar .brand {padding:0;font-size:24px;border:0}
+  .workbench-shell .sidebar .top-credit {display:none}
+  .workbench-shell .sidebar nav {position:fixed;inset:auto 0 0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin:0;padding:4px 2px max(4px,env(safe-area-inset-bottom));background:var(--night);border:0;gap:0;z-index:45}
+  .workbench-shell .sidebar .nav {padding:4px 1px;display:flex;flex-direction:column;gap:3px;min-height:44px;border:0}
+  .workbench-shell .sidebar .nav .nav-label,.workbench-shell .sidebar .nav .lab-mobile-label {display:block;font:9px var(--grotesk);letter-spacing:0}
+  .workbench-shell .sidebar .nav .lab-desktop-label,.workbench-shell .sidebar .nav i {display:none}
+  .workbench-shell .sidebar .nav svg {width:17px;height:17px}
+  .workbench-shell main,.workbench-shell[data-page] main {padding-bottom:85px}
+  .workbench-shell .main>header {display:flex;padding:6px var(--gutter);height:auto;min-height:47px;gap:6px}
+  .workbench-shell .main>header .search {order:0;flex:1;min-width:0;width:auto!important;margin:0}
+  .workbench-shell .main>header :is(.account-button,.header-help,.header-settings,.header-support) {order:1;min-width:35px;width:35px;padding:4px}
+  .workbench-shell .main>header .account-button>span:last-child,.workbench-shell .sidebar-toggle {display:none}
+  .workbench-shell .search kbd {display:none}
+  .workbench-shell .domain-switch {margin:0;justify-content:space-between;gap:5px}
+  .workbench-shell .domain-switch>button,.workbench-shell .domain-switch #computingNav {min-height:43px;flex:1;justify-content:center;gap:4px}
+  .workbench-shell .domain-switch b {font-size:12px}
+  .workbench-shell .domain-switch>button>span {display:none}
+}
+
+/* Interactive instrument and its measurement controls. */
+html[data-domain] .workbench-shell .hero:not([hidden]) {
+  display:grid!important;position:relative;isolation:isolate;align-items:center;
+  grid-template-columns:minmax(0,.94fr) minmax(0,1.12fr)!important;
+  gap:clamp(24px,4.5vw,76px);margin:20px 0 0;padding:clamp(26px,3vw,52px) clamp(24px,3.4vw,65px)!important;
+  min-height:0;background:var(--night)!important;color:#eef0f4;border:1px solid #33373b;border-radius:8px 8px 0 0;overflow:hidden;box-shadow:none;
+}
+html[data-domain] .workbench-shell .hero .hero-copy {display:block;padding:0!important;width:auto;max-width:none;grid-area:auto;position:static}
+html[data-domain] .workbench-shell .hero .eyebrow {margin:0 0 18px;color:#b1bbc3;font:500 11px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.12em}
+html[data-domain] .workbench-shell .hero h1 {font:500 clamp(58px,6.25vw,104px)/.94 var(--grotesk)!important;letter-spacing:-.075em!important;color:#f1f4f8;margin:0!important;max-width:none!important}
+html[data-domain] .workbench-shell .hero h1 em {font:italic 400 1.03em/1 var(--book);letter-spacing:-.061em;color:var(--mint)}
+html[data-domain] .workbench-shell .hero-copy>p {margin:17px 0 0;color:#bac1c9;font:400 clamp(14px,1.05vw,17px)/1.55 var(--grotesk);max-width:40ch}
+.workbench-shell .hero .hero-actions {display:flex;flex-flow:row wrap;gap:8px 18px;align-items:center;margin:20px 0 0;min-width:0;grid-area:auto}
+html[data-domain] .workbench-shell .hero .primary {padding:9px 15px;min-height:40px;background:var(--mint);border:1px solid var(--mint);border-radius:3px;color:#15210c;font:500 13px var(--grotesk);box-shadow:none}
+html[data-domain] .workbench-shell .hero .hero-graph {padding:8px 0;color:#e1e5ea;border:0;font:500 13px var(--grotesk);min-height:38px}
+.workbench-shell .hero-actions button span {margin-left:5px}
+.workbench-shell .hero-foot {display:none}
+html[data-domain] .workbench-shell .hero .hero-art {
+  display:block!important;position:relative;grid-area:auto;inset:auto;align-self:stretch;align-content:center;
+  margin:0;padding:0!important;min-height:0!important;height:auto!important;max-height:none!important;
+  width:100%!important;max-width:none;opacity:1!important;transform:none;overflow:visible;background:none!important;border:0;
+}
+.phase-plate {margin:0;width:100%;color:#d1d8df;min-width:0}
+.phase-plate figcaption {display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid var(--rule);padding-bottom:6px}
+.phase-plate figcaption strong {display:block;margin:4px 0 2px;font:500 clamp(17px,1.5vw,24px)/1.15 var(--grotesk);letter-spacing:-.035em;color:#edf1f5}
+.phase-plate figcaption small {font:10px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#afb7bf}
+.phase-formula {white-space:nowrap;color:var(--mint);font:italic clamp(16px,1.6vw,24px)/1.4 var(--book)}
+.phase-values b {font-weight:400}
+.phase-legend {font:12px var(--mono);fill:#c4cbd2}
+.axis-ticks {fill:none;stroke:#89939d;stroke-width:1}
+.angle-sector {fill:#b7ef632c;stroke:var(--mint);stroke-width:1}
+.optics-chart path {vector-effect:non-scaling-stroke}
+.optics-axis {fill:none;stroke:#858d94;stroke-width:1}
+.optics-lens {fill:#c4d6ed16;stroke:#bfccd6;stroke-width:1.3}
+.optics-ray {fill:none;stroke:var(--mint);stroke-width:1.9}
+.optics-ray.central {stroke:#c1cad4;stroke-width:1.3}
+.optics-object,.optics-image {fill:none;stroke:#f0f3f6;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.optics-image {stroke:var(--mint)}
+.phase-controls output {white-space:nowrap}
+.workbench-shell .hero .phase-controls input {background:transparent}
+
+.drawing-field {position:relative;display:grid;align-items:center;width:100%;aspect-ratio:556/218;background:#151719;overflow:hidden}
+.workbench-shell .hero-art :is(.phase-chart,.optics-chart) {display:block;position:static;width:100%!important;height:auto!important;max-height:none;margin:0;overflow:visible}
+.phase-chart path,.phase-chart circle,.phase-chart polyline {vector-effect:non-scaling-stroke}
+.phase-labels {font:15px Georgia,serif;fill:#bec6ce}
+.phase-ring,.phase-wave,.phase-trace,.phase-radius,.phase-guide {fill:none;stroke-linecap:round;stroke-linejoin:round}
+.phase-ring,.phase-wave {stroke:#9ba6b0;stroke-width:1.2}
+.phase-trace,.phase-radius {stroke:var(--mint);stroke-width:2.4}
+.phase-guide {stroke:#abb5be;stroke-width:1;stroke-dasharray:3 4}
+.phase-pin,.phase-sample {fill:var(--brass);stroke:#1d2022;stroke-width:1.5}
+.phase-controls,.phase-values {display:flex;align-items:center;color:#b6bec5;font:12px/1.4 var(--mono);font-variant-numeric:tabular-nums}
+.phase-controls {gap:11px;border-top:1px solid var(--rule);padding-top:8px}
+.phase-controls button {border:1px solid #454a4f;background:#25292d;color:#bcf16d;border-radius:3px;min-width:42px;min-height:35px}
+.phase-controls input {flex:1;width:0;min-width:40px;height:24px;accent-color:var(--mint);cursor:pointer}
+.phase-controls output {min-width:4ch;text-align:right;color:var(--brass)}
+.phase-values {gap:14px;margin:4px 0 0;justify-content:flex-end;font-size:11px}
+.phase-values output {color:#f3f5f7}
+.workbench-shell .study-ribbon {margin:0;padding:15px clamp(12px,2.2vw,34px);background:var(--ui-soft);border:0;gap:15px}
+.workbench-shell .study-ribbon>div {border:0;gap:13px}
+.workbench-shell .study-ribbon>div>span {font:italic 22px var(--book);color:var(--copper)}
+.workbench-shell .study-ribbon b {font-size:13px}
+.workbench-shell .study-ribbon small {font-size:12px;color:var(--ui-text)}
+@media(max-width:900px) {
+  html[data-domain] .workbench-shell .hero:not([hidden]) {gap:20px;padding:25px!important}
+  html[data-domain] .workbench-shell .hero h1 {font-size:clamp(47px,6.5vw,60px)!important}
+}
+@media(max-width:670px) {
+  html[data-domain] .workbench-shell .hero:not([hidden]) {grid-template-columns:minmax(0,1fr)!important;padding:22px 18px 14px!important;gap:18px;margin-top:9px}
+  html[data-domain] .workbench-shell .hero h1 {font-size:clamp(47px,10vw,65px)!important}
+  .workbench-shell .hero h1 br {display:none}
+  html[data-domain] .workbench-shell .hero h1 em {display:block}
+  html[data-domain] .workbench-shell .hero .eyebrow {margin-bottom:9px;font-size:10px}
+  html[data-domain] .workbench-shell .hero-copy>p {margin-top:10px;font-size:14px;max-width:46ch}
+  .workbench-shell .hero .hero-actions {margin-top:12px;gap:8px 12px}
+  .phase-plate figcaption strong {font-size:18px}
+  .drawing-field {aspect-ratio:556/218}
+  .phase-values {font-size:10px}
+  .workbench-shell .study-ribbon {display:none}
+}
+
+/* Course index and individual entries */
+.workbench-shell #catalog {padding:0}
+.workbench-shell #catalog .section-head {align-items:end;margin:clamp(24px,2.8vw,45px) 0 16px;padding:0;border:0}
+.workbench-shell .section-head .eyebrow,html[data-page=catalog] .workbench-shell #catalogNote {display:none}
+.workbench-shell #sectionTitle {font:500 clamp(27px,2.15vw,40px)/1.12 var(--grotesk);letter-spacing:-.055em;margin:0}
+.course-filters {display:flex;position:relative;flex-wrap:wrap;align-items:center;gap:9px 20px;padding:11px 0;border-block:1px solid var(--line)}
+.course-filters:not(:has(.grade-row:not([hidden]),.subject-tabs:not([hidden]),.physics-filter:not([hidden]))) {display:none}
+.workbench-shell .course-filters .grade-row,.workbench-shell .course-filters .subject-tabs {display:flex;flex-wrap:wrap;align-items:center;border:0;margin:0;padding:0}
+.workbench-shell .grade-row {gap:13px}
+.workbench-shell .grade-row>span {font:11px var(--mono);color:var(--ui-text);letter-spacing:.08em}
+.workbench-shell #grades,.workbench-shell .subject-tabs {gap:5px}
+.workbench-shell #grades button {min-width:36px;min-height:36px;border-radius:3px;background:transparent;color:var(--ink);font:500 15px var(--grotesk);padding:5px;border:1px solid var(--line)}
+.workbench-shell #grades button[aria-pressed=true] {background:var(--sci-blue);color:var(--paper);border-color:var(--sci-blue)}
+.workbench-shell .subject-tabs button {min-height:36px;border-radius:3px;font:500 13px var(--grotesk);padding:6px 11px}
+.workbench-shell .course-filters .physics-filter {margin:0;flex-wrap:wrap;min-width:0}
+.syllabus-note {margin-left:auto;color:var(--ui-text);font-size:12px}
+.syllabus-note summary {padding:9px 0;cursor:pointer}
+.syllabus-note:has(.curriculum-note[hidden]) {display:none}
+.workbench-shell .syllabus-note .curriculum-note {margin:0;padding:12px;border:1px solid var(--line);font:13px/1.6 var(--grotesk);color:var(--ui-text)}
+.course-directory {margin-top:17px}
+.course-directory:not(:has(> :not([hidden]))) {display:none}
+.workbench-shell .topics-head {align-items:baseline;border:0;min-height:0;margin:0;padding:3px 0 12px}
+.workbench-shell .topics-head h3 {font:500 18px/1.2 var(--grotesk);margin:0}
+.workbench-shell #topicCount {color:var(--ui-text);font:12px var(--mono)}
+.workbench-shell #topics {display:block;border-top:2px solid var(--sci-blue);background:transparent}
+.workbench-shell #topics .topic:nth-child(n) {
+  display:grid;grid-template-columns:80px minmax(0,1.2fr) minmax(0,.95fr) minmax(165px,.7fr);
+  gap:8px 18px;align-items:center;min-height:68px;margin:0;padding:10px 14px;
+  border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;box-shadow:none;
+}
+.workbench-shell #topics .topic:nth-child(n):is(:hover,:focus-within,.active) {background:var(--ui-soft);box-shadow:inset 3px 0 var(--sci-accent)}
+.workbench-shell #topics .topic > * {grid-area:auto;margin:0;min-width:0}
+.workbench-shell #topics .topic-topline {display:flex;flex-flow:row;align-items:center;justify-content:space-between;gap:5px;border:0;padding:0}
+.workbench-shell #topics .topic-index {order:-1;color:var(--ui-text);font:11px var(--mono)}
+.workbench-shell #topics .topic-symbol {width:auto;max-width:5ch;height:auto;color:var(--copper);font:italic 22px/1.15 var(--book);overflow-wrap:anywhere}
+.workbench-shell #topics h3 {font:500 clamp(16px,1.26vw,20px)/1.22 var(--grotesk);letter-spacing:-.035em;color:var(--ink)}
+.workbench-shell #topics p {font:13px/1.48 var(--grotesk);color:var(--ui-text)}
+.workbench-shell #topics .topic-actions {display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;border:0;padding:0;gap:2px 8px}
+.workbench-shell #topics .topic-actions :is(button,a) {font:500 12px/1.35 var(--grotesk);min-height:36px;padding:7px 4px;white-space:normal;color:var(--sci-accent)}
+.workbench-shell #topics .topic-actions button:last-child {border-bottom:1px solid var(--ui-accent-edge)}
+.workbench-shell #topics .ege-topic-status {grid-column:2/-1;font-size:11px;color:var(--ui-text)}
+.workbench-shell .level-header {padding-top:18px;border-top:2px solid var(--sci-blue)}
+.workbench-shell .level-header h3 {font:400 clamp(26px,2.7vw,44px)/1.12 var(--book);letter-spacing:-.045em}
+.workbench-shell .level-tabs {display:flex;flex-wrap:wrap;gap:6px;border:0;background:none}
+.workbench-shell .level-tabs button {min-height:36px;border-radius:3px;background:var(--ui-field);color:var(--ink);border:1px solid var(--line)}
+.workbench-shell .level-tabs button.selected {background:var(--sci-blue);border-color:var(--sci-blue);color:var(--paper)}
+.workbench-shell .task-card {background:var(--ui-surface);border:0;border-bottom:1px solid var(--line);border-radius:0;box-shadow:none;padding:15px 18px}
+.workbench-shell .task-num {width:36px;height:36px;align-self:start;display:grid;place-items:center;background:var(--ui-soft);border-inline-start:2px solid var(--copper);color:var(--copper);font:italic 18px var(--book)}
+.workbench-shell .task-info h3 {font:500 18px/1.3 var(--grotesk);letter-spacing:-.03em}
+.workbench-shell .task-info p {font:15px/1.62 var(--book);color:var(--ui-text);max-width:78ch}
+.workbench-shell .task-card:hover,.workbench-shell .task-card:focus-within {background:var(--ui-soft)}
+.workbench-shell .challenge-banner {background:var(--ice)!important;border:0;border-inline-start:3px solid var(--sci-accent);border-radius:0}
+.workbench-shell .challenge-banner h3 {color:var(--ink)}
+@media(min-width:1280px) {
+  .workbench-shell .course-directory {display:grid;grid-template-columns:minmax(155px,.41fr) minmax(0,2.5fr);gap:0 24px;align-items:start}
+  .course-directory>section {grid-column:1/-1}
+  .workbench-shell .topics-head {display:flex;flex-flow:column;align-items:flex-start;border-top:2px solid var(--copper);gap:7px;padding:14px 0}
+}
+@media(max-width:960px) {
+  .workbench-shell #topics .topic:nth-child(n) {grid-template-columns:50px minmax(0,1fr) minmax(110px,auto);gap:3px 12px}
+  .workbench-shell #topics .topic-topline {grid-area:1/1/3/2;flex-flow:column;align-items:flex-start}
+  .workbench-shell #topics .topic h3 {grid-area:1/2}
+  .workbench-shell #topics .topic p {grid-area:2/2}
+  .workbench-shell #topics .topic-actions {grid-column:3;grid-row:1/3}
+}
+@media(max-width:580px) {
+  .workbench-shell #catalog .section-head {margin:23px 0 12px}
+  .workbench-shell .course-filters {gap:6px 10px}
+  .workbench-shell .course-filters .grade-row {width:100%}
+  .workbench-shell #grades {display:flex;flex-wrap:wrap}
+  .workbench-shell .syllabus-note {font-size:11px}
+  .workbench-shell #topics .topic:nth-child(n) {grid-template-columns:36px minmax(0,1fr);gap:3px 12px;padding:12px 6px}
+  .workbench-shell #topics .topic-topline {grid-row:1/4;align-self:start;gap:5px}
+  .workbench-shell #topics .topic-symbol {font-size:18px}
+  .workbench-shell #topics .topic-actions {grid-area:3/2;justify-content:flex-start}
+  .workbench-shell .task-card {padding:13px 10px}
+}
+
+/* Reading desk, notebooks and instruments */
+html:is([data-page=favorites],[data-page=progress]) .workbench-shell #catalog .section-head,
+.workbench-shell :is(.graph-heading,.lab-heading,.computing-hero) {
+  background:var(--night)!important;color:#edf0f3;border:0;border-inline-start:4px solid #606b6d;
+  border-radius:0;margin:18px 0 24px;padding:clamp(20px,3vw,43px);box-shadow:none;
+}
+html:is([data-page=favorites],[data-page=progress]) #catalog .section-head :is(#sectionTitle,#catalogNote),
+.workbench-shell :is(.graph-heading,.lab-heading,.computing-hero) :is(h1,p,.eyebrow,.lab-heading-mark,.graph-counter) {color:#eef1f5}
+.workbench-shell :is(.graph-heading,.lab-heading,.computing-intro) h1 {font:500 clamp(32px,3.7vw,61px)/1.06 var(--grotesk);letter-spacing:-.052em;margin:7px 0}
+.workbench-shell :is(.graph-heading,.lab-heading,.computing-intro) h1 em {color:var(--mint)}
+.workbench-shell :is(.graph-heading,.lab-heading) p {color:#b5bec6}
+.workbench-shell :is(.graph-counter,.computing-status,.lab-heading-mark) {background:transparent;color:var(--mint);border-color:var(--rule)}
+.workbench-shell .stats {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:0;background:var(--ui-surface);border-bottom:1px solid var(--line)}
+.workbench-shell .stat {border:0;border-top:2px solid var(--sci-accent);padding:clamp(10px,2vw,28px);background:transparent}
+.workbench-shell .stat+.stat {border-left:1px solid var(--line)}
+.workbench-shell .stat strong {font:400 clamp(27px,3.4vw,54px)/1 var(--book);color:var(--sci-blue)}
+.workbench-shell .progress-row {padding:14px 7px;border-block-end:1px solid var(--line);background:none}
+.workbench-shell .progress-row progress {accent-color:var(--sci-accent)}
+.workbench-shell :is(.plot-toolbar,.lab-stage-head,.lab-work-head) {background:var(--ui-soft);padding:12px 16px;color:var(--ink);border-bottom:1px solid var(--line)}
+.workbench-shell :is(.graph-controls,.lab-controls,.lab-theory,.graph-canvas-card,.lab-apparatus) {border-radius:2px!important;border-top:2px solid var(--sci-accent)}
+.workbench-shell .lab-card {border-left:2px solid transparent}
+.workbench-shell .lab-card[aria-pressed=true] {border-left-color:var(--copper);background:var(--ui-soft)}
+.workbench-shell #taskDialog {background:var(--ui-surface);border:1px solid var(--line);border-radius:4px}
+.workbench-shell .workspace-top {background:var(--night);border-bottom:3px solid #454c52;padding-block:12px}
+.workbench-shell .workspace-top :is(span,.eyebrow,i) {color:#c4cbd3}
+.workbench-shell .workspace-top button {background:#282d30;color:white;border-color:#51575c}
+.workbench-shell #taskDialog>.close {color:#e5e9eb;background:#282c2f;border-color:#474d51}
+.workbench-shell .workspace-dialog .modal-title,.workbench-shell .lesson-dialog h2 {font:400 clamp(25px,3vw,46px)/1.11 var(--book);letter-spacing:-.035em}
+.workbench-shell .workspace-dialog .question {font:calc(1.16rem * var(--font-scale,1))/1.68 var(--book);color:var(--ink)}
+.workbench-shell .problem-pane {background:var(--ui-surface)}
+.workbench-shell .work-pane {background:var(--ui-soft);border-left:1px solid var(--line)}
+.workbench-shell .work-panel,.workbench-shell .lesson-content {min-width:0}
+.workbench-shell .workspace-dialog .solution-details {border:0;border-inline-start:3px solid var(--copper);background:var(--paper);padding:10px 14px}
+.workbench-shell .solution-details summary {font:500 15px var(--grotesk);padding:4px 0}
+.workbench-shell #settingsForm fieldset {border:0;border-top:1px solid var(--line);border-radius:0;background:var(--ui-surface);padding:12px 14px}
+.workbench-shell #settingsForm legend {font:500 16px var(--grotesk);color:var(--ink);padding:0 6px}
+.workbench-shell #settingsDialog h2 {font:400 33px/1.1 var(--book)}
+.workbench-shell .language-tab[aria-selected=true] {border-color:var(--sci-accent);background:var(--ui-soft)}
+@media(max-width:580px) {
+  .workbench-shell :is(.graph-heading,.lab-heading,.computing-hero) {padding:18px;margin:10px 0 14px}
+  .workbench-shell .stat span {font-size:11px;line-height:1.4;display:block;margin-top:5px}
+  .workbench-shell .work-pane {border:0;border-top:1px solid var(--line)}
+}
+@keyframes phase-build {from {clip-path:inset(0 100% 0 0)} to {clip-path:inset(0)}}
+@keyframes ink-in {from {opacity:.12;transform:translateY(9px)} to {opacity:1;transform:none}}
+@keyframes chart-ink {from {clip-path:inset(0 100% 0 0)} to {clip-path:inset(0)}}
+@media(prefers-reduced-motion:no-preference) {
+  html:not([data-motion=off]) .phase-wave {animation:phase-build 1s cubic-bezier(.18,.65,.25,1) both}
+  html:not([data-motion=off]) #graphSection:not([hidden]) #plotSvg {animation:chart-ink .85s cubic-bezier(.2,.72,.3,1) both}
+  html:not([data-motion=off]) :is(.hero-copy,.phase-plate,dialog[open],details[open]>:not(summary),#siteSidebar nav) {animation:ink-in .35s ease-out both}
+  html:not([data-motion=off]) #topics .topic {animation:ink-in .3s ease-out backwards;animation-delay:calc(min(var(--order,0),6)*24ms)}
+  html:not([data-motion=off]) :where(a,button,.task-card,.topic) {transition:transform .16s,background-color .16s,border-color .16s,color .16s}
+  @media(hover:hover) {html:not([data-motion=off]) .topic:hover h3 {transform:translateX(2px)}}
+}
+@media(prefers-reduced-motion:reduce) {.workbench-shell *, .workbench-shell *::before,.workbench-shell *::after {scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+html[data-motion=off] .workbench-shell * {animation:none!important;transition:none!important;scroll-behavior:auto!important}
+
+.workbench-shell .hero-copy {container-type:inline-size}
+html[data-domain] .workbench-shell .hero h1 {font-size:clamp(36px,15.3cqw,100px)!important}
+html[data-domain] .workbench-shell .hero h1 em {white-space:nowrap}
+.workbench-shell .challenge-banner :is(p,.section-kicker) {color:var(--ui-text)}
+.workbench-shell .challenge-banner button {background:var(--sci-blue);color:var(--paper);border:1px solid var(--sci-blue)}
+.workbench-shell #siteSidebar .top-credit b {color:inherit}
+.workbench-shell .domain-switch #computingNav small {display:none}
+@media(min-width:1080px) {
+  .workbench-shell #siteSidebar {justify-content:flex-start;padding-right:calc(max(var(--gutter), (100vw - var(--measure))/2 + var(--gutter)) + 128px);gap:clamp(12px,2.3vw,42px)}
+  .workbench-shell #siteSidebar nav {width:auto;flex:0 1 auto}
+  .workbench-shell #siteSidebar .nav {flex:0 0 auto}
+  .workbench-shell #siteSidebar .top-credit {margin-left:auto}
+}
+@media(max-width:670px) {
+  html[data-domain] .workbench-shell .hero h1 {font-size:clamp(37px,15.2cqw,65px)!important}
+}
+
+@media(min-width:1080px) {
+  .workbench-shell #siteSidebar .nav {width:auto!important;min-width:0}
+  .workbench-shell #siteSidebar .brand {width:auto!important}
+}
+html[data-font=mono] .workbench-shell .workspace-dialog .question {font-family:var(--reading-font)}
+html[data-reading=relaxed] .workbench-shell .workspace-dialog .question {line-height:2.1}
+
+.workbench-shell .lab-heading-mark span,.workbench-shell .graph-counter {color:var(--mint)}
+.workbench-shell .lab-heading-mark small,.workbench-shell .graph-counter small {color:#c0c7ce}
+@media(max-width:767px),(max-height:500px) and (max-width:1023px) {
+  .workbench-shell .main>header :is(.account-button,.header-help,.header-settings,.header-support) {width:44px;min-width:44px;height:44px;min-height:44px}
+  .workbench-shell .phase-controls button {min-height:40px}
+  .workbench-shell .topic-actions button,.workbench-shell #grades button {min-height:40px}
+}
+
+.workbench-shell #topics .topic-symbol {background:transparent;border:0;max-width:none;word-break:normal;overflow-wrap:normal}
+.workbench-shell #topics .topic-index {position:static}
+@media(max-width:580px) {
+  .workbench-shell #topics .topic:nth-child(n) {grid-template-columns:clamp(52px,15vw,64px) minmax(0,1fr)}
+}
+
+@media(min-width:1080px) {
+  html[data-sidebar=shown]:has(.workbench-shell) {scroll-padding-top:76px}
+  .workbench-shell #siteSidebar {position:sticky;top:0;z-index:30}
+}
+.workbench-shell #siteSidebar {background:#111315;border-bottom:1px solid #303439}
+.workbench-shell .study-ribbon {border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px}
+.workbench-shell .study-ribbon>div>span {font:12px var(--mono)}
+.workbench-shell .study-ribbon>div+div {padding-inline-start:16px;border-inline-start:1px solid var(--line)}
+.workbench-shell #topics {border-top:1px solid var(--line)}
+.workbench-shell .topics-head {border-color:var(--line)}
+.workbench-shell .course-filters {background:var(--ui-surface);border:1px solid var(--line);border-radius:5px;padding:10px 12px}
+.workbench-shell #grades button[aria-pressed=true] {background:var(--sci-accent);border-color:var(--sci-accent)}
+.workbench-shell #topics .topic-actions :is(button,a):not(:hover) {color:var(--ink)}
+.workbench-shell .phase-controls {padding-block:9px;gap:12px}
+.workbench-shell .phase-values {margin:0;padding-top:7px;border-top:1px solid var(--rule);letter-spacing:.02em}
+.workbench-shell .hero .phase-controls button:hover {background:#353b3d}
+.workbench-shell .phase-values output {font-size:13px}
+.workbench-shell .phase-wave {stroke:#9ca7b0;stroke-width:1.55}
+.workbench-shell .phase-trace {stroke-width:3}
+.workbench-shell .phase-ring {stroke:#b4bdc6}
+.workbench-shell .phase-pin,.workbench-shell .phase-sample {fill:var(--mint);stroke:#101315}
+.workbench-shell .graph-heading h1 em,.workbench-shell .lab-heading h1 em,.workbench-shell .computing-intro h1 em {color:#c8d0d7;font-style:normal}
+@media(min-width:1600px){
+  .workbench-shell {--measure:clamp(1580px,83vw,2280px)}
+}
+@media(max-width:670px){
+  .workbench-shell .phase-labels {font-size:19px}
+  .workbench-shell .phase-legend {font-size:16px}
+  .workbench-shell .phase-values {font-size:12px}
+}
+/* One fixed coordinate system for the default dock and saved drag position. */
+.workbench-shell #aiLaunch {
+  --dock-right:max(18px,env(safe-area-inset-right));
+  --dock-bottom:max(18px,env(safe-area-inset-bottom));
+  position:fixed!important; inset:auto var(--dock-right) var(--dock-bottom) auto!important;
+  z-index:65; display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  margin:0; padding:0 14px 0 10px; width:auto!important; height:42px!important; min-height:42px!important;
+  background:#202523!important; color:#edf2ed!important; border:1px solid #596354;
+  border-radius:24px!important; box-shadow:0 3px 12px #0004!important;
+  font:500 13px/1 var(--grotesk); touch-action:none; user-select:none; cursor:grab;
+}
+.workbench-shell #aiLaunch.ai-positioned {inset:var(--ai-y) auto auto var(--ai-x)!important}
+.workbench-shell #aiLaunch .assistant-glyph {width:26px;height:26px;color:#b7ef63;stroke-width:1.55;stroke-linejoin:round}
+.workbench-shell #aiLaunch .assistant-label {display:inline;color:inherit}
+.workbench-shell #aiLaunch:is(:hover,:focus-visible) {background:#2c332b!important;border-color:#a5cb73}
+.workbench-shell #aiLaunch.ai-dragging {cursor:grabbing;border-color:#b7ef63;transition:none}
+@media(max-width:767px) {
+  .workbench-shell #aiLaunch {
+    --dock-right:max(10px,env(safe-area-inset-right));
+    --dock-bottom:calc(62px + env(safe-area-inset-bottom));
+    width:42px!important;height:42px!important;min-height:42px!important;padding:0;border-radius:14px!important;
+  }
+  .workbench-shell #aiLaunch .assistant-label {display:none}
+  .workbench-shell #grades button {height:32px;min-height:32px;min-width:30px;font-size:13px}
+  .workbench-shell :is(.subject-tabs,.level-tabs) button {min-height:32px;padding:5px 8px;font-size:12px}
+  .workbench-shell #topics .topic-actions :is(button,a) {min-height:32px;padding:4px 5px}
+  html[data-domain] .workbench-shell .hero .primary {min-height:35px;padding:7px 12px}
+  .workbench-shell .sidebar .nav {gap:2px;padding:3px 1px}
+}

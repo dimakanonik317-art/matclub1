@@ -26,3 +26,5 @@
  .ai-note{padding:6px 12px 0;font-size:10px;line-height:1.5}.ai-suggestions{padding:0 12px 7px;gap:5px}.ai-suggestions button{padding:6px 9px;font-size:10px;min-height:36px}
  #aiStatus{margin:0 12px 5px;font-size:10px;line-height:1.5}
 }
+
+#aiLaunch.ai-positioned{position:fixed;inset:var(--ai-y) auto auto var(--ai-x)!important}
