@@ -21,3 +21,11 @@
 .oge-variant-header p{margin:0 0 8px;font-size:.875rem;line-height:1.45}
 .oge-variant-header a{font-size:.875rem;color:var(--ui-accent-text)}
 #ogeVariantFrame{display:block;flex:1;min-height:0;width:100%;border:0;background:#fff}
+
+#egeVariantDialog{box-sizing:border-box;width:min(760px,94vw);max-width:94vw;max-height:92dvh;padding:0;overflow:auto}
+.ege-variant-body{padding:clamp(12px,3vw,24px)}
+.ege-variant-body h3{margin:0 0 .75rem}
+.ege-variant-body li{padding:.75rem .25rem;border-bottom:1px solid var(--line);line-height:1.55}
+.ege-variant-body li strong{display:block}
+.ege-variant-body li a{display:inline-block;margin-right:1rem;color:var(--ui-accent-text);text-underline-offset:.2em}
+#egeVariantClock{font-variant-numeric:tabular-nums}
