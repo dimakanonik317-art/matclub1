@@ -27,5 +27,12 @@
 .ege-variant-body h3{margin:0 0 .75rem}
 .ege-variant-body li{padding:.75rem .25rem;border-bottom:1px solid var(--line);line-height:1.55}
 .ege-variant-body li strong{display:block}
-.ege-variant-body li a{display:inline-block;margin-right:1rem;color:var(--ui-accent-text);text-underline-offset:.2em}
+.ege-variant-body li p{line-height:1.55;white-space:pre-wrap}
+.ege-variant-body li label{display:block;font-weight:600;margin:.75rem 0 .25rem}
+.ege-variant-body li :is(input,textarea){box-sizing:border-box;max-width:100%;padding:.55rem .65rem;color:var(--ink);background:var(--ui-surface);border:1px solid var(--line);border-radius:4px;font:inherit}
+.ege-variant-body li textarea{width:100%;resize:vertical}
+.ege-variant-body li details{margin-top:.65rem}
+#egeVariantDialog .oge-variant-header{position:sticky;top:0;z-index:2;background:var(--paper)}
+#egeVariantResult{padding:.75rem 1rem;border:1px solid var(--line);border-radius:4px}
+.ege-variant-body :is(input,textarea):focus-visible{outline:2px solid var(--ui-accent-text);outline-offset:2px}
 #egeVariantClock{font-variant-numeric:tabular-nums}
