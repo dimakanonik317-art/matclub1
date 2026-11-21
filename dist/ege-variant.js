@@ -1,4 +1,166 @@
-/* Авторский пробник по структуре профильного ЕГЭ-2027. */
+/* Общая логика математических пробников и задачи профильного ЕГЭ-2027. */
+window.mountMathExam = function({key, templates, shortCount, sharedCount=0, renderShared}) {
+  const button = document.getElementById('open'+key[0].toUpperCase()+key.slice(1)+'Variant');
+  const dialog = document.getElementById(key+'VariantDialog');
+  const clock = document.getElementById(key+'VariantClock');
+  const short = document.getElementById(key+'VariantShort');
+  const long = document.getElementById(key+'VariantLong');
+  const form = document.getElementById(key+'VariantForm');
+  const finish = document.getElementById(key+'VariantFinish');
+  const restart = document.getElementById(key+'VariantRestart');
+  const result = document.getElementById(key+'VariantResult');
+  const storageKey = 'matclub-'+key+'-practice-2027-v1';
+  const duration = 235 * 60_000;
+  let attempt;
+  let timer;
+
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(storageKey));
+    if (saved && Array.isArray(saved.seeds) && saved.seeds.length === templates.length &&
+        saved.seeds.every(n => Number.isInteger(n) && n >= 2 && n <= 24) &&
+        Array.isArray(saved.answers) && saved.answers.length === templates.length &&
+        saved.answers.every(a=>typeof a === 'string') && Number.isFinite(saved.deadline)) attempt = saved;
+  } catch {}
+
+  function save() {
+    try { sessionStorage.setItem(storageKey, JSON.stringify(attempt)); } catch {}
+  }
+
+  function buildTask(index) {
+    const [title, generate] = templates[index];
+    const [question, answer, explanation, figure] = generate(attempt.seeds[index]);
+    return {id: key+'-practice-'+(index+1), title, question, answer, explanation, figure};
+  }
+
+  function matches(expected, input) {
+    if (!input.trim()) return false;
+    const parsed = parseAnswer(input);
+    return Number.isFinite(parsed) && Math.abs(parsed-expected) <= 1e-10;
+  }
+
+  function buildRow(index) {
+    const task = buildTask(index);
+    const row = document.createElement('li');
+    const heading = document.createElement('strong');
+    heading.textContent = task.title;
+    const question = document.createElement('p');
+    question.textContent = task.question;
+    row.append(heading, question);
+    if (task.figure) row.insertAdjacentHTML('beforeend', egeFigure(task));
+
+    const input = document.createElement(index < shortCount ? 'input' : 'textarea');
+    input.id = task.id + '-answer';
+    input.dataset.taskIndex = index;
+    input.autocomplete = 'off';
+    input.maxLength = index < shortCount ? 40 : 8000;
+    if (index < shortCount) input.inputMode = 'decimal';
+    else input.rows = 3;
+    const label = document.createElement('label');
+    label.htmlFor = input.id;
+    label.textContent = (index < shortCount ? 'Ответ' : 'Решение') + ' № ' + (index+1);
+    input.value = attempt.answers[index];
+    input.disabled = attempt.finished;
+    row.append(label,input);
+    if (attempt.finished) {
+      const details = document.createElement('details');
+      const summary = document.createElement('summary');
+      summary.textContent = index < shortCount
+        ? (matches(task.answer, input.value) ? 'Верно · разбор' : 'Ответ и разбор')
+        : 'Разбор для самопроверки';
+      const explanation = document.createElement('p');
+      explanation.textContent = task.explanation;
+      details.append(summary,explanation);
+      row.append(details);
+    }
+    return row;
+  }
+
+  function render() {
+    if (renderShared) renderShared(attempt.seeds[0]);
+    const rows = templates.map((_,index)=>buildRow(index));
+    short.replaceChildren(...rows.slice(0,shortCount));
+    long.replaceChildren(...rows.slice(shortCount));
+    finish.hidden = attempt.finished;
+    restart.hidden = !attempt.finished;
+    result.hidden = !attempt.finished;
+    if (attempt.finished) {
+      const correct = templates.slice(0,shortCount).filter((_,index)=>matches(buildTask(index).answer,attempt.answers[index])).length;
+      result.textContent = 'Часть 1: '+correct+' из '+shortCount+'. Часть 2: сравни свои решения с разборами.';
+    }
+  }
+
+  function updateTime() {
+    const seconds = Math.max(0, Math.ceil((attempt.deadline-Date.now())/1000));
+    if (attempt.finished) {
+      clock.textContent = 'Завершено';
+      return;
+    }
+    const segments = [Math.floor(seconds/3600), Math.floor(seconds/60)%60, seconds%60];
+    clock.textContent = segments.map(value=>String(value).padStart(2,'0')).join(':');
+    if (!seconds) complete();
+  }
+
+  function complete() {
+    attempt.finished = true;
+    save();
+    clearInterval(timer);
+    button.textContent = 'Открыть результат';
+    updateTime();
+    render();
+    result.focus();
+  }
+
+  function start() {
+    const draws = crypto.getRandomValues(new Uint32Array(templates.length));
+    const seeds = templates.map(([, generate],index)=>{
+      const before = attempt && generate(attempt.seeds[index]);
+      const choices = Array.from({length:23},(_,i)=>i+2).filter(n=>{
+        if (!before) return true;
+        const next = generate(n);
+        return next[0] !== before[0] || next[1] !== before[1] || n !== attempt.seeds[index] && (index < sharedCount || JSON.stringify(next[3]) !== JSON.stringify(before[3]));
+      });
+      return choices[draws[index]%choices.length];
+    });
+    if (sharedCount) seeds.fill(seeds[0],0,sharedCount);
+    attempt = {seeds, answers:Array(templates.length).fill(''), deadline:Date.now()+duration, finished:false};
+    save();
+  }
+
+  function show() {
+    render();
+    clearInterval(timer);
+    updateTime();
+    if (!attempt.finished) timer = setInterval(updateTime,1000);
+    button.textContent = attempt.finished ? 'Открыть результат' : 'Продолжить вариант';
+  }
+
+  if (attempt) button.textContent = attempt.finished ? 'Открыть результат' : 'Продолжить вариант';
+  button.addEventListener('click',()=>{
+    if (!attempt) start();
+    dialog.showModal();
+    show();
+  });
+  form.addEventListener('input',event=>{
+    if (attempt.finished || !event.target.matches('[data-task-index]')) return;
+    if (Date.now() >= attempt.deadline) {
+      updateTime();
+      return;
+    }
+    attempt.answers[Number(event.target.dataset.taskIndex)] = event.target.value;
+    save();
+  });
+  form.addEventListener('submit',event=>event.preventDefault());
+  finish.addEventListener('click',()=>{
+    if (!attempt.finished) complete();
+  });
+  restart.addEventListener('click',()=>{
+    start();
+    show();
+    dialog.scrollTop = 0;
+  });
+  dialog.addEventListener('close',()=>clearInterval(timer));
+};
+
 (() => {
   const shape = (caption, coords, edges) => ({geometry:{
     caption,
@@ -78,157 +240,5 @@
       `Присутствуют все остатки от 0 до ${2*n}. Их сумма равна ${n}·${2*n+1}, то есть делится на ${2*n+1}. Поэтому а) да, б) нет. Минимальный положительный представитель нулевого класса — ${2*n+1}, а остальных классов — их остатки. Набор 1, …, ${2*n+1} даёт минимум ${(2*n+1)*(n+1)}.`]]
   ];
 
-  const button = document.getElementById('openEgeVariant');
-  const dialog = document.getElementById('egeVariantDialog');
-  const clock = document.getElementById('egeVariantClock');
-  const short = document.getElementById('egeVariantShort');
-  const long = document.getElementById('egeVariantLong');
-  const form = document.getElementById('egeVariantForm');
-  const finish = document.getElementById('egeVariantFinish');
-  const restart = document.getElementById('egeVariantRestart');
-  const result = document.getElementById('egeVariantResult');
-  const storageKey = 'matclub-ege-practice-2027-v1';
-  const duration = 235 * 60_000;
-  let attempt;
-  let timer;
-
-  try {
-    const saved = JSON.parse(sessionStorage.getItem(storageKey));
-    if (saved && Array.isArray(saved.seeds) && saved.seeds.length === templates.length &&
-        saved.seeds.every(n => Number.isInteger(n) && n >= 2 && n <= 24) &&
-        Array.isArray(saved.answers) && saved.answers.length === templates.length &&
-        saved.answers.every(a=>typeof a === 'string') && Number.isFinite(saved.deadline)) attempt = saved;
-  } catch {}
-
-  function save() {
-    try { sessionStorage.setItem(storageKey, JSON.stringify(attempt)); } catch {}
-  }
-
-  function buildTask(index) {
-    const [title, generate] = templates[index];
-    const [question, answer, explanation, figure] = generate(attempt.seeds[index]);
-    return {id: 'ege-practice-'+(index+1), title, question, answer, explanation, figure};
-  }
-
-  function matches(expected, input) {
-    if (!input.trim()) return false;
-    const parsed = parseAnswer(input);
-    return Number.isFinite(parsed) && Math.abs(parsed-expected) <= 1e-10;
-  }
-
-  function buildRow(index) {
-    const task = buildTask(index);
-    const row = document.createElement('li');
-    const heading = document.createElement('strong');
-    heading.textContent = task.title;
-    const question = document.createElement('p');
-    question.textContent = task.question;
-    row.append(heading, question);
-    if (task.figure) row.insertAdjacentHTML('beforeend', egeFigure(task));
-
-    const input = document.createElement(index < 12 ? 'input' : 'textarea');
-    input.id = task.id + '-answer';
-    input.dataset.taskIndex = index;
-    input.autocomplete = 'off';
-    input.maxLength = index < 12 ? 40 : 8000;
-    if (index < 12) input.inputMode = 'decimal';
-    else input.rows = 3;
-    const label = document.createElement('label');
-    label.htmlFor = input.id;
-    label.textContent = (index < 12 ? 'Ответ' : 'Решение') + ' № ' + (index+1);
-    input.value = attempt.answers[index];
-    input.disabled = attempt.finished;
-    row.append(label,input);
-    if (attempt.finished) {
-      const details = document.createElement('details');
-      const summary = document.createElement('summary');
-      summary.textContent = index < 12
-        ? (matches(task.answer, input.value) ? 'Верно · разбор' : 'Ответ и разбор')
-        : 'Разбор для самопроверки';
-      const explanation = document.createElement('p');
-      explanation.textContent = task.explanation;
-      details.append(summary,explanation);
-      row.append(details);
-    }
-    return row;
-  }
-
-  function render() {
-    const rows = templates.map((_,index)=>buildRow(index));
-    short.replaceChildren(...rows.slice(0,12));
-    long.replaceChildren(...rows.slice(12));
-    finish.hidden = attempt.finished;
-    restart.hidden = !attempt.finished;
-    result.hidden = !attempt.finished;
-    if (attempt.finished) {
-      const correct = templates.slice(0,12).filter((_,index)=>matches(buildTask(index).answer,attempt.answers[index])).length;
-      result.textContent = 'Часть 1: '+correct+' из 12. Часть 2: сравни свои решения с разборами.';
-    }
-  }
-
-  function updateTime() {
-    const seconds = Math.max(0, Math.ceil((attempt.deadline-Date.now())/1000));
-    if (attempt.finished) {
-      clock.textContent = 'Завершено';
-      return;
-    }
-    const segments = [Math.floor(seconds/3600), Math.floor(seconds/60)%60, seconds%60];
-    clock.textContent = segments.map(value=>String(value).padStart(2,'0')).join(':');
-    if (!seconds) complete();
-  }
-
-  function complete() {
-    attempt.finished = true;
-    save();
-    clearInterval(timer);
-    button.textContent = 'Открыть результат';
-    updateTime();
-    render();
-    result.focus();
-  }
-
-  function start() {
-    const draws = crypto.getRandomValues(new Uint32Array(templates.length));
-    const seeds = templates.map((_,index)=>{
-      const choices = Array.from({length:23},(_,i)=>i+2).filter(n=>n!==attempt?.seeds[index]);
-      return choices[draws[index]%choices.length];
-    });
-    attempt = {seeds, answers:Array(templates.length).fill(''), deadline:Date.now()+duration, finished:false};
-    save();
-  }
-
-  function show() {
-    render();
-    clearInterval(timer);
-    updateTime();
-    if (!attempt.finished) timer = setInterval(updateTime,1000);
-    button.textContent = attempt.finished ? 'Открыть результат' : 'Продолжить вариант';
-  }
-
-  if (attempt) button.textContent = attempt.finished ? 'Открыть результат' : 'Продолжить вариант';
-  button.addEventListener('click',()=>{
-    if (!attempt) start();
-    dialog.showModal();
-    show();
-  });
-  form.addEventListener('input',event=>{
-    if (attempt.finished || !event.target.matches('[data-task-index]')) return;
-    if (Date.now() >= attempt.deadline) {
-      updateTime();
-      return;
-    }
-    attempt.answers[Number(event.target.dataset.taskIndex)] = event.target.value;
-    save();
-  });
-  form.addEventListener('submit',event=>event.preventDefault());
-  finish.addEventListener('click',()=>{
-    if (!attempt.finished) complete();
-  });
-  restart.addEventListener('click',()=>{
-    start();
-    show();
-    dialog.scrollTop = 0;
-  });
-  dialog.addEventListener('close',()=>clearInterval(timer));
+  window.mountMathExam({key:'ege', templates, shortCount:12});
 })();
-

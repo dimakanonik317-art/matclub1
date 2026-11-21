@@ -14,15 +14,12 @@
 .oge-variant-action{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:18px}
 .oge-variant-action[hidden]{display:none}
 .oge-variant-action span{font-size:.875rem;color:var(--ui-text)}
-#ogeVariantDialog{box-sizing:border-box;width:min(1080px,96vw);max-width:96vw;height:min(860px,92dvh);max-height:92dvh;padding:0;overflow:hidden}
-#ogeVariantDialog[open]{display:flex;flex-direction:column}
 .oge-variant-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:clamp(12px,2.5vw,24px);border-bottom:1px solid var(--line)}
 .oge-variant-header h2{margin:0 0 8px;font-size:clamp(1rem,3vw,1.35rem)}
 .oge-variant-header p{margin:0 0 8px;font-size:.875rem;line-height:1.45}
 .oge-variant-header a{font-size:.875rem;color:var(--ui-accent-text)}
-#ogeVariantFrame{display:block;flex:1;min-height:0;width:100%;border:0;background:#fff}
 
-#egeVariantDialog{box-sizing:border-box;width:min(760px,94vw);max-width:94vw;max-height:92dvh;padding:0;overflow:auto}
+:is(#egeVariantDialog,#ogeVariantDialog){box-sizing:border-box;width:min(760px,94vw);max-width:94vw;max-height:92dvh;padding:0;overflow:auto}
 .ege-variant-body{padding:clamp(12px,3vw,24px)}
 .ege-variant-body h3{margin:0 0 .75rem}
 .ege-variant-body li{padding:.75rem .25rem;border-bottom:1px solid var(--line);line-height:1.55}
@@ -32,7 +29,9 @@
 .ege-variant-body li :is(input,textarea){box-sizing:border-box;max-width:100%;padding:.55rem .65rem;color:var(--ink);background:var(--ui-surface);border:1px solid var(--line);border-radius:4px;font:inherit}
 .ege-variant-body li textarea{width:100%;resize:vertical}
 .ege-variant-body li details{margin-top:.65rem}
-#egeVariantDialog .oge-variant-header{position:sticky;top:0;z-index:2;background:var(--paper)}
-#egeVariantResult{padding:.75rem 1rem;border:1px solid var(--line);border-radius:4px}
+:is(#egeVariantDialog,#ogeVariantDialog) .oge-variant-header{position:sticky;top:0;z-index:2;background:var(--paper)}
+:is(#egeVariantResult,#ogeVariantResult){padding:.75rem 1rem;border:1px solid var(--line);border-radius:4px}
 .ege-variant-body :is(input,textarea):focus-visible{outline:2px solid var(--ui-accent-text);outline-offset:2px}
-#egeVariantClock{font-variant-numeric:tabular-nums}
+:is(#egeVariantClock,#ogeVariantClock){font-variant-numeric:tabular-nums}
+.exam-beta{display:inline-block;padding:.1em .45em;margin-inline-start:.35em;border:1px solid var(--line);border-radius:4px;color:var(--ui-text);font-size:.75rem;vertical-align:middle}
+.exam-shared-statement{padding:1rem;border:1px solid var(--line);border-radius:4px;margin-bottom:1rem}

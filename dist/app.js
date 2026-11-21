@@ -107,16 +107,3 @@ $('#physicsSection').addEventListener('change',e=>{state.section=e.target.value;
 // Shareable entry into the exam collection.
 if(new URLSearchParams(location.search).get('exam')==='ege'){Object.assign(state,{grade:11,domain:'math',subject:'ege',view:'catalog',level:-1,topic:null,strongOnly:false});const theme=new URLSearchParams(location.search).get('egeTopic');state.examTopic=egeTopics.some(t=>t.id===theme)?theme:null;render();$('#catalog').scrollIntoView({block:'start'})}
 {const params=new URLSearchParams(location.search),exam=params.get('exam');if(exam==='oge'||exam==='oge-physics'){const physics=exam==='oge-physics',themes=physics?physicsOgeThemes:ogeThemes,theme=params.get('ogeTopic');Object.assign(state,{grade:9,domain:physics?'physics':'math',subject:physics?'physics-oge':'oge',view:'catalog',level:-1,topic:null,strongOnly:false,examTopic:themes.some(t=>t.id===theme)?theme:null});render();$('#catalog').scrollIntoView({block:'start'})}}
-
-
-
-{
-  const openButton = document.getElementById('openOgeVariant');
-  const dialog = document.getElementById('ogeVariantDialog');
-  const frame = document.getElementById('ogeVariantFrame');
-
-  openButton.addEventListener('click', () => {
-    dialog.showModal();
-    if (!frame.hasAttribute('src')) frame.src = dialog.querySelector('a').href;
-  });
-}
